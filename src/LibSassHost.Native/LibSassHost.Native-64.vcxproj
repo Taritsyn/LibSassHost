@@ -76,7 +76,7 @@
       <ForceSymbolReferences>_DllMainCRTStartup</ForceSymbolReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(ProjectDir)bin\$(Configuration)\$(Platform)\$(ProjectName).dll $(ProjectDir)..\LibSassHost\LibSassHost.Native /Y /T</Command>
+      <Command>xcopy $(ProjectDir)bin\$(Configuration)\$(Platform)\$(ProjectName).dll $(ProjectDir)..\LibSassHost\LibSassHost.Native /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -100,7 +100,7 @@
       <ForceSymbolReferences>_DllMainCRTStartup</ForceSymbolReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(ProjectDir)bin\$(Configuration)\$(Platform)\$(ProjectName).dll $(ProjectDir)..\LibSassHost\LibSassHost.Native /Y /T</Command>
+      <Command>xcopy $(ProjectDir)bin\$(Configuration)\$(Platform)\$(ProjectName).dll $(ProjectDir)..\LibSassHost\LibSassHost.Native /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
