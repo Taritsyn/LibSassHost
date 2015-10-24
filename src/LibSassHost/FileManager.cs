@@ -45,14 +45,6 @@ namespace LibSassHost
 
 
 		/// <summary>
-		/// Static constructor
-		/// </summary>
-		static FileManager()
-		{
-			AssemblyResolver.Initialize();
-		}
-
-		/// <summary>
 		/// Constructs a instance of file manager
 		/// </summary>
 		public FileManager()

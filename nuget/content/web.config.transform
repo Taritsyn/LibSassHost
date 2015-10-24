@@ -1,0 +1,11 @@
+﻿<configuration>
+	<system.webServer>
+		<security>
+			<requestFiltering>
+				<hiddenSegments>
+					<add segment="LibSassHost.Native" />
+				</hiddenSegments>
+			</requestFiltering>
+		</security>
+	</system.webServer>
+</configuration>

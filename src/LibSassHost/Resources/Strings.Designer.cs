@@ -61,7 +61,7 @@ namespace LibSassHost.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load the {0} assembly, because the directory &apos;{1}&apos; does not exist..
+        ///   Looks up a localized string similar to Failed to load the `{0}` assembly, because the directory &apos;{1}&apos; does not exist..
         /// </summary>
         internal static string AssembliesDirectoryNotFound {
             get {
@@ -70,7 +70,7 @@ namespace LibSassHost.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load the {0} assembly, because the file &apos;{1}&apos; does not exist..
+        ///   Looks up a localized string similar to Failed to load the `{0}` assembly, because the file &apos;{1}&apos; does not exist..
         /// </summary>
         internal static string AssemblyFileNotFound {
             get {
@@ -102,6 +102,17 @@ namespace LibSassHost.Resources {
         internal static string Common_FileNotExist {
             get {
                 return ResourceManager.GetString("Common_FileNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found &apos;{0}.dll&apos; assembly, that should not exist. Must instead have &apos;{1}32.dll&apos; and &apos;{1}64.dll&apos; assemblies.
+        ///
+        ///Check your build settings..
+        /// </summary>
+        internal static string ProxyAssemblyFileFound {
+            get {
+                return ResourceManager.GetString("ProxyAssemblyFileFound", resourceCulture);
             }
         }
     }

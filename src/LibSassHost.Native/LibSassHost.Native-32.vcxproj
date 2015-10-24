@@ -45,7 +45,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>$(ProjectName)</TargetName>
+    <TargetName>LibSassHost.Native-Proxy</TargetName>
     <OutDir>bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\</IntDir>
     <LinkKeyFile>$(SolutionDir)LibSassHost.snk</LinkKeyFile>
@@ -55,7 +55,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
+    <TargetName>LibSassHost.Native-Proxy</TargetName>
     <LinkKeyFile>$(SolutionDir)LibSassHost.snk</LinkKeyFile>
     <LinkDelaySign>false</LinkDelaySign>
   </PropertyGroup>
@@ -76,7 +76,10 @@
       <ForceSymbolReferences>__DllMainCRTStartup@12</ForceSymbolReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(ProjectDir)bin\$(Configuration)\$(Platform)\$(ProjectName).dll $(ProjectDir)..\LibSassHost\LibSassHost.Native /Y</Command>
+      <Command>set target_path="$(ProjectDir)..\LibSassHost\LibSassHost.Native\$(ProjectName).dll"
+
+if exist %target_path% del %target_path%
+copy "$(ProjectDir)bin\$(Configuration)\$(Platform)\$(TargetName).dll" %target_path% /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -100,7 +103,10 @@
       <ForceSymbolReferences>__DllMainCRTStartup@12</ForceSymbolReferences>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(ProjectDir)bin\$(Configuration)\$(Platform)\$(ProjectName).dll $(ProjectDir)..\LibSassHost\LibSassHost.Native /Y</Command>
+      <Command>set target_path="$(ProjectDir)..\LibSassHost\LibSassHost.Native\$(ProjectName).dll"
+
+if exist %target_path% del %target_path%
+copy "$(ProjectDir)bin\$(Configuration)\$(Platform)\$(TargetName).dll" %target_path% /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

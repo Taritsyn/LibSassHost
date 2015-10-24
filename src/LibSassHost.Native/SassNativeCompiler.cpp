@@ -17,9 +17,9 @@ namespace LibSassHost
 		void SassNativeCompiler::Compile(SassDataContext^ dataContext)
 		{
 			int result = -1;
-			char* sourceString = MarshallingHelper::MarshalString(dataContext->SourceString);
 
-			Sass_Data_Context* data_ctx = sass_make_data_context(sourceString);
+			Sass_Data_Context* data_ctx = sass_make_data_context(
+				MarshallingHelper::MarshalString(dataContext->SourceString));
 			Sass_Options* data_ctx_options = sass_data_context_get_options(data_ctx);
 
 			FillUnmanagedContextOptions(data_ctx_options, dataContext);
@@ -52,16 +52,15 @@ namespace LibSassHost
 			{
 				// Free resources
 				sass_delete_data_context(data_ctx);
-				MarshallingHelper::FreeString(sourceString);
 			}
 		}
 
 		void SassNativeCompiler::CompileFile(SassFileContext^ fileContext)
 		{
 			int result = -1;
-			const char* inputPath = MarshallingHelper::MarshalConstString(fileContext->InputPath);
 
-			Sass_File_Context* file_ctx = sass_make_file_context(inputPath);
+			Sass_File_Context* file_ctx = sass_make_file_context(
+				MarshallingHelper::MarshalConstString(fileContext->InputPath));
 			Sass_Options* file_ctx_options = sass_file_context_get_options(file_ctx);
 
 			FillUnmanagedContextOptions(file_ctx_options, fileContext);
@@ -94,7 +93,6 @@ namespace LibSassHost
 			{
 				// Free resources
 				sass_delete_file_context(file_ctx);
-				MarshallingHelper::FreeConstString(inputPath);
 			}
 		}
 

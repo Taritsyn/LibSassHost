@@ -72,11 +72,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\import\base.sass" />
-    <None Include="Resources\variables\style.sass" />
-    <None Include="Resources\import\base.scss" />
-    <None Include="Resources\import\_reset.scss" />
-    <None Include="Resources\variables\style.scss" />
+    <None Include="Resources\import\sass\base.sass" />
+    <None Include="Resources\import\sass\_reset.sass" />
+    <None Include="Resources\variables\sass\style.sass" />
+    <None Include="Resources\import\scss\base.scss" />
+    <None Include="Resources\import\scss\_reset.scss" />
+    <None Include="Resources\variables\scss\style.scss" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
@@ -94,10 +95,11 @@
     <Error Condition="!Exists('..\..\packages\xunit.core.2.1.0\build\portable-net45+win8+wp8+wpa81\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.1.0\build\portable-net45+win8+wp8+wpa81\xunit.core.props'))" />
     <Error Condition="!Exists('..\..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
-  <PropertyGroup>
-    <PostBuildEvent>del $(ProjectDir)bin\$(Configuration)\LibSassHost.Native-32.*</PostBuildEvent>
-  </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

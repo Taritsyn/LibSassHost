@@ -11,6 +11,8 @@ namespace LibSassHost.Test
 
 		private readonly string _fileExtension;
 
+		private readonly string _subfolderName;
+
 		private readonly bool _indentedSyntax;
 
 
@@ -19,11 +21,13 @@ namespace LibSassHost.Test
 			if (syntaxType == SyntaxType.Sass)
 			{
 				_fileExtension = ".sass";
+				_subfolderName = "sass";
 				_indentedSyntax = true;
 			}
 			else if (syntaxType == SyntaxType.Scss)
 			{
 				_fileExtension = ".scss";
+				_subfolderName = "scss";
 				_indentedSyntax = false;
 			}
 			else
@@ -45,7 +49,8 @@ namespace LibSassHost.Test
 		public virtual void CodeCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath, "variables/style" + _fileExtension);
+			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("variables/{0}/style{1}", _subfolderName, _fileExtension));
 			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "variables/style.css");
 
 			string inputCode = File.ReadAllText(inputFilePath);
@@ -74,8 +79,10 @@ namespace LibSassHost.Test
 		public virtual void CodeWithImportCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath, "import/base" + _fileExtension);
-			string importedFilePath = Path.Combine(_resourcesDirectoryPath, "import/_reset.scss");
+			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("import/{0}/base{1}", _subfolderName, _fileExtension));
+			string importedFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("import/{0}/_reset{1}", _subfolderName, _fileExtension));
 			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "import/base.css");
 
 			string inputCode = File.ReadAllText(inputFilePath);
@@ -92,7 +99,7 @@ namespace LibSassHost.Test
 
 			using (var compiler = new SassCompiler())
 			{
-				result = compiler.Compile(inputCode, inputPath: inputFilePath, options: options);
+				result = compiler.Compile(inputCode, inputFilePath, options: options);
 			}
 
 			// Assert
@@ -108,7 +115,8 @@ namespace LibSassHost.Test
 		public virtual void FileCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath, "variables/style" + _fileExtension);
+			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("variables/{0}/style{1}", _subfolderName, _fileExtension));
 			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "variables/style.css");
 
 			string targetOutputCode = File.ReadAllText(outputFilePath);
@@ -134,8 +142,10 @@ namespace LibSassHost.Test
 		public virtual void FileWithImportCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath, "import/base" + _fileExtension);
-			string importedFilePath = Path.Combine(_resourcesDirectoryPath, "import/_reset.scss");
+			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("import/{0}/base{1}", _subfolderName, _fileExtension));
+			string importedFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("import/{0}/_reset{1}", _subfolderName, _fileExtension));
 			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "import/base.css");
 
 			string targetOutputCode = File.ReadAllText(outputFilePath);
