@@ -8,28 +8,28 @@ namespace LibSassHost
 	{
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool FuncStringBoolean([MarshalAs(UnmanagedType.LPStr)]string p);
+		private delegate bool FuncStringBoolean([MarshalAs(UnmanagedType.LPWStr)]string p);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		[return: MarshalAs(UnmanagedType.LPStr)]
+		[return: MarshalAs(UnmanagedType.LPWStr)]
 		private delegate string FuncString();
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		[return: MarshalAs(UnmanagedType.LPStr)]
-		private delegate string FuncStringString([MarshalAs(UnmanagedType.LPStr)]string p);
+		[return: MarshalAs(UnmanagedType.LPWStr)]
+		private delegate string FuncStringString([MarshalAs(UnmanagedType.LPWStr)]string p);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		[return: MarshalAs(UnmanagedType.LPStr)]
+		[return: MarshalAs(UnmanagedType.LPWStr)]
 		private delegate string FuncStringStringString(
-			[MarshalAs(UnmanagedType.LPStr)]string p1,
-			[MarshalAs(UnmanagedType.LPStr)]string p2);
+			[MarshalAs(UnmanagedType.LPWStr)]string p1,
+			[MarshalAs(UnmanagedType.LPWStr)]string p2);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		[return: MarshalAs(UnmanagedType.LPStr)]
+		[return: MarshalAs(UnmanagedType.LPWStr)]
 		private delegate string FuncStringStringStringString(
-			[MarshalAs(UnmanagedType.LPStr)]string p1,
-			[MarshalAs(UnmanagedType.LPStr)]string p2,
-			[MarshalAs(UnmanagedType.LPStr)]string p3);
+			[MarshalAs(UnmanagedType.LPWStr)]string p1,
+			[MarshalAs(UnmanagedType.LPWStr)]string p2,
+			[MarshalAs(UnmanagedType.LPWStr)]string p3);
 
 
 		public static void SetFileManager(IFileManager fileManager)

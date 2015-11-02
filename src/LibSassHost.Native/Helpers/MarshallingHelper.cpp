@@ -2,8 +2,11 @@
 
 #include "MarshallingHelper.hpp"
 
+using namespace std;
+
 using namespace System;
 using namespace System::Runtime::InteropServices;
+using namespace System::Text;
 
 namespace LibSassHost
 {
@@ -21,21 +24,32 @@ namespace LibSassHost
 					return nullptr;
 				}
 
-				char* original_str = (char*)(Marshal::StringToCoTaskMemAnsi(value)).ToPointer();
-				char* target_str = (char*)malloc(strlen(original_str) + 1);
-				strcpy(target_str, original_str);
+				array<Byte>^ bytes = Encoding::UTF8->GetBytes(value);
+				int byteCount = bytes->Length;
 
-				FreeString(original_str);
+				char* result = new char[byteCount + 1];
+				Marshal::Copy(bytes, 0, IntPtr(result), byteCount);
+				result[byteCount] = '\0';
 
-				return target_str;
+				return result;
 			}
 
-			void MarshallingHelper::FreeString(char* value)
+			String^ MarshallingHelper::UnmarshalString(char* value)
 			{
-				if (value)
+				if (!value)
 				{
-					Marshal::FreeCoTaskMem(IntPtr((void *)value));
+					return nullptr;
 				}
+
+				size_t byteCount = strlen(value) * sizeof(*value);
+				array<unsigned char, 1>^ bytes = gcnew array<Byte>(byteCount);
+
+				pin_ptr<Byte> pinnedBytes = &bytes[0];
+				memcpy(pinnedBytes, value, byteCount);
+
+				String^ result = Encoding::UTF8->GetString(bytes);
+
+				return result;
 			}
 
 #pragma endregion
@@ -44,15 +58,12 @@ namespace LibSassHost
 
 			const char* MarshallingHelper::MarshalConstString(String^ value)
 			{
-				return (const char*)Marshal::StringToCoTaskMemAnsi(value).ToPointer();
+				return (const char*)MarshalString(value);
 			}
 
-			void MarshallingHelper::FreeConstString(const char* value)
+			String^ MarshallingHelper::UnmarshalConstString(const char* value)
 			{
-				if (value)
-				{
-					Marshal::FreeCoTaskMem(IntPtr((void *)value));
-				}
+				return UnmarshalString(custom_strdup(value));
 			}
 
 #pragma endregion
@@ -94,32 +105,36 @@ namespace LibSassHost
 				{
 					for (int itemIndex = 0; itemIndex < itemCount; itemIndex++)
 					{
-						result[itemIndex] = gcnew String(items[itemIndex]);
+						result[itemIndex] = UnmarshalString(items[itemIndex]);
 					}
 				}
 
 				return result;
 			}
 
-			void MarshallingHelper::FreeStringArray(char** items)
-			{
-				if (items != NULL)
-				{
-					int itemIndex = 0;
-
-					while (items[itemIndex] != NULL)
-					{
-						Marshal::FreeHGlobal(IntPtr((void *)items[itemIndex]));
-
-						itemIndex++;
-					}
-
-					delete[] items;
-				}
-			}
-
 #pragma endregion
 
+			char* MarshallingHelper::custom_strdup(const char* value)
+			{
+				if (value == NULL)
+				{
+					return NULL;
+				}
+
+				if (value == nullptr)
+				{
+					return nullptr;
+				}
+
+				char* result = (char*)malloc(strlen(value) + 1);
+				if (result == NULL)
+				{
+					throw gcnew InvalidCastException("Out of memory.");
+				}
+				strcpy(result, value);
+
+				return result;
+			}
 		}
 	}
 }

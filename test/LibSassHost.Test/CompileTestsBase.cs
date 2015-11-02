@@ -71,7 +71,7 @@ namespace LibSassHost.Test
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
-			Assert.True(result.SourceMap.Length == 0);
+			Assert.True(string.IsNullOrEmpty(result.SourceMap));
 			Assert.Empty(result.IncludedFilePaths);
 		}
 
@@ -104,11 +104,41 @@ namespace LibSassHost.Test
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
-			Assert.True(result.SourceMap.Length > 0);
+			Assert.False(string.IsNullOrEmpty(result.SourceMap));
 
 			var includedFilePaths = result.IncludedFilePaths;
 			Assert.Equal(1, includedFilePaths.Count);
 			Assert.Equal(GetCanonicalPath(importedFilePath), includedFilePaths[0]);
+		}
+
+		[Fact]
+		public virtual void CodeWithUnicodeCharactersCompilationIsCorrect()
+		{
+			// Arrange
+			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("юникод/{0}/символы{1}", _subfolderName, _fileExtension));
+			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "юникод/символы.css");
+
+			string inputCode = File.ReadAllText(inputFilePath);
+			string targetOutputCode = File.ReadAllText(outputFilePath);
+
+			var options = new CompilationOptions
+			{
+				IndentedSyntax = _indentedSyntax
+			};
+
+			// Act
+			CompilationResult result;
+
+			using (var compiler = new SassCompiler())
+			{
+				result = compiler.Compile(inputCode, options: options);
+			}
+
+			// Assert
+			Assert.Equal(targetOutputCode, result.CompiledContent);
+			Assert.True(string.IsNullOrEmpty(result.SourceMap));
+			Assert.Empty(result.IncludedFilePaths);
 		}
 
 		[Fact]
@@ -131,7 +161,7 @@ namespace LibSassHost.Test
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
-			Assert.True(result.SourceMap.Length == 0);
+			Assert.True(string.IsNullOrEmpty(result.SourceMap));
 
 			var includedFilePaths = result.IncludedFilePaths;
 			Assert.Equal(1, includedFilePaths.Count);
@@ -165,12 +195,39 @@ namespace LibSassHost.Test
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
-			Assert.True(result.SourceMap.Length > 0);
+			Assert.False(string.IsNullOrEmpty(result.SourceMap));
 
 			var includedFilePaths = result.IncludedFilePaths;
 			Assert.Equal(2, includedFilePaths.Count);
-			Assert.Equal(GetCanonicalPath(importedFilePath), includedFilePaths[0]);
-			Assert.Equal(GetCanonicalPath(inputFilePath), includedFilePaths[1]);
+			Assert.Equal(GetCanonicalPath(inputFilePath), includedFilePaths[0]);
+			Assert.Equal(GetCanonicalPath(importedFilePath), includedFilePaths[1]);
+		}
+
+		[Fact]
+		public virtual void FileWithUnicodeCharactersCompilationIsCorrect()
+		{
+			// Arrange
+			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+				string.Format("юникод/{0}/символы{1}", _subfolderName, _fileExtension));
+			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "юникод/символы.css");
+
+			string targetOutputCode = File.ReadAllText(outputFilePath);
+
+			// Act
+			CompilationResult result;
+
+			using (var compiler = new SassCompiler())
+			{
+				result = compiler.CompileFile(inputFilePath);
+			}
+
+			// Assert
+			Assert.Equal(targetOutputCode, result.CompiledContent);
+			Assert.True(string.IsNullOrEmpty(result.SourceMap));
+
+			var includedFilePaths = result.IncludedFilePaths;
+			Assert.Equal(1, includedFilePaths.Count);
+			Assert.Equal(GetCanonicalPath(inputFilePath), includedFilePaths[0]);
 		}
 	}
 }

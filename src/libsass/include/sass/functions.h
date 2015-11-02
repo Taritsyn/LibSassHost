@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "sass.h"
+#include <sass/base.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,7 +32,7 @@ typedef struct Sass_Function (*Sass_Function_Entry);
 typedef struct Sass_Function* (*Sass_Function_List);
 // Typedef defining function signature and return type
 typedef union Sass_Value* (*Sass_Function_Fn)
-  (const union Sass_Value*, Sass_Function_Entry cb, struct Sass_Options* options);
+  (const union Sass_Value*, Sass_Function_Entry cb, struct Sass_Compiler* compiler);
 
 
 // Creator for sass custom importer return argument list
@@ -57,7 +57,7 @@ ADDAPI void ADDCALL sass_delete_importer (Sass_Importer_Entry cb);
 ADDAPI Sass_Import_List ADDCALL sass_make_import_list (size_t length);
 // Creator for a single import entry returned by the custom importer inside the list
 ADDAPI Sass_Import_Entry ADDCALL sass_make_import_entry (const char* path, char* source, char* srcmap);
-ADDAPI Sass_Import_Entry ADDCALL sass_make_import (const char* path, const char* base, char* source, char* srcmap);
+ADDAPI Sass_Import_Entry ADDCALL sass_make_import (const char* imp_path, const char* abs_base, char* source, char* srcmap);
 // set error message to abort import and to print out a message (path from existing object is used in output)
 ADDAPI Sass_Import_Entry ADDCALL sass_import_set_error(Sass_Import_Entry import, const char* message, size_t line, size_t col);
 
@@ -67,8 +67,8 @@ ADDAPI void ADDCALL sass_import_set_list_entry (Sass_Import_List list, size_t id
 ADDAPI Sass_Import_Entry ADDCALL sass_import_get_list_entry (Sass_Import_List list, size_t idx);
 
 // Getters for import entry
-ADDAPI const char* ADDCALL sass_import_get_path (Sass_Import_Entry);
-ADDAPI const char* ADDCALL sass_import_get_base (Sass_Import_Entry);
+ADDAPI const char* ADDCALL sass_import_get_imp_path (Sass_Import_Entry);
+ADDAPI const char* ADDCALL sass_import_get_abs_path (Sass_Import_Entry);
 ADDAPI const char* ADDCALL sass_import_get_source (Sass_Import_Entry);
 ADDAPI const char* ADDCALL sass_import_get_srcmap (Sass_Import_Entry);
 // Explicit functions to take ownership of these items

@@ -3,14 +3,11 @@
 
 #pragma once
 
-#include <iostream>
-
 #include "ast.hpp"
 #include "operation.hpp"
 
 namespace Sass {
 
-    using namespace std;
 
     class Context;
 
@@ -18,7 +15,7 @@ namespace Sass {
 
         Context&          ctx;
 
-        void fallback_impl(AST_Node* n) {};
+        void fallback_impl(AST_Node* n) {}
 
     public:
         Remove_Placeholders(Context&);
@@ -30,9 +27,6 @@ namespace Sass {
         void operator()(Ruleset*);
         void operator()(Media_Block*);
         void operator()(At_Rule*);
-
-        template <typename T>
-        void clean_selector_list(T r);
 
         template <typename U>
         void fallback(U x) { return fallback_impl(x); }

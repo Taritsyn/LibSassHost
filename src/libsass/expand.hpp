@@ -1,43 +1,44 @@
 #ifndef SASS_EXPAND_H
 #define SASS_EXPAND_H
 
-#include <map>
 #include <vector>
-#include <iostream>
 
 #include "ast.hpp"
 #include "eval.hpp"
 #include "operation.hpp"
 #include "environment.hpp"
-#include "contextualize.hpp"
 
 namespace Sass {
-  using namespace std;
 
+  class Listize;
   class Context;
   class Eval;
-  class Contextualize_Eval;
   typedef Environment<AST_Node*> Env;
   struct Backtrace;
 
   class Expand : public Operation_CRTP<Statement*, Expand> {
+  public:
+
+    Env* environment();
+    Context& context();
+    Selector_List* selector();
+    Backtrace* backtrace();
 
     Context&          ctx;
-    Eval*             eval;
-    Contextualize_Eval*    contextualize_eval;
-    Env*              env;
-    vector<Block*>    block_stack;
-    vector<String*>   property_stack;
-    vector<Selector*> selector_stack;
-    vector<Selector*> at_root_selector_stack;
-    bool              in_at_root;
+    Eval              eval;
+
+    // it's easier to work with vectors
+    std::vector<Env*>      env_stack;
+    std::vector<Block*>    block_stack;
+    std::vector<String*>   property_stack;
+    std::vector<Selector_List*> selector_stack;
+    std::vector<Backtrace*>backtrace_stack;
     bool              in_keyframes;
-    Backtrace*        backtrace;
 
     Statement* fallback_impl(AST_Node* n);
 
   public:
-    Expand(Context&, Eval*, Contextualize_Eval*, Env*, Backtrace*);
+    Expand(Context&, Env*, Backtrace*);
     virtual ~Expand() { }
 
     using Operation<Statement*>::operator();
@@ -46,7 +47,7 @@ namespace Sass {
     Statement* operator()(Ruleset*);
     Statement* operator()(Propset*);
     Statement* operator()(Media_Block*);
-    Statement* operator()(Feature_Block*);
+    Statement* operator()(Supports_Block*);
     Statement* operator()(At_Root_Block*);
     Statement* operator()(At_Rule*);
     Statement* operator()(Declaration*);

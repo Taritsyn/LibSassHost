@@ -6,26 +6,28 @@
 #include "position.hpp"
 
 namespace Sass {
-  using namespace std;
 
   struct Backtrace;
 
-  struct Sass_Error {
+  struct Error_Invalid {
     enum Type { read, write, syntax, evaluation };
 
     Type type;
     ParserState pstate;
-    string message;
+    std::string message;
 
-    Sass_Error(Type type, ParserState pstate, string message);
+    Error_Invalid(Type type, ParserState pstate, std::string message);
 
   };
 
-  void warn(string msg, ParserState pstate);
-  void warn(string msg, ParserState pstate, Backtrace* bt);
+  void warn(std::string msg, ParserState pstate);
+  void warn(std::string msg, ParserState pstate, Backtrace* bt);
 
-  void error(string msg, ParserState pstate);
-  void error(string msg, ParserState pstate, Backtrace* bt);
+  void deprecated(std::string msg, ParserState pstate);
+  // void deprecated(std::string msg, ParserState pstate, Backtrace* bt);
+
+  void error(std::string msg, ParserState pstate);
+  void error(std::string msg, ParserState pstate, Backtrace* bt);
 
 }
 

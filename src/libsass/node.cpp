@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "node.hpp"
 #include "to_string.hpp"
 #include "context.hpp"
@@ -19,18 +21,20 @@ namespace Sass {
     pStripped->tail(NULL);
     pStripped->combinator(Complex_Selector::ANCESTOR_OF);
 
-    return Node(SELECTOR, Complex_Selector::ANCESTOR_OF, pStripped, null /*pCollection*/);
+    Node n(SELECTOR, Complex_Selector::ANCESTOR_OF, pStripped, null /*pCollection*/);
+    if (pSelector) n.got_line_feed = pSelector->has_line_feed();
+    return n;
   }
 
 
   Node Node::createCollection() {
-    NodeDequePtr pEmptyCollection = make_shared<NodeDeque>();
+    NodeDequePtr pEmptyCollection = std::make_shared<NodeDeque>();
     return Node(COLLECTION, Complex_Selector::ANCESTOR_OF, NULL /*pSelector*/, pEmptyCollection);
   }
 
 
   Node Node::createCollection(const NodeDeque& values) {
-    NodeDequePtr pShallowCopiedCollection = make_shared<NodeDeque>(values);
+    NodeDequePtr pShallowCopiedCollection = std::make_shared<NodeDeque>(values);
     return Node(COLLECTION, Complex_Selector::ANCESTOR_OF, NULL /*pSelector*/, pShallowCopiedCollection);
   }
 
@@ -43,11 +47,11 @@ namespace Sass {
 
   Node::Node(const TYPE& type, Complex_Selector::Combinator combinator, Complex_Selector* pSelector, NodeDequePtr& pCollection)
   : got_line_feed(false), mType(type), mCombinator(combinator), mpSelector(pSelector), mpCollection(pCollection)
-  { /* if (pSelector) got_line_feed = pSelector->has_line_feed(); */ }
+  { if (pSelector) got_line_feed = pSelector->has_line_feed(); }
 
 
   Node Node::clone(Context& ctx) const {
-    NodeDequePtr pNewCollection = make_shared<NodeDeque>();
+    NodeDequePtr pNewCollection = std::make_shared<NodeDeque>();
     if (mpCollection) {
       for (NodeDeque::iterator iter = mpCollection->begin(), iterEnd = mpCollection->end(); iter != iterEnd; iter++) {
         Node& toClone = *iter;
@@ -55,7 +59,9 @@ namespace Sass {
       }
     }
 
-    return Node(mType, mCombinator, mpSelector ? mpSelector->clone(ctx) : NULL, pNewCollection);
+    Node n(mType, mCombinator, mpSelector ? mpSelector->clone(ctx) : NULL, pNewCollection);
+    n.got_line_feed = got_line_feed;
+    return n;
   }
 
 
@@ -129,7 +135,7 @@ namespace Sass {
   }
 
 #ifdef DEBUG
-  ostream& operator<<(ostream& os, const Node& node) {
+  std::ostream& operator<<(std::ostream& os, const Node& node) {
 
     if (node.isCombinator()) {
 
@@ -138,6 +144,7 @@ namespace Sass {
         case Complex_Selector::PARENT_OF:   os << "\">\""; break;
         case Complex_Selector::PRECEDES:    os << "\"~\""; break;
         case Complex_Selector::ADJACENT_TO: os << "\"+\""; break;
+        case Complex_Selector::REFERENCE: os    << "\"/\""; break;
       }
 
     } else if (node.isNil()) {
@@ -151,14 +158,14 @@ namespace Sass {
 
     } else if (node.isCollection()) {
 
-			os << "[";
+      os << "[";
 
       for (NodeDeque::iterator iter = node.collection()->begin(), iterBegin = node.collection()->begin(), iterEnd = node.collection()->end(); iter != iterEnd; iter++) {
         if (iter != iterBegin) {
           os << ", ";
         }
 
-				os << (*iter);
+        os << (*iter);
       }
 
       os << "]";
@@ -175,18 +182,39 @@ namespace Sass {
     if (pToConvert == NULL) {
       return Node::createNil();
     }
-
     Node node = Node::createCollection();
+    node.got_line_feed = pToConvert->has_line_feed();
+    bool has_lf = pToConvert->has_line_feed();
+
+    // unwrap the selector from parent ref
+    if (pToConvert->head() && pToConvert->head()->has_parent_ref()) {
+      Complex_Selector* tail = pToConvert->tail();
+      if (tail) tail->has_line_feed(pToConvert->has_line_feed());
+      pToConvert = tail;
+    }
 
     while (pToConvert) {
 
+      bool empty_parent_ref = pToConvert->head() && pToConvert->head()->is_empty_reference();
+
+      if (pToConvert->head() == NULL || empty_parent_ref) {
+      }
+
       // the first Complex_Selector may contain a dummy head pointer, skip it.
-      if (pToConvert->head() != NULL && !pToConvert->head()->is_empty_reference()) {
+      if (pToConvert->head() != NULL && !empty_parent_ref) {
         node.collection()->push_back(Node::createSelector(pToConvert, ctx));
+        if (has_lf) node.collection()->back().got_line_feed = has_lf;
+        has_lf = false;
       }
 
       if (pToConvert->combinator() != Complex_Selector::ANCESTOR_OF) {
         node.collection()->push_back(Node::createCombinator(pToConvert->combinator()));
+        if (has_lf) node.collection()->back().got_line_feed = has_lf;
+        has_lf = false;
+      }
+
+      if (pToConvert && empty_parent_ref && pToConvert->tail()) {
+        // pToConvert->tail()->has_line_feed(pToConvert->has_line_feed());
       }
 
       pToConvert = pToConvert->tail();
@@ -209,10 +237,14 @@ namespace Sass {
 
     NodeDeque& childNodes = *toConvert.collection();
 
-    string noPath("");
+    std::string noPath("");
     Position noPosition(-1, -1, -1);
-    Complex_Selector* pFirst = new (ctx.mem) Complex_Selector(ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, NULL, NULL);
+    Complex_Selector* pFirst = SASS_MEMORY_NEW(ctx.mem, Complex_Selector, ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, NULL, NULL);
+
     Complex_Selector* pCurrent = pFirst;
+
+    if (toConvert.isSelector()) pFirst->has_line_feed(toConvert.got_line_feed);
+    if (toConvert.isCombinator()) pFirst->has_line_feed(toConvert.got_line_feed);
 
     for (NodeDeque::iterator childIter = childNodes.begin(), childIterEnd = childNodes.end(); childIter != childIterEnd; childIter++) {
 
@@ -220,15 +252,18 @@ namespace Sass {
 
       if (child.isSelector()) {
         pCurrent->tail(child.selector()->clone(ctx));   // JMA - need to clone the selector, because they can end up getting shared across Node collections, and can result in an infinite loop during the call to parentSuperselector()
+        // if (child.got_line_feed) pCurrent->has_line_feed(child.got_line_feed);
         pCurrent = pCurrent->tail();
       } else if (child.isCombinator()) {
         pCurrent->combinator(child.combinator());
+        if (child.got_line_feed) pCurrent->has_line_feed(child.got_line_feed);
 
         // if the next node is also a combinator, create another Complex_Selector to hold it so it doesn't replace the current combinator
         if (childIter+1 != childIterEnd) {
           Node& nextNode = *(childIter+1);
           if (nextNode.isCombinator()) {
-            pCurrent->tail(new (ctx.mem) Complex_Selector(ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, NULL, NULL));
+            pCurrent->tail(SASS_MEMORY_NEW(ctx.mem, Complex_Selector, ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, NULL, NULL));
+            if (nextNode.got_line_feed) pCurrent->tail()->has_line_feed(nextNode.got_line_feed);
             pCurrent = pCurrent->tail();
           }
         }
@@ -238,14 +273,50 @@ namespace Sass {
     }
 
     // Put the dummy Compound_Selector in the first position, for consistency with the rest of libsass
-    Compound_Selector* fakeHead = new (ctx.mem) Compound_Selector(ParserState("[NODE]"), 1);
-    Selector_Reference* selectorRef = new (ctx.mem) Selector_Reference(ParserState("[NODE]"), NULL);
+    Compound_Selector* fakeHead = SASS_MEMORY_NEW(ctx.mem, Compound_Selector, ParserState("[NODE]"), 1);
+    Parent_Selector* selectorRef = SASS_MEMORY_NEW(ctx.mem, Parent_Selector, ParserState("[NODE]"));
     fakeHead->elements().push_back(selectorRef);
+    if (toConvert.got_line_feed) pFirst->has_line_feed(toConvert.got_line_feed);
+    // pFirst->has_line_feed(pFirst->has_line_feed() || pFirst->tail()->has_line_feed() || toConvert.got_line_feed);
     pFirst->head(fakeHead);
-    pFirst->has_line_feed(pFirst->has_line_feed() || pFirst->tail()->has_line_feed() || toConvert.got_line_feed);
-
     return pFirst;
   }
 
+  // A very naive trim function, which removes duplicates in a node
+  // This is only used in Complex_Selector::unify_with for now, may need modifications to fit other needs
+  Node Node::naiveTrim(Node& seqses, Context& ctx) {
 
+    std::vector<Node*> res;
+    std::vector<Complex_Selector*> known;
+
+    NodeDeque::reverse_iterator seqsesIter = seqses.collection()->rbegin(),
+                                seqsesIterEnd = seqses.collection()->rend();
+
+    for (; seqsesIter != seqsesIterEnd; ++seqsesIter)
+    {
+      Node& seqs1 = *seqsesIter;
+      if( seqs1.isSelector() ) {
+        Complex_Selector* sel = seqs1.selector();
+        std::vector<Complex_Selector*>::iterator it;
+        bool found = false;
+        for (it = known.begin(); it != known.end(); ++it) {
+          if (**it == *sel) { found = true; break; }
+        }
+        if( !found ) {
+          known.push_back(seqs1.selector());
+          res.push_back(&seqs1);
+        }
+      } else {
+        res.push_back(&seqs1);
+      }
+    }
+
+    Node result = Node::createCollection();
+
+    for (size_t i = res.size() - 1; i != std::string::npos; --i) {
+      result.collection()->push_back(*res[i]);
+    }
+
+    return result;
+  }
 }

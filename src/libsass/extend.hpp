@@ -1,30 +1,29 @@
 #ifndef SASS_EXTEND_H
 #define SASS_EXTEND_H
 
-#include <map>
-#include <set>
-#include <vector>
-#include <iostream>
+#include <string>
 
 #include "ast.hpp"
 #include "operation.hpp"
 #include "subset_map.hpp"
 
 namespace Sass {
-  using namespace std;
 
   class Context;
+  class Node;
 
-  typedef Subset_Map<string, pair<Complex_Selector*, Compound_Selector*> > ExtensionSubsetMap;
+  typedef Subset_Map<std::string, std::pair<Complex_Selector*, Compound_Selector*> > ExtensionSubsetMap;
 
   class Extend : public Operation_CRTP<void, Extend> {
 
     Context&            ctx;
     ExtensionSubsetMap& subset_map;
 
-    void fallback_impl(AST_Node* n) { };
+    void fallback_impl(AST_Node* n) { }
 
   public:
+    static Node subweave(Node& one, Node& two, Context& ctx);
+    static Selector_List* extendSelectorList(Selector_List* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, bool isReplace, bool& extendedSomething);
     Extend(Context&, ExtensionSubsetMap&);
     virtual ~Extend() { }
 
@@ -32,7 +31,7 @@ namespace Sass {
 
     void operator()(Block*);
     void operator()(Ruleset*);
-    void operator()(Feature_Block*);
+    void operator()(Supports_Block*);
     void operator()(Media_Block*);
     void operator()(At_Rule*);
 

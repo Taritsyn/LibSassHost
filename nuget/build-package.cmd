@@ -10,6 +10,6 @@ rmdir content\LibSassHost.Native /Q/S
 
 xcopy ..\src\LibSassHost\bin\Release\LibSassHost.dll lib\net40-client\
 xcopy ..\src\LibSassHost\LibSassHost.Native\*.dll content\LibSassHost.Native\
-xcopy ..\src\libsass\license libsass-license.txt /Y/F
+xcopy ..\src\libsass\license libsass-license.txt /Y/F/E
 
 %nuget_package_manager% pack LibSassHost.nuspec

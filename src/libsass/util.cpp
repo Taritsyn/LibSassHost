@@ -1,8 +1,12 @@
-#include<stdint.h>
+#include "sass.h"
 #include "ast.hpp"
 #include "util.hpp"
+#include "lexer.hpp"
 #include "prelexer.hpp"
+#include "constants.hpp"
 #include "utf8/checked.h"
+
+#include <stdint.h>
 
 namespace Sass {
 
@@ -44,10 +48,48 @@ namespace Sass {
     return atof(str);
   }
 
-  string string_eval_escapes(const string& s)
+  // helper for safe access to c_ctx
+  const char* safe_str (const char* str) {
+    return str == NULL ? "" : str;
+  }
+
+  void free_string_array(char ** arr) {
+    if(!arr)
+        return;
+
+    char **it = arr;
+    while (it && (*it)) {
+      free(*it);
+      ++it;
+    }
+
+    free(arr);
+  }
+
+  char **copy_strings(const std::vector<std::string>& strings, char*** array, int skip) {
+    int num = static_cast<int>(strings.size()) - skip;
+    char** arr = (char**) calloc(num + 1, sizeof(char*));
+    if (arr == 0)
+      return *array = (char **)NULL;
+
+    for(int i = 0; i < num; i++) {
+      arr[i] = (char*) malloc(sizeof(char) * (strings[i + skip].size() + 1));
+      if (arr[i] == 0) {
+        free_string_array(arr);
+        return *array = (char **)NULL;
+      }
+      std::copy(strings[i + skip].begin(), strings[i + skip].end(), arr[i]);
+      arr[i][strings[i + skip].size()] = '\0';
+    }
+
+    arr[num] = 0;
+    return *array = arr;
+  }
+
+  std::string string_eval_escapes(const std::string& s)
   {
 
-    string out("");
+    std::string out("");
     bool esc = false;
     for (size_t i = 0, L = s.length(); i < L; ++i) {
       if(s[i] == '\\' && esc == false) {
@@ -99,9 +141,9 @@ namespace Sass {
 
   // double escape every escape sequences
   // escape unescaped quotes and backslashes
-  string string_escape(const string& str)
+  std::string string_escape(const std::string& str)
   {
-    string out("");
+    std::string out("");
     for (auto i : str) {
       // escape some characters
       if (i == '"') out += '\\';
@@ -114,9 +156,9 @@ namespace Sass {
 
   // unescape every escape sequence
   // only removes unescaped backslashes
-  string string_unescape(const string& str)
+  std::string string_unescape(const std::string& str)
   {
-    string out("");
+    std::string out("");
     bool esc = false;
     for (auto i : str) {
       if (esc || i != '\\') {
@@ -133,9 +175,9 @@ namespace Sass {
   }
 
   // read css string (handle multiline DELIM)
-  string read_css_string(const string& str)
+  std::string read_css_string(const std::string& str)
   {
-    string out("");
+    std::string out("");
     bool esc = false;
     for (auto i : str) {
       if (i == '\\') {
@@ -157,9 +199,9 @@ namespace Sass {
 
   // evacuate unescaped quoted
   // leave everything else untouched
-  string evacuate_quotes(const string& str)
+  std::string evacuate_quotes(const std::string& str)
   {
-    string out("");
+    std::string out("");
     bool esc = false;
     for (auto i : str) {
       if (!esc) {
@@ -179,9 +221,9 @@ namespace Sass {
 
   // double escape all escape sequences
   // keep unescaped quotes and backslashes
-  string evacuate_escapes(const string& str)
+  std::string evacuate_escapes(const std::string& str)
   {
-    string out("");
+    std::string out("");
     bool esc = false;
     for (auto i : str) {
       if (i == '\\' && !esc) {
@@ -213,22 +255,25 @@ namespace Sass {
   }
 
   // bell character is replaces with space
-  string string_to_output(const string& str)
+  std::string string_to_output(const std::string& str)
   {
-    string out("");
+    std::string out("");
+    bool lf = false;
     for (auto i : str) {
       if (i == 10) {
         out += ' ';
-      } else {
+        lf = true;
+      } else if (!(lf && isspace(i))) {
         out += i;
+        lf = false;
       }
     }
     return out;
   }
 
-  string comment_to_string(const string& text)
+  std::string comment_to_string(const std::string& text)
   {
-    string str = "";
+    std::string str = "";
     size_t has = 0;
     char prev = 0;
     bool clean = false;
@@ -258,11 +303,11 @@ namespace Sass {
     else return text;
   }
 
-   string normalize_wspace(const string& str)
+   std::string normalize_wspace(const std::string& str)
   {
     bool ws = false;
     bool esc = false;
-    string text = "";
+    std::string text = "";
     for(const char& i : str) {
       if (!esc && i == '\\') {
         esc = true;
@@ -310,7 +355,7 @@ namespace Sass {
     return quote_mark;
   }
 
-  string unquote(const string& s, char* qd)
+  std::string unquote(const std::string& s, char* qd, bool keep_utf8_sequences)
   {
 
     // not enough room for quotes
@@ -326,7 +371,7 @@ namespace Sass {
     else if (*s.begin() == '\'' && *s.rbegin() == '\'') q = '\'';
     else                                                return s;
 
-    string unq;
+    std::string unq;
     unq.reserve(s.length()-2);
 
     for (size_t i = 1, L = s.length() - 1; i < L; ++i) {
@@ -350,11 +395,15 @@ namespace Sass {
         while (i + len < L && s[i + len] && isxdigit(s[i + len])) ++ len;
 
         // hex string?
-        if (len > 1) {
+        if (keep_utf8_sequences) {
+          unq.push_back(s[i]);
+        } else if (len > 1) {
 
           // convert the extracted hex string to code point value
           // ToDo: Maybe we could do this without creating a substring
           uint32_t cp = strtol(s.substr (i + 1, len - 1).c_str(), nullptr, 16);
+
+          if (s[i + len] == ' ') ++ len;
 
           // assert invalid code points
           if (cp == 0) cp = 0xFFFD;
@@ -395,16 +444,16 @@ namespace Sass {
 
   }
 
-  string quote(const string& s, char q, bool keep_linefeed_whitespace)
+  std::string quote(const std::string& s, char q, bool keep_linefeed_whitespace)
   {
 
     // autodetect with fallback to given quote
     q = detect_best_quotemark(s.c_str(), q);
 
     // return an empty quoted string
-    if (s.empty()) return string(2, q ? q : '"');
+    if (s.empty()) return std::string(2, q ? q : '"');
 
-    string quoted;
+    std::string quoted;
     quoted.reserve(s.length()+2);
     quoted.push_back(q);
 
@@ -421,7 +470,7 @@ namespace Sass {
 
       int cp = utf8::next(it, end);
 
-      if (cp == 10) {
+      if (cp == '\n') {
         quoted.push_back('\\');
         quoted.push_back('a');
         // we hope we can remove this flag once we figure out
@@ -457,19 +506,40 @@ namespace Sass {
 
   bool peek_linefeed(const char* start)
   {
-    while (*start) {
-      if (*start == '\n' || *start == '\r') return true;
-      if (*start != ' ' && *start != '\t') return false;
-      ++ start;
-    }
-    return false;
+    using namespace Prelexer;
+    using namespace Constants;
+    return sequence <
+             zero_plus <
+               alternatives <
+                 exactly <' '>,
+                 exactly <'\t'>,
+                 line_comment,
+                 block_comment,
+                 delimited_by <
+                   slash_star,
+                   star_slash,
+                   false
+                 >
+               >
+             >,
+             re_linebreak
+           >(start) != 0;
   }
 
   namespace Util {
     using std::string;
 
-    string normalize_underscores(const string& str) {
-      string normalized = str;
+    std::string rtrim(const std::string &str) {
+      std::string trimmed = str;
+      size_t pos_ws = trimmed.find_last_not_of(" \t\n\v\f\r");
+      if (pos_ws != std::string::npos)
+      { trimmed.erase(pos_ws + 1); }
+      else { trimmed.clear(); }
+      return trimmed;
+    }
+
+    std::string normalize_underscores(const std::string& str) {
+      std::string normalized = str;
       for(size_t i = 0, L = normalized.length(); i < L; ++i) {
         if(normalized[i] == '_') {
           normalized[i] = '-';
@@ -478,26 +548,26 @@ namespace Sass {
       return normalized;
     }
 
-    string normalize_decimals(const string& str) {
-      string prefix = "0";
-      string normalized = str;
+    std::string normalize_decimals(const std::string& str) {
+      std::string prefix = "0";
+      std::string normalized = str;
 
       return normalized[0] == '.' ? normalized.insert(0, prefix) : normalized;
     }
 
     // compress a color sixtuplet if possible
     // input: "#CC9900" -> output: "#C90"
-    string normalize_sixtuplet(const string& col) {
+    std::string normalize_sixtuplet(const std::string& col) {
       if(
         col.substr(1, 1) == col.substr(2, 1) &&
         col.substr(3, 1) == col.substr(4, 1) &&
         col.substr(5, 1) == col.substr(6, 1)
       ) {
-        return string("#" + col.substr(1, 1)
+        return std::string("#" + col.substr(1, 1)
                           + col.substr(3, 1)
                           + col.substr(5, 1));
       } else {
-        return string(col);
+        return std::string(col);
       }
     }
 
@@ -518,16 +588,21 @@ namespace Sass {
       bool hasPrintableChildBlocks = false;
       for (size_t i = 0, L = b->length(); i < L; ++i) {
         Statement* stm = (*b)[i];
-        if (dynamic_cast<Has_Block*>(stm)) {
+        if (dynamic_cast<At_Rule*>(stm)) {
+          return true;
+        } else if (dynamic_cast<Has_Block*>(stm)) {
           Block* pChildBlock = ((Has_Block*)stm)->block();
           if (isPrintable(pChildBlock, style)) {
             hasPrintableChildBlocks = true;
           }
         } else if (Comment* c = dynamic_cast<Comment*>(stm)) {
-          if (style == COMPRESSED) {
-            hasDeclarations = c->is_important();
-          } else {
+          // keep for uncompressed
+          if (style != COMPRESSED) {
             hasDeclarations = true;
+          }
+          // output style compressed
+          if (c->is_important()) {
+            hasDeclarations = c->is_important();
           }
         } else if (Declaration* d = dynamic_cast<Declaration*>(stm)) {
           return isPrintable(d, style);
@@ -561,24 +636,20 @@ namespace Sass {
       return true;
     }
 
-    bool isPrintable(Expression* e, Output_Style style) {
-      return isPrintable(e, style);
-    }
-
-    bool isPrintable(Feature_Block* f, Output_Style style) {
+    bool isPrintable(Supports_Block* f, Output_Style style) {
       if (f == NULL) {
         return false;
       }
 
       Block* b = f->block();
 
-      bool hasSelectors = f->selector() && static_cast<Selector_List*>(f->selector())->length() > 0;
+//      bool hasSelectors = f->selector() && static_cast<Selector_List*>(f->selector())->length() > 0;
 
       bool hasDeclarations = false;
       bool hasPrintableChildBlocks = false;
       for (size_t i = 0, L = b->length(); i < L; ++i) {
         Statement* stm = (*b)[i];
-        if (!stm->is_hoistable() && f->selector() != NULL && !hasSelectors) {
+        if (!stm->is_hoistable()) {
           // If a statement isn't hoistable, the selectors apply to it. If there are no selectors (a selector list of length 0),
           // then those statements aren't considered printable. That means there was a placeholder that was removed. If the selector
           // is NULL, then that means there was never a wrapping selector and it is printable (think of a top level media block with
@@ -602,40 +673,19 @@ namespace Sass {
       return false;
     }
 
-    bool isPrintable(Media_Block* m, Output_Style style) {
-      if (m == NULL) {
-        return false;
-      }
-
+    bool isPrintable(Media_Block* m, Output_Style style)
+    {
+      if (m == 0) return false;
       Block* b = m->block();
-
-      bool hasSelectors = m->selector() && static_cast<Selector_List*>(m->selector())->length() > 0;
-
-      bool hasDeclarations = false;
-      bool hasPrintableChildBlocks = false;
+      if (b == 0) return false;
       for (size_t i = 0, L = b->length(); i < L; ++i) {
         Statement* stm = (*b)[i];
-        if (!stm->is_hoistable() && m->selector() != NULL && !hasSelectors) {
-          // If a statement isn't hoistable, the selectors apply to it. If there are no selectors (a selector list of length 0),
-          // then those statements aren't considered printable. That means there was a placeholder that was removed. If the selector
-          // is NULL, then that means there was never a wrapping selector and it is printable (think of a top level media block with
-          // a declaration in it).
-        }
-        else if (typeid(*stm) == typeid(Declaration) || typeid(*stm) == typeid(At_Rule)) {
-          hasDeclarations = true;
-        }
-        else if (dynamic_cast<Has_Block*>(stm)) {
-          Block* pChildBlock = ((Has_Block*)stm)->block();
-          if (isPrintable(pChildBlock, style)) {
-            hasPrintableChildBlocks = true;
-          }
-        }
-
-        if (hasDeclarations || hasPrintableChildBlocks) {
-          return true;
+        if (typeid(*stm) == typeid(At_Rule)) return true;
+        if (typeid(*stm) == typeid(Declaration)) return true;
+        if (Has_Block* child = dynamic_cast<Has_Block*>(stm)) {
+          if (isPrintable(child->block(), style)) return true;
         }
       }
-
       return false;
     }
 
@@ -650,7 +700,15 @@ namespace Sass {
           return true;
         }
         else if (typeid(*stm) == typeid(Comment)) {
-
+          Comment* c = (Comment*) stm;
+          // keep for uncompressed
+          if (style != COMPRESSED) {
+            return true;
+          }
+          // output style compressed
+          if (c->is_important()) {
+            return true;
+          }
         }
         else if (typeid(*stm) == typeid(Ruleset)) {
           Ruleset* r = (Ruleset*) stm;
@@ -658,8 +716,8 @@ namespace Sass {
             return true;
           }
         }
-        else if (typeid(*stm) == typeid(Feature_Block)) {
-          Feature_Block* f = (Feature_Block*) stm;
+        else if (typeid(*stm) == typeid(Supports_Block)) {
+          Supports_Block* f = (Supports_Block*) stm;
           if (isPrintable(f, style)) {
             return true;
           }
@@ -678,12 +736,12 @@ namespace Sass {
       return false;
     }
 
-    string vecJoin(const vector<string>& vec, const string& sep)
+    std::string vecJoin(const std::vector<std::string>& vec, const std::string& sep)
     {
       switch (vec.size())
       {
         case 0:
-            return string("");
+            return std::string("");
         case 1:
             return vec[0];
         default:

@@ -21,6 +21,11 @@
   THE SOFTWARE.
 */
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#define _CRT_NONSTDC_NO_DEPRECATE
+#endif
+
 #include "json.hpp"
 
 #include <assert.h>
@@ -29,35 +34,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef _MSC_VER
-
+#if defined(_MSC_VER) && _MSC_VER < 1900
 #include <stdarg.h>
-#define snprintf c99_snprintf
-
-inline int c99_vsnprintf(char* str, size_t size, const char* format, va_list ap)
-{
-    int count = -1;
-
-    if (size != 0)
-        count = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
-    if (count == -1)
-        count = _vscprintf(format, ap);
-
-    return count;
-}
-
-inline int c99_snprintf(char* str, size_t size, const char* format, ...)
-{
-    int count;
-    va_list ap;
-
-    va_start(ap, format);
-    count = c99_vsnprintf(str, size, format, ap);
-    va_end(ap);
-
-    return count;
-}
-#endif // _MSC_VER
+#ifdef snprintf
+#undef snprintf
+#endif
+extern "C" int snprintf(char *, size_t, const char *, ...);
+#endif
 
 #define out_of_memory() do {                    \
     fprintf(stderr, "Out of memory.\n");    \
@@ -129,7 +112,7 @@ static void sb_put(SB *sb, const char *bytes, int count)
 
 static void sb_puts(SB *sb, const char *str)
 {
-  sb_put(sb, str, strlen(str));
+  sb_put(sb, str, (int)strlen(str));
 }
 
 static char *sb_finish(SB *sb)
@@ -352,9 +335,8 @@ static void to_surrogate_pair(uint32_t unicode, uint16_t *uc, uint16_t *lc)
   *lc = (n & 0x3FF) | 0xDC00;
 }
 
-#define is_space(c) ((c) == '\t' || (c) == '\n' || (c) == '\r' || (c) == ' ')
-#define is_digit(c) ((c) >= '0' && (c) <= '9')
-
+static bool is_space        (const char *c);
+static bool is_digit        (const char *c);
 static bool parse_value     (const char **sp, JsonNode        **out);
 static bool parse_string    (const char **sp, char            **out);
 static bool parse_number    (const char **sp, double           *out);
@@ -680,7 +662,7 @@ static bool parse_value(const char **sp, JsonNode **out)
       return false;
 
     case '"': {
-      char *str;
+      char *str = NULL;
       if (parse_string(&s, out ? &str : NULL)) {
         if (out)
           *out = mkstring(str);
@@ -721,7 +703,7 @@ static bool parse_array(const char **sp, JsonNode **out)
 {
   const char *s = *sp;
   JsonNode *ret = out ? json_mkarray() : NULL;
-  JsonNode *element;
+  JsonNode *element = NULL;
 
   if (*s++ != '[')
     goto failure;
@@ -765,8 +747,8 @@ static bool parse_object(const char **sp, JsonNode **out)
 {
   const char *s = *sp;
   JsonNode *ret = out ? json_mkobject() : NULL;
-  char *key;
-  JsonNode *value;
+  char *key = NULL;
+  JsonNode *value = NULL;
 
   if (*s++ != '{')
     goto failure;
@@ -820,7 +802,7 @@ failure:
 bool parse_string(const char **sp, char **out)
 {
   const char *s = *sp;
-  SB sb;
+  SB sb = { 0, 0, 0};
   char throwaway_buffer[4];
     /* enough space for a UTF-8 character */
   char *b;
@@ -932,6 +914,14 @@ failed:
   return false;
 }
 
+bool is_space(const char *c) {
+  return ((*c) == '\t' || (*c) == '\n' || (*c) == '\r' || (*c) == ' ');
+}
+
+bool is_digit(const char *c){
+  return ((*c) >= '0' && (*c) <= '9');
+}
+
 /*
  * The JSON spec says that a number shall follow this precise pattern
  * (spaces and quotes added for readability):
@@ -954,21 +944,21 @@ bool parse_number(const char **sp, double *out)
   if (*s == '0') {
     s++;
   } else {
-    if (!is_digit(*s))
+    if (!is_digit(s))
       return false;
     do {
       s++;
-    } while (is_digit(*s));
+    } while (is_digit(s));
   }
 
   /* ('.' [0-9]+)? */
   if (*s == '.') {
     s++;
-    if (!is_digit(*s))
+    if (!is_digit(s))
       return false;
     do {
       s++;
-    } while (is_digit(*s));
+    } while (is_digit(s));
   }
 
   /* ([Ee] [+-]? [0-9]+)? */
@@ -976,11 +966,11 @@ bool parse_number(const char **sp, double *out)
     s++;
     if (*s == '+' || *s == '-')
       s++;
-    if (!is_digit(*s))
+    if (!is_digit(s))
       return false;
     do {
       s++;
-    } while (is_digit(*s));
+    } while (is_digit(s));
   }
 
   if (out)
@@ -993,7 +983,7 @@ bool parse_number(const char **sp, double *out)
 static void skip_space(const char **sp)
 {
   const char *s = *sp;
-  while (is_space(*s))
+  while (is_space(s))
     s++;
   *sp = s;
 }

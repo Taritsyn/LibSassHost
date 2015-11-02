@@ -1,11 +1,3 @@
-#ifdef _WIN32
-#include <io.h>
-#define LFEED "\n"
-#else
-#include <unistd.h>
-#define LFEED "\n"
-#endif
-
 #include <string>
 #include <cstdlib>
 #include <cstring>
@@ -16,46 +8,15 @@
 #include "context.hpp"
 #include "inspect.hpp"
 #include "error_handling.hpp"
-#include "sass_interface.h"
+#include "sass/base.h"
+#include "sass/interface.h"
 
+#define LFEED "\n"
 
 extern "C" {
-  using namespace std;
 
   sass_context* sass_new_context()
   { return (sass_context*) calloc(1, sizeof(sass_context)); }
-
-  // helper for safe access to c_ctx
-  static const char* safe_str (const char* str) {
-    return str == NULL ? "" : str;
-  }
-
-  static void copy_strings(const std::vector<std::string>& strings, char*** array, int skip = 0) {
-    int num = static_cast<int>(strings.size());
-    char** arr = (char**) malloc(sizeof(char*) * (num + 1));
-
-    for(int i = skip; i < num; i++) {
-      arr[i-skip] = (char*) malloc(sizeof(char) * (strings[i].size() + 1));
-      std::copy(strings[i].begin(), strings[i].end(), arr[i-skip]);
-      arr[i-skip][strings[i].size()] = '\0';
-    }
-
-    arr[num-skip] = 0;
-    *array = arr;
-  }
-
-  static void free_string_array(char ** arr) {
-    if(!arr)
-        return;
-
-    char **it = arr;
-    while (it && (*it)) {
-      free(*it);
-      ++it;
-    }
-
-    free(arr);
-  }
 
   void sass_free_context(sass_context* ctx)
   {
@@ -64,7 +25,7 @@ extern "C" {
     if (ctx->error_message)     free(ctx->error_message);
     if (ctx->c_functions)       free(ctx->c_functions);
 
-    free_string_array(ctx->included_files);
+    Sass::free_string_array(ctx->included_files);
 
     free(ctx);
   }
@@ -79,7 +40,7 @@ extern "C" {
     if (ctx->error_message)     free(ctx->error_message);
     if (ctx->c_functions)       free(ctx->c_functions);
 
-    free_string_array(ctx->included_files);
+    Sass::free_string_array(ctx->included_files);
 
     free(ctx);
   }
@@ -89,7 +50,7 @@ extern "C" {
 
   void sass_free_folder_context(sass_folder_context* ctx)
   {
-    free_string_array(ctx->included_files);
+    Sass::free_string_array(ctx->included_files);
     free(ctx);
   }
 
@@ -97,9 +58,9 @@ extern "C" {
   {
     using namespace Sass;
     try {
-      string input_path = safe_str(c_ctx->input_path);
+      std::string input_path = safe_str(c_ctx->input_path);
       int lastindex = static_cast<int>(input_path.find_last_of("."));
-      string output_path;
+      std::string output_path;
       if (!c_ctx->output_path) {
         if (input_path != "") {
           output_path = (lastindex > -1 ? input_path.substr(0, lastindex) : input_path) + ".css";
@@ -123,8 +84,8 @@ extern "C" {
                        .plugin_paths_c_str(c_ctx->options.plugin_paths)
                        // .include_paths_array(0)
                        // .plugin_paths_array(0)
-                       .include_paths(vector<string>())
-                       .plugin_paths(vector<string>())
+                       .include_paths(std::vector<std::string>())
+                       .plugin_paths(std::vector<std::string>())
                        .precision(c_ctx->options.precision ? c_ctx->options.precision : 5)
                        .indent(c_ctx->options.indent ? c_ctx->options.indent : "  ")
                        .linefeed(c_ctx->options.linefeed ? c_ctx->options.linefeed : LFEED)
@@ -141,35 +102,36 @@ extern "C" {
       c_ctx->error_message = 0;
       c_ctx->error_status = 0;
 
-      copy_strings(cpp_ctx.get_included_files(1), &c_ctx->included_files, 1);
+      if (copy_strings(cpp_ctx.get_included_files(true), &c_ctx->included_files, 1) == NULL)
+        throw(std::bad_alloc());
     }
-    catch (Sass_Error& e) {
-      stringstream msg_stream;
-      msg_stream << e.pstate.path << ":" << e.pstate.line << ": " << e.message << endl;
+    catch (Error_Invalid& e) {
+      std::stringstream msg_stream;
+      msg_stream << e.pstate.path << ":" << e.pstate.line << ": " << e.message << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
     }
-    catch(bad_alloc& ba) {
-      stringstream msg_stream;
-      msg_stream << "Unable to allocate memory: " << ba.what() << endl;
+    catch(std::bad_alloc& ba) {
+      std::stringstream msg_stream;
+      msg_stream << "Unable to allocate memory: " << ba.what() << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
     }
     catch (std::exception& e) {
-      stringstream msg_stream;
-      msg_stream << "Error: " << e.what() << endl;
+      std::stringstream msg_stream;
+      msg_stream << "Error: " << e.what() << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
     }
-    catch (string& e) {
-      stringstream msg_stream;
-      msg_stream << "Error: " << e << endl;
+    catch (std::string& e) {
+      std::stringstream msg_stream;
+      msg_stream << "Error: " << e << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
@@ -177,8 +139,8 @@ extern "C" {
     }
     catch (...) {
       // couldn't find the specified file in the include paths; report an error
-      stringstream msg_stream;
-      msg_stream << "Unknown error occurred" << endl;
+      std::stringstream msg_stream;
+      msg_stream << "Unknown error occurred" << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
@@ -191,9 +153,9 @@ extern "C" {
   {
     using namespace Sass;
     try {
-      string input_path = safe_str(c_ctx->input_path);
+      std::string input_path = safe_str(c_ctx->input_path);
       int lastindex = static_cast<int>(input_path.find_last_of("."));
-      string output_path;
+      std::string output_path;
       if (!c_ctx->output_path) {
           output_path = (lastindex > -1 ? input_path.substr(0, lastindex) : input_path) + ".css";
       }
@@ -215,8 +177,8 @@ extern "C" {
                        .plugin_paths_c_str(c_ctx->options.plugin_paths)
                        // .include_paths_array(0)
                        // .plugin_paths_array(0)
-                       .include_paths(vector<string>())
-                       .plugin_paths(vector<string>())
+                       .include_paths(std::vector<std::string>())
+                       .plugin_paths(std::vector<std::string>())
                        .precision(c_ctx->options.precision ? c_ctx->options.precision : 5)
                        .indent(c_ctx->options.indent ? c_ctx->options.indent : "  ")
                        .linefeed(c_ctx->options.linefeed ? c_ctx->options.linefeed : LFEED)
@@ -233,35 +195,36 @@ extern "C" {
       c_ctx->error_message = 0;
       c_ctx->error_status = 0;
 
-      copy_strings(cpp_ctx.get_included_files(), &c_ctx->included_files);
+      if (copy_strings(cpp_ctx.get_included_files(false), &c_ctx->included_files) == NULL)
+        throw(std::bad_alloc());
     }
-    catch (Sass_Error& e) {
-      stringstream msg_stream;
-      msg_stream << e.pstate.path << ":" << e.pstate.line << ": " << e.message << endl;
+    catch (Error_Invalid& e) {
+      std::stringstream msg_stream;
+      msg_stream << e.pstate.path << ":" << e.pstate.line << ": " << e.message << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
     }
-    catch(bad_alloc& ba) {
-      stringstream msg_stream;
-      msg_stream << "Unable to allocate memory: " << ba.what() << endl;
+    catch(std::bad_alloc& ba) {
+      std::stringstream msg_stream;
+      msg_stream << "Unable to allocate memory: " << ba.what() << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
     }
     catch (std::exception& e) {
-      stringstream msg_stream;
-      msg_stream << "Error: " << e.what() << endl;
+      std::stringstream msg_stream;
+      msg_stream << "Error: " << e.what() << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
     }
-    catch (string& e) {
-      stringstream msg_stream;
-      msg_stream << "Error: " << e << endl;
+    catch (std::string& e) {
+      std::stringstream msg_stream;
+      msg_stream << "Error: " << e << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;
@@ -269,8 +232,8 @@ extern "C" {
     }
     catch (...) {
       // couldn't find the specified file in the include paths; report an error
-      stringstream msg_stream;
-      msg_stream << "Unknown error occurred" << endl;
+      std::stringstream msg_stream;
+      msg_stream << "Unknown error occurred" << std::endl;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_status = 1;
       c_ctx->output_string = 0;

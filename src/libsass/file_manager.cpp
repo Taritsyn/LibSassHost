@@ -1,6 +1,6 @@
-#include "file_manager.hpp"
-
-using namespace std;
+#include "file_manager.h"
+#include "utf8_string.hpp"
+#include "util.hpp"
 
 namespace Sass
 {
@@ -38,14 +38,17 @@ namespace Sass
 		_get_current_directory_delegate = NULL;
 	}
 
-	string File_Manager::get_current_directory()
+	std::string File_Manager::get_current_directory()
 	{
 		if (_get_current_directory_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'get_current_directory' method is null.");
+			throw std::runtime_error("The delegate for 'get_current_directory' method is null.");
 		}
 
-		return strdup(_get_current_directory_delegate());
+		const wchar_t* wcurrent_directory_name = _get_current_directory_delegate();
+		std::string current_directory_name = UTF_8::convert_from_utf16(wcurrent_directory_name);
+
+		return current_directory_name;
 	}
 
 #pragma endregion
@@ -62,14 +65,18 @@ namespace Sass
 		_file_exists_delegate = NULL;
 	}
 
-	bool File_Manager::file_exists(const string& path)
+	bool File_Manager::file_exists(const std::string& path)
 	{
 		if (_file_exists_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'file_exists' method is null.");
+			throw std::runtime_error("The delegate for 'file_exists' method is null.");
 		}
 
-		return _file_exists_delegate(path.c_str());
+		std::wstring wpath = UTF_8::convert_to_utf16(path);
+
+		bool result = _file_exists_delegate(wpath.c_str());
+
+		return result;
 	}
 
 #pragma endregion
@@ -86,14 +93,18 @@ namespace Sass
 		_is_absolute_path_delegate = NULL;
 	}
 
-	bool File_Manager::is_absolute_path(const string& path)
+	bool File_Manager::is_absolute_path(const std::string& path)
 	{
 		if (_is_absolute_path_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'is_absolute_path' method is null.");
+			throw std::runtime_error("The delegate for 'is_absolute_path' method is null.");
 		}
 
-		return _is_absolute_path_delegate(path.c_str());
+		std::wstring wpath = UTF_8::convert_to_utf16(path);
+
+		bool result = _is_absolute_path_delegate(wpath.c_str());
+
+		return result;
 	}
 
 #pragma endregion
@@ -110,14 +121,19 @@ namespace Sass
 		_get_directory_name_delegate = NULL;
 	}
 
-	string File_Manager::get_directory_name(const string& path)
+	std::string File_Manager::get_directory_name(const std::string& path)
 	{
 		if (_get_directory_name_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'get_directory_name' method is null.");
+			throw std::runtime_error("The delegate for 'get_directory_name' method is null.");
 		}
 
-		return strdup(_get_directory_name_delegate(path.c_str()));
+		std::wstring wpath = UTF_8::convert_to_utf16(path);
+
+		const wchar_t* wdirectory_name = _get_directory_name_delegate(wpath.c_str());
+		std::string directory_name = UTF_8::convert_from_utf16(std::wstring(wdirectory_name));
+
+		return directory_name;
 	}
 
 #pragma endregion
@@ -134,14 +150,19 @@ namespace Sass
 		_get_file_name_delegate = NULL;
 	}
 
-	string File_Manager::get_file_name(const string& path)
+	std::string File_Manager::get_file_name(const std::string& path)
 	{
 		if (_get_file_name_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'get_file_name' method is null.");
+			throw std::runtime_error("The delegate for 'get_file_name' method is null.");
 		}
 
-		return strdup(_get_file_name_delegate(path.c_str()));
+		std::wstring wpath = UTF_8::convert_to_utf16(path);
+
+		const wchar_t* wfile_name = _get_file_name_delegate(wpath.c_str());
+		std::string file_name = UTF_8::convert_from_utf16(std::wstring(wfile_name));
+
+		return file_name;
 	}
 
 #pragma endregion
@@ -158,14 +179,19 @@ namespace Sass
 		_get_canonical_path_delegate = NULL;
 	}
 
-	string File_Manager::get_canonical_path(string path)
+	std::string File_Manager::get_canonical_path(std::string path)
 	{
 		if (_get_canonical_path_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'get_canonical_path' method is null.");
+			throw std::runtime_error("The delegate for 'get_canonical_path' method is null.");
 		}
 
-		return _get_canonical_path_delegate(path.c_str());
+		std::wstring wpath = UTF_8::convert_to_utf16(path);
+
+		const wchar_t* wcanonical_path = _get_canonical_path_delegate(wpath.c_str());
+		std::string canonical_path = UTF_8::convert_from_utf16(std::wstring(wcanonical_path));
+
+		return canonical_path;
 	}
 
 #pragma endregion
@@ -182,14 +208,20 @@ namespace Sass
 		_combine_paths_delegate = NULL;
 	}
 
-	string File_Manager::combine_paths(string base_path, string relative_path)
+	std::string File_Manager::combine_paths(std::string base_path, std::string relative_path)
 	{
 		if (_combine_paths_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'combine_paths' method is null.");
+			throw std::runtime_error("The delegate for 'combine_paths' method is null.");
 		}
 
-		return _combine_paths_delegate(base_path.c_str(), relative_path.c_str());
+		std::wstring wbase_path = UTF_8::convert_to_utf16(base_path);
+		std::wstring wrelative_path = UTF_8::convert_to_utf16(relative_path);
+
+		const wchar_t* wcombined_path = _combine_paths_delegate(wbase_path.c_str(), wrelative_path.c_str());
+		std::string combined_path = UTF_8::convert_from_utf16(std::wstring(wcombined_path));
+
+		return combined_path;
 	}
 
 #pragma endregion
@@ -206,14 +238,20 @@ namespace Sass
 		_to_absolute_path_delegate = NULL;
 	}
 
-	string File_Manager::to_absolute_path(const string& relative_path, const string& current_directory_path)
+	std::string File_Manager::to_absolute_path(const std::string& relative_path, const std::string& current_directory_path)
 	{
 		if (_to_absolute_path_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'to_absolute_path' method is null.");
+			throw std::runtime_error("The delegate for 'to_absolute_path' method is null.");
 		}
 
-		return _to_absolute_path_delegate(relative_path.c_str(), current_directory_path.c_str());
+		std::wstring wrelative_path = UTF_8::convert_to_utf16(relative_path);
+		std::wstring wcurrent_directory_path = UTF_8::convert_to_utf16(current_directory_path);
+
+		const wchar_t* wabsolute_path = _to_absolute_path_delegate(wrelative_path.c_str(), wcurrent_directory_path.c_str());
+		std::string absolute_path = UTF_8::convert_from_utf16(std::wstring(wabsolute_path));
+
+		return absolute_path;
 	}
 
 #pragma endregion
@@ -230,14 +268,21 @@ namespace Sass
 		_make_relative_path_delegate = NULL;
 	}
 
-	string File_Manager::make_relative_path(const string&  from_path, const string&  to_path, const string&  current_directory_path)
+	std::string File_Manager::make_relative_path(const std::string& from_path, const std::string& to_path, const std::string& current_directory_path)
 	{
 		if (_make_relative_path_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'make_relative_path' method is null.");
+			throw std::runtime_error("The delegate for 'make_relative_path' method is null.");
 		}
 
-		return _make_relative_path_delegate(from_path.c_str(), to_path.c_str(), current_directory_path.c_str());
+		std::wstring wfrom_path = UTF_8::convert_to_utf16(from_path);
+		std::wstring wto_path = UTF_8::convert_to_utf16(to_path);
+		std::wstring wcurrent_directory_path = UTF_8::convert_to_utf16(current_directory_path);
+
+		const wchar_t* wrelative_path = _make_relative_path_delegate(wfrom_path.c_str(), wto_path.c_str(), wcurrent_directory_path.c_str());
+		std::string relative_path = UTF_8::convert_from_utf16(std::wstring(wrelative_path));
+
+		return relative_path;
 	}
 
 #pragma endregion
@@ -254,14 +299,19 @@ namespace Sass
 		_read_file_delegate = NULL;
 	}
 
-	char* File_Manager::read_file(const string& path)
+	char* File_Manager::read_file(const std::string& path)
 	{
 		if (_read_file_delegate == NULL)
 		{
-			throw runtime_error("The delegate for 'read_file' method is null.");
+			throw std::runtime_error("The delegate for 'read_file' method is null.");
 		}
 
-		return strdup(_read_file_delegate(path.c_str()));
+		std::wstring wpath = UTF_8::convert_to_utf16(path);
+
+		const wchar_t* wcontent = _read_file_delegate(wpath.c_str());
+		std::string content = UTF_8::convert_from_utf16(std::wstring(wcontent));
+
+		return sass_strdup(content.c_str());
 	}
 
 #pragma endregion

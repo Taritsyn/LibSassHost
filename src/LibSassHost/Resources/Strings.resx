@@ -132,6 +132,21 @@
   <data name="Common_FileNotExist" xml:space="preserve">
     <value>File '{0}' not exist.</value>
   </data>
+  <data name="ErrorDetails_ColumnNumber" xml:space="preserve">
+    <value>Column number</value>
+  </data>
+  <data name="ErrorDetails_File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="ErrorDetails_LineNumber" xml:space="preserve">
+    <value>Line number</value>
+  </data>
+  <data name="ErrorDetails_Message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="ErrorDetails_SourceFragment" xml:space="preserve">
+    <value>Source fragment</value>
+  </data>
   <data name="ProxyAssemblyFileFound" xml:space="preserve">
     <value>Found '{0}.dll' assembly, that should not exist. Must instead have '{1}32.dll' and '{1}64.dll' assemblies.
 

@@ -1,0 +1,17 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="LibSass Host: Native Header files">
+    <ClInclude Include="Helpers\MarshallingHelper.hpp" />
+    <ClInclude Include="FileManagerDelegates.hpp" />
+    <ClInclude Include="FileManagerMarshaller.hpp" />
+    <ClInclude Include="SassContext.hpp" />
+    <ClCompile Include="SassErrorInfo.hpp" />
+    <ClInclude Include="SassNativeCompiler.hpp" />
+    <ClCompile Include="SassOptions.hpp" />
+  </ItemGroup>
+  <ItemGroup Label="LibSass Host: Native Source files">
+    <ClCompile Include="Helpers\MarshallingHelper.cpp" />
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="FileManagerMarshaller.cpp" />
+    <ClCompile Include="SassNativeCompiler.cpp" />
+  </ItemGroup>
+</Project>

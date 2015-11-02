@@ -1,32 +1,27 @@
 #ifndef SASS_CSSIZE_H
 #define SASS_CSSIZE_H
 
-#include <vector>
-#include <iostream>
-
 #include "ast.hpp"
 #include "context.hpp"
 #include "operation.hpp"
 #include "environment.hpp"
 
 namespace Sass {
-  using namespace std;
 
   typedef Environment<AST_Node*> Env;
   struct Backtrace;
 
   class Cssize : public Operation_CRTP<Statement*, Cssize> {
 
-    Context&            ctx;
-    Env*                env;
-    vector<Block*>      block_stack;
-    vector<Statement*>  p_stack;
-    Backtrace*          backtrace;
+    Context&                 ctx;
+    std::vector<Block*>      block_stack;
+    std::vector<Statement*>  p_stack;
+    Backtrace*               backtrace;
 
     Statement* fallback_impl(AST_Node* n);
 
   public:
-    Cssize(Context&, Env*, Backtrace*);
+    Cssize(Context&, Backtrace*);
     virtual ~Cssize() { }
 
     using Operation<Statement*>::operator();
@@ -36,7 +31,7 @@ namespace Sass {
     // Statement* operator()(Propset*);
     // Statement* operator()(Bubble*);
     Statement* operator()(Media_Block*);
-    Statement* operator()(Feature_Block*);
+    Statement* operator()(Supports_Block*);
     Statement* operator()(At_Root_Block*);
     Statement* operator()(At_Rule*);
     Statement* operator()(Keyframe_Rule*);
@@ -56,13 +51,14 @@ namespace Sass {
     // Statement* operator()(Definition*);
     // Statement* operator()(Mixin_Call*);
     // Statement* operator()(Content*);
+    Statement* operator()(Null*);
 
     Statement* parent();
-    vector<pair<bool, Block*>> slice_by_bubble(Statement*);
+    std::vector<std::pair<bool, Block*>> slice_by_bubble(Statement*);
     Statement* bubble(At_Rule*);
     Statement* bubble(At_Root_Block*);
     Statement* bubble(Media_Block*);
-    Statement* bubble(Feature_Block*);
+    Statement* bubble(Supports_Block*);
     Statement* shallow_copy(Statement*);
     Statement* debubble(Block* children, Statement* parent = 0);
     Statement* flatten(Statement*);

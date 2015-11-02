@@ -1,8 +1,6 @@
 #include <exception>
 #include <string>
 
-#include "sass_context.h"
-
 #include "Helpers/MarshallingHelper.hpp"
 #include "SassNativeCompiler.hpp"
 
@@ -18,9 +16,9 @@ namespace LibSassHost
 		{
 			int result = -1;
 
-			Sass_Data_Context* data_ctx = sass_make_data_context(
+			struct Sass_Data_Context* data_ctx = sass_make_data_context(
 				MarshallingHelper::MarshalString(dataContext->SourceString));
-			Sass_Options* data_ctx_options = sass_data_context_get_options(data_ctx);
+			struct Sass_Options* data_ctx_options = sass_data_context_get_options(data_ctx);
 
 			FillUnmanagedContextOptions(data_ctx_options, dataContext);
 
@@ -42,7 +40,7 @@ namespace LibSassHost
 			}
 			catch (exception& e)
 			{
-				throw gcnew Exception(gcnew String(e.what()));
+				throw gcnew Exception(MarshallingHelper::UnmarshalConstString(e.what()));
 			}
 			catch (...)
 			{
@@ -59,9 +57,9 @@ namespace LibSassHost
 		{
 			int result = -1;
 
-			Sass_File_Context* file_ctx = sass_make_file_context(
+			struct Sass_File_Context* file_ctx = sass_make_file_context(
 				MarshallingHelper::MarshalConstString(fileContext->InputPath));
-			Sass_Options* file_ctx_options = sass_file_context_get_options(file_ctx);
+			struct Sass_Options* file_ctx_options = sass_file_context_get_options(file_ctx);
 
 			FillUnmanagedContextOptions(file_ctx_options, fileContext);
 
@@ -70,7 +68,7 @@ namespace LibSassHost
 				// Compile Sass-file by using context
 				result = sass_compile_file_context(file_ctx);
 
-				// Copy resulting fields from unmanaged structure to managed
+				// Copy resulting fields from unmanaged object to managed
 				struct Sass_Context* base_ctx = sass_file_context_get_context(file_ctx);
 				if (result == 0)
 				{
@@ -83,7 +81,7 @@ namespace LibSassHost
 			}
 			catch (exception& e)
 			{
-				throw gcnew Exception(gcnew String(e.what()));
+				throw gcnew Exception(MarshallingHelper::UnmarshalConstString(e.what()));
 			}
 			catch (...)
 			{
@@ -121,7 +119,7 @@ namespace LibSassHost
 			return constant;
 		}
 
-		void SassNativeCompiler::FillUnmanagedContextOptions(Sass_Options* ctx_options, SassContext^ context)
+		void SassNativeCompiler::FillUnmanagedContextOptions(struct Sass_Options* ctx_options, SassContext^ context)
 		{
 			SassOptions^ options = context->Options;
 			sass_option_set_include_path(ctx_options, MarshallingHelper::MarshalString(options->IncludePath));
@@ -140,23 +138,25 @@ namespace LibSassHost
 			sass_option_set_source_map_root(ctx_options, MarshallingHelper::MarshalString(options->SourceMapRoot));
 		}
 
-		void SassNativeCompiler::FillManagedContextOutput(SassContext^ context, Sass_Context* ctx)
+		void SassNativeCompiler::FillManagedContextOutput(SassContext^ context, struct Sass_Context* ctx)
 		{
-			context->OutputString = gcnew String(sass_context_get_output_string(ctx));
-			context->SourceMapString = gcnew String(sass_context_get_source_map_string(ctx));
+			context->OutputString = MarshallingHelper::UnmarshalConstString(sass_context_get_output_string(ctx));
+			context->SourceMapString = MarshallingHelper::UnmarshalConstString(sass_context_get_source_map_string(ctx));
 			context->IncludedFiles = MarshallingHelper::UnmarshalStringArray(sass_context_get_included_files(ctx));
 		}
 
-		void SassNativeCompiler::FillManagedContextError(SassContext^ context, Sass_Context* ctx)
+		void SassNativeCompiler::FillManagedContextError(SassContext^ context, struct Sass_Context* ctx)
 		{
-			SassErrorInfo^ error = context->Error;
+			SassErrorInfo^ error = gcnew SassErrorInfo();
 			error->Status = sass_context_get_error_status(ctx);
-			error->Text = gcnew String(sass_context_get_error_text(ctx));
-			error->Message = gcnew String(sass_context_get_error_message(ctx));
-			error->File = gcnew String(sass_context_get_error_file(ctx));
+			error->Text = MarshallingHelper::UnmarshalConstString(sass_context_get_error_text(ctx));
+			error->Message = MarshallingHelper::UnmarshalConstString(sass_context_get_error_message(ctx));
+			error->File = MarshallingHelper::UnmarshalConstString(sass_context_get_error_file(ctx));
 			error->Line = sass_context_get_error_line(ctx);
 			error->Column = sass_context_get_error_column(ctx);
-			error->Source = gcnew String(sass_context_get_error_src(ctx));
+			error->Source = MarshallingHelper::UnmarshalConstString(sass_context_get_error_src(ctx));
+
+			context->Error = error;
 		}
 	}
 }

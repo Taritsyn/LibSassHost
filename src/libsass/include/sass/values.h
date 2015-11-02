@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "sass.h"
+#include <sass/base.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,6 +30,14 @@ enum Sass_Tag {
 enum Sass_Separator {
   SASS_COMMA,
   SASS_SPACE
+};
+
+// Value Operators
+enum Sass_OP {
+  AND, OR,                   // logical connectives
+  EQ, NEQ, GT, GTE, LT, LTE, // arithmetic relations
+  ADD, SUB, MUL, DIV, MOD,   // arithmetic functions
+  NUM_OPS                    // so we know how big to make the op table
 };
 
 // Return the sass tag for a generic sass value
@@ -118,6 +126,12 @@ ADDAPI void ADDCALL sass_delete_value (union Sass_Value* val);
 
 // Make a deep cloned copy of the given sass value
 ADDAPI union Sass_Value* ADDCALL sass_clone_value (const union Sass_Value* val);
+
+// Stringify a Sass_Values and also return the result as a Sass_Value (of type STRING)
+ADDAPI union Sass_Value* ADDCALL sass_value_stringify (const union Sass_Value* a, bool compressed, int precision);
+
+// Execute an operation for two Sass_Values and return the result as a Sass_Value too
+ADDAPI union Sass_Value* ADDCALL sass_value_op (enum Sass_OP op, const union Sass_Value* a, const union Sass_Value* b);
 
 
 #ifdef __cplusplus

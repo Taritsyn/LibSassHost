@@ -1,16 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 
-using LibSassHost.Helpers;
+using LibSassHost.Resources;
 
 namespace LibSassHost
 {
 	/// <summary>
 	/// File manager
 	/// </summary>
-	public sealed class FileManager : IFileManager
+	public sealed class FileManager : FileManagerBase
 	{
 		/// <summary>
 		/// Regular expression for working with the path with a drive letter
@@ -43,197 +42,81 @@ namespace LibSassHost
 			}
 		}
 
+		/// <summary>
+		/// Current working directory of the application
+		/// </summary>
+		private readonly string _currentDirectoryName;
+
 
 		/// <summary>
 		/// Constructs a instance of file manager
 		/// </summary>
 		public FileManager()
 		{
+			_currentDirectoryName = GetDefaultDirectory();
 			UseCaseSensitiveFileNames = false;
+		}
+
+
+		/// <summary>
+		/// Gets a default working directory of the application
+		/// </summary>
+		/// <returns>The string containing the path of the default working directory</returns>
+		private static string GetDefaultDirectory()
+		{
+			string defaultDirectoryName = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
+
+			// Convert back slashes to forward slashes
+			defaultDirectoryName = BackSlashesToForwardSlashes(defaultDirectoryName);
+
+			return defaultDirectoryName;
 		}
 
 
 		#region IFileManager implementation
 
-		public bool UseCaseSensitiveFileNames
+		public override string GetCurrentDirectory()
 		{
-			get;
-			set;
+			return _currentDirectoryName;
 		}
 
-
-		public string GetCurrentDirectory()
+		public override bool FileExists(string path)
 		{
-			string currentDirectoryPath = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
-
-			// Convert back slashes to forward slashes
-			currentDirectoryPath = PathHelpers.BackSlashesToForwardSlashes(currentDirectoryPath);
-
-			return currentDirectoryPath;
-		}
-
-		public bool FileExists(string path)
-		{
-			return File.Exists(path);
-		}
-
-		public bool IsAbsolutePath(string path)
-		{
-			return _pathWithDriveLetterRegex.IsMatch(path);
-		}
-
-		public string GetDirectoryName(string path)
-		{
-			string directoryName = Path.GetDirectoryName(path) + Path.DirectorySeparatorChar;
-
-			// Convert backslashes to forward slashes
-			directoryName = PathHelpers.BackSlashesToForwardSlashes(directoryName);
-
-			return directoryName;
-		}
-
-		public string GetFileName(string path)
-		{
-			return Path.GetFileName(path);
-		}
-
-		public string GetCanonicalPath(string path)
-		{
-			string canonicalPath = path;
-
-			// Convert backslashes to forward slashes
-			canonicalPath = PathHelpers.BackSlashesToForwardSlashes(canonicalPath);
-
-			// Normalize path
-			canonicalPath = PathHelpers.NormalizePath(canonicalPath);
-
-			return canonicalPath;
-		}
-
-		public string CombinePaths(string basePath, string relativePath)
-		{
-			// Convert backslashes to forward slashes
-			string processedBasePath = PathHelpers.BackSlashesToForwardSlashes(basePath);
-			string processedRelativePath = PathHelpers.BackSlashesToForwardSlashes(relativePath);
-
-			if (string.IsNullOrWhiteSpace(processedBasePath))
+			if (path == null)
 			{
-				return processedRelativePath;
+				throw new ArgumentNullException("path",
+					string.Format(Strings.Common_ArgumentIsNull, "path"));
 			}
 
-			if (string.IsNullOrWhiteSpace(processedRelativePath))
-			{
-				return processedBasePath;
-			}
-
-			if (IsAbsolutePath(processedRelativePath))
-			{
-				return processedRelativePath;
-			}
-
-			string combinedPath = processedBasePath;
-			if (!processedBasePath.EndsWith("/"))
-			{
-				combinedPath += '/';
-			}
-			combinedPath += processedRelativePath;
-
-			// Normalize path
-			combinedPath = PathHelpers.NormalizePath(combinedPath);
-
-			return combinedPath;
-		}
-
-		public string ToAbsolutePath(string relativePath, string currentDirectoryPath)
-		{
-			string absolutePath = IsAbsolutePath(relativePath) ?
-				relativePath : CombinePaths(currentDirectoryPath, relativePath);
-
-			// Make a canonical path
-			string canonicalAbsolutePath = GetCanonicalPath(absolutePath);
-
-			return canonicalAbsolutePath;
-		}
-
-		public string MakeRelativePath(string fromPath, string toPath, string currentDirectoryPath)
-		{
-			string absoluteFromPath = ToAbsolutePath(fromPath, currentDirectoryPath);
-			string absoluteToPath = ToAbsolutePath(toPath, currentDirectoryPath);
-
-			// Absolute path must have a drive letter, and we know that we
-			// can only create relative paths if both are on the same drive
-			if (absoluteFromPath[0] != absoluteToPath[0])
-			{
-				return absoluteToPath;
-			}
-
-			int pathDifferencePosition = 0;
-			int minPathLength = Math.Min(absoluteToPath.Length, absoluteFromPath.Length);
-			StringComparison comparisonType = UseCaseSensitiveFileNames ?
-				StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-
-			for (int charIndex = 0; charIndex < minPathLength; charIndex++)
-			{
-				if (!string.Equals(
-					absoluteToPath[charIndex].ToString(),
-					absoluteFromPath[charIndex].ToString(),
-					comparisonType))
-				{
-					break;
-				}
-
-				if (absoluteToPath[charIndex] == '/')
-				{
-					pathDifferencePosition = charIndex + 1;
-				}
-			}
-
-			string strippedFromPath = absoluteFromPath.Substring(pathDifferencePosition);
-			string strippedToPath = absoluteToPath.Substring(pathDifferencePosition);
-
-			int leftPosition = 0;
-			int rightPosition = 0;
-			int directoryCount = 0;
-
-			for (; rightPosition < strippedFromPath.Length; rightPosition++)
-			{
-				if (strippedFromPath[rightPosition] == '/')
-				{
-					if (strippedFromPath.Substring(leftPosition, 2) != "..")
-					{
-						directoryCount++;
-					}
-					else if (directoryCount > 1)
-					{
-						directoryCount--;
-					}
-					else
-					{
-						directoryCount = 0;
-					}
-
-					leftPosition = rightPosition + 1;
-				}
-			}
-
-			var resultBuilder = new StringBuilder();
-
-			for (int directoryIndex = 0; directoryIndex < directoryCount; directoryIndex++)
-			{
-				resultBuilder.Append("../");
-			}
-
-			resultBuilder.Append(strippedToPath);
-
-			string result = resultBuilder.ToString();
-			resultBuilder.Clear();
+			bool result = File.Exists(path);
 
 			return result;
 		}
 
-		public string ReadFile(string path)
+		public override bool IsAbsolutePath(string path)
 		{
-			return File.ReadAllText(path);
+			if (path == null)
+			{
+				throw new ArgumentNullException("path",
+					string.Format(Strings.Common_ArgumentIsNull, "path"));
+			}
+
+			bool result = _pathWithDriveLetterRegex.IsMatch(path);
+
+			return result;
+		}
+
+		public override string ReadFile(string path)
+		{
+			if (path == null)
+			{
+				throw new ArgumentNullException("path",
+					string.Format(Strings.Common_ArgumentIsNull, "path"));
+			}
+
+			string content = File.ReadAllText(path);
+
+			return content;
 		}
 
 		#endregion

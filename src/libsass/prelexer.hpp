@@ -195,10 +195,16 @@ namespace Sass {
     const char* identifier(const char* src);
     const char* identifier_alpha(const char* src);
     const char* identifier_alnum(const char* src);
-    const char* identifier_alnums(const char* src);
-    // Match selector names.
-    // const char* sel_ident(const char* src);
-    const char* kwd_sel_deep(const char* src);
+    const char* strict_identifier(const char* src);
+    const char* strict_identifier_alpha(const char* src);
+    const char* strict_identifier_alnum(const char* src);
+    // Match a CSS unit identifier.
+    const char* unit_identifier(const char* src);
+    // const char* strict_identifier_alnums(const char* src);
+    // Match reference selector.
+    const char* re_reference_combinator(const char* src);
+    const char* static_reference_combinator(const char* src);
+    const char* schema_reference_combinator(const char* src);
 
     // Match interpolant schemas
     const char* identifier_schema(const char* src);
@@ -215,15 +221,18 @@ namespace Sass {
     const char* kwd_with_directive(const char* src);
     const char* kwd_without_directive(const char* src);
     const char* kwd_media(const char* src);
-    const char* kwd_supports(const char* src);
+    const char* kwd_supports_directive(const char* src);
     // const char* keyframes(const char* src);
     // const char* keyf(const char* src);
     const char* kwd_mixin(const char* src);
     const char* kwd_function(const char* src);
     const char* kwd_return_directive(const char* src);
-    const char* kwd_include(const char* src);
-    const char* kwd_content(const char* src);
+    const char* kwd_include_directive(const char* src);
+    const char* kwd_content_directive(const char* src);
+    const char* kwd_charset_directive(const char* src);
     const char* kwd_extend(const char* src);
+
+    const char* unicode_seq(const char* src);
 
     const char* kwd_if_directive(const char* src);
     const char* kwd_else_directive(const char* src);
@@ -239,13 +248,25 @@ namespace Sass {
 
     const char* kwd_while_directive(const char* src);
 
+    const char* re_nothing(const char* src);
+    const char* re_type_selector2(const char* src);
+
+
     const char* kwd_warn(const char* src);
     const char* kwd_err(const char* src);
     const char* kwd_dbg(const char* src);
 
     const char* kwd_null(const char* src);
 
+    const char* re_type_selector(const char* src);
+    const char* re_static_expression(const char* src);
+
+    // identifier that can start with hyphens
+    const char* css_identifier(const char* src);
+    const char* css_ip_identifier(const char* src);
+
     // Match CSS type selectors
+    const char* namespace_schema(const char* src);
     const char* namespace_prefix(const char* src);
     const char* type_selector(const char* src);
     const char* hyphens_and_identifier(const char* src);
@@ -276,16 +297,17 @@ namespace Sass {
     const char* uri_prefix(const char* src);
     const char* uri_value(const char* src);
     // Match CSS "!important" keyword.
-    const char* important(const char* src);
+    const char* kwd_important(const char* src);
     // Match CSS "!optional" keyword.
-    const char* optional(const char* src);
+    const char* kwd_optional(const char* src);
     // Match Sass "!default" keyword.
     const char* default_flag(const char* src);
     const char* global_flag(const char* src);
     // Match CSS pseudo-class/element prefixes
     const char* pseudo_prefix(const char* src);
     // Match CSS function call openers.
-    const char* functional(const char* src);
+    const char* re_functional(const char* src);
+    const char* re_pseudo_selector(const char* src);
     const char* functional_schema(const char* src);
     const char* pseudo_not(const char* src);
     // Match CSS 'odd' and 'even' keywords for functional pseudo-classes.
@@ -318,6 +340,17 @@ namespace Sass {
     // match urls
     const char* url(const char* src);
 
+    // match url()
+    const char* H(const char* src);
+    const char* W(const char* src);
+    // `UNICODE` makes VS sad
+    const char* UUNICODE(const char* src);
+    const char* NONASCII(const char* src);
+    const char* ESCAPE(const char* src);
+    const char* real_uri_suffix(const char* src);
+    // const char* real_uri_prefix(const char* src);
+    const char* real_uri_value(const char* src);
+
     // Path matching functions.
     // const char* folder(const char* src);
     // const char* folders(const char* src);
@@ -325,6 +358,7 @@ namespace Sass {
 
     const char* static_string(const char* src);
     const char* static_component(const char* src);
+    const char* static_property(const char* src);
     const char* static_value(const char* src);
 
     // Utility functions for finding and counting characters in a string.
@@ -371,6 +405,12 @@ namespace Sass {
       }
       return counter;
     }
+
+    template <size_t size, prelexer mx, prelexer pad>
+    const char* padded_token(const char* src);
+
+    template <size_t min, size_t max, prelexer mx>
+    const char* minmax_range(const char* src);
 
   }
 }

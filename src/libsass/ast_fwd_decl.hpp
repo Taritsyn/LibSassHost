@@ -16,7 +16,7 @@ namespace Sass {
   class Propset;
   class Bubble;
   class Media_Block;
-  class Feature_Block;
+  class Supports_Block;
   class At_Rule;
   class Keyframe_Rule;
   class At_Root_Block;
@@ -38,6 +38,7 @@ namespace Sass {
   class Definition;
   class Mixin_Call;
   // expressions
+  class Value;
   class Expression;
   class List;
   class Map;
@@ -45,6 +46,8 @@ namespace Sass {
   class Unary_Expression;
   class Function_Call;
   class Function_Call_Schema;
+  class Custom_Warning;
+  class Custom_Error;
   class Variable;
   class Textual;
   class Number;
@@ -56,8 +59,11 @@ namespace Sass {
   class String_Quoted;
   class Media_Query;
   class Media_Query_Expression;
-  class Feature_Query;
-  class Feature_Query_Condition;
+  class Supports_Condition;
+  class Supports_Operator;
+  class Supports_Negation;
+  class Supports_Declaration;
+  class Supports_Interpolation;
   class At_Root_Expression;
   class Null;
   class Parent_Selector;
@@ -69,7 +75,6 @@ namespace Sass {
   // selectors
   class Selector;
   class Selector_Schema;
-  class Selector_Reference;
   class Selector_Placeholder;
   class Type_Selector;
   class Selector_Qualifier;

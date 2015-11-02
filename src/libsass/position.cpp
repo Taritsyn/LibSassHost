@@ -2,7 +2,6 @@
 
 namespace Sass {
 
-  using namespace std;
 
   Offset::Offset(const char* string)
   : line(0), column(0)
@@ -10,7 +9,7 @@ namespace Sass {
     *this = inc(string, string + strlen(string));
   }
 
-  Offset::Offset(const string& text)
+  Offset::Offset(const std::string& text)
   : line(0), column(0)
   {
     *this = inc(text.c_str(), text.c_str() + text.size());
@@ -96,13 +95,13 @@ namespace Sass {
   : Offset(line, column), file(file) { }
 
 
-  ParserState::ParserState(string path, const char* src, const size_t file)
+  ParserState::ParserState(const char* path, const char* src, const size_t file)
   : Position(file, 0, 0), path(path), src(src), offset(0, 0), token() { }
 
-  ParserState::ParserState(string path, const char* src, Position position, Offset offset)
+  ParserState::ParserState(const char* path, const char* src, const Position& position, Offset offset)
   : Position(position), path(path), src(src), offset(offset), token() { }
 
-  ParserState::ParserState(string path, const char* src, Token token, Position position, Offset offset)
+  ParserState::ParserState(const char* path, const char* src, const Token& token, const Position& position, Offset offset)
   : Position(position), path(path), src(src), offset(offset), token(token) { }
 
   Position Position::add(const char* begin, const char* end)

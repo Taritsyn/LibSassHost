@@ -1,9 +1,12 @@
 #ifndef SASS_C_INTERFACE_H
 #define SASS_C_INTERFACE_H
 
+// the API in this header has been deprecated
+// please use the new API from sass/context.h
+
 #include <stddef.h>
 #include <stdbool.h>
-#include "sass.h"
+#include <sass/base.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,7 +50,7 @@ struct sass_options {
 struct sass_context {
   const char* input_path;
   const char* output_path;
-  const char* source_string;
+  char* source_string;
   char* output_string;
   char* source_map_string;
   struct sass_options options;

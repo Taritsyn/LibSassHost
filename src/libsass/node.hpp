@@ -2,7 +2,6 @@
 #define SASS_NODE_H
 
 #include <deque>
-#include <iostream>
 #include <memory>
 
 #include "ast.hpp"
@@ -11,7 +10,6 @@
 namespace Sass {
 
 
-  using namespace std;
 
 
   class Context;
@@ -33,8 +31,8 @@ namespace Sass {
    */
 
   class Node;
-  typedef deque<Node> NodeDeque;
-  typedef shared_ptr<NodeDeque> NodeDequePtr;
+  typedef std::deque<Node> NodeDeque;
+  typedef std::shared_ptr<NodeDeque> NodeDequePtr;
 
   class Node {
   public:
@@ -45,7 +43,7 @@ namespace Sass {
       NIL
     };
 
-		TYPE type() const { return mType; }
+    TYPE type() const { return mType; }
     bool isCombinator() const { return mType == COMBINATOR; }
     bool isSelector() const { return mType == SELECTOR; }
     bool isCollection() const { return mType == COLLECTION; }
@@ -69,6 +67,7 @@ namespace Sass {
     static Node createCollection(const NodeDeque& values);
 
     static Node createNil();
+    static Node naiveTrim(Node& seqses, Context& ctx);
 
     Node clone(Context& ctx) const;
 
@@ -109,7 +108,7 @@ namespace Sass {
   };
 
 #ifdef DEBUG
-  ostream& operator<<(ostream& os, const Node& node);
+  std::ostream& operator<<(std::ostream& os, const Node& node);
 #endif
   Node complexSelectorToNode(Complex_Selector* pToConvert, Context& ctx);
   Complex_Selector* nodeToComplexSelector(const Node& toConvert, Context& ctx);

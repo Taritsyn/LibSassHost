@@ -1,5 +1,6 @@
 #include <iostream>
 #include <typeinfo>
+#include <string>
 
 #include "listize.hpp"
 #include "to_string.hpp"
@@ -15,8 +16,9 @@ namespace Sass {
 
   Expression* Listize::operator()(Selector_List* sel)
   {
-    List* l = new (ctx.mem) List(sel->pstate(), sel->length(), List::COMMA);
+    List* l = SASS_MEMORY_NEW(ctx.mem, List, sel->pstate(), sel->length(), SASS_COMMA);
     for (size_t i = 0, L = sel->length(); i < L; ++i) {
+      if (!(*sel)[i]) continue;
       *l << (*sel)[i]->perform(this);
     }
     return l;
@@ -25,17 +27,17 @@ namespace Sass {
   Expression* Listize::operator()(Compound_Selector* sel)
   {
     To_String to_string;
-    string str;
+    std::string str;
     for (size_t i = 0, L = sel->length(); i < L; ++i) {
       Expression* e = (*sel)[i]->perform(this);
       if (e) str += e->perform(&to_string);
     }
-    return new (ctx.mem) String_Constant(sel->pstate(), str);
+    return SASS_MEMORY_NEW(ctx.mem, String_Quoted, sel->pstate(), str);
   }
 
   Expression* Listize::operator()(Complex_Selector* sel)
   {
-    List* l = new (ctx.mem) List(sel->pstate(), 2);
+    List* l = SASS_MEMORY_NEW(ctx.mem, List, sel->pstate(), 2);
 
     Compound_Selector* head = sel->head();
     if (head && !head->is_empty_reference())
@@ -44,16 +46,22 @@ namespace Sass {
       if (hh) *l << hh;
     }
 
+    To_String to_string;
+    std::string reference = ! sel->reference() ? ""
+      : sel->reference()->perform(&to_string);
     switch(sel->combinator())
     {
       case Complex_Selector::PARENT_OF:
-        *l << new (ctx.mem) String_Constant(sel->pstate(), ">");
+        *l << SASS_MEMORY_NEW(ctx.mem, String_Quoted, sel->pstate(), ">");
       break;
       case Complex_Selector::ADJACENT_TO:
-        *l << new (ctx.mem) String_Constant(sel->pstate(), "+");
+        *l << SASS_MEMORY_NEW(ctx.mem, String_Quoted, sel->pstate(), "+");
+      break;
+      case Complex_Selector::REFERENCE:
+        *l << SASS_MEMORY_NEW(ctx.mem, String_Quoted, sel->pstate(), "/" + reference + "/");
       break;
       case Complex_Selector::PRECEDES:
-        *l << new (ctx.mem) String_Constant(sel->pstate(), "~");
+        *l << SASS_MEMORY_NEW(ctx.mem, String_Quoted, sel->pstate(), "~");
       break;
       case Complex_Selector::ANCESTOR_OF:
       break;
@@ -71,13 +79,9 @@ namespace Sass {
     return l;
   }
 
-  Expression* Listize::operator()(Selector_Reference* sel)
-  {
-    return 0;
-  }
-
   Expression* Listize::fallback_impl(AST_Node* n)
   {
-    return static_cast<Expression*>(n);
+    return dynamic_cast<Expression*>(n);
   }
+
 }

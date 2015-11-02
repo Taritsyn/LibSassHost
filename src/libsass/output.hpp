@@ -10,7 +10,6 @@
 
 namespace Sass {
   class Context;
-  using namespace std;
 
   // Refactor to make it generic to find linefeed (look behind)
   inline bool ends_with(std::string const & value, std::string const & ending)
@@ -29,20 +28,22 @@ namespace Sass {
     virtual ~Output();
 
   protected:
-    string charset;
-    vector<AST_Node*> top_nodes;
+    std::string charset;
+    std::vector<AST_Node*> top_nodes;
 
   public:
     OutputBuffer get_buffer(void);
 
+    virtual void operator()(Map*);
     virtual void operator()(Ruleset*);
     // virtual void operator()(Propset*);
-    virtual void operator()(Feature_Block*);
+    virtual void operator()(Supports_Block*);
     virtual void operator()(Media_Block*);
     virtual void operator()(At_Rule*);
     virtual void operator()(Keyframe_Rule*);
     virtual void operator()(Import*);
     virtual void operator()(Comment*);
+    virtual void operator()(Number*);
     virtual void operator()(String_Quoted*);
     virtual void operator()(String_Constant*);
 

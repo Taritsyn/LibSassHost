@@ -66,7 +66,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libSass;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libsass\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -88,7 +88,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libSass;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libsass\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -103,21 +103,7 @@
       <Command>copy "$(ProjectDir)bin\$(Configuration)\$(Platform)\$(ProjectName).dll" "$(ProjectDir)..\LibSassHost\LibSassHost.Native" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Helpers\MarshallingHelper.hpp" />
-    <ClInclude Include="FileManagerDelegates.hpp" />
-    <ClInclude Include="FileManagerMarshaller.hpp" />
-    <ClInclude Include="SassContext.hpp" />
-    <ClCompile Include="SassErrorInfo.hpp" />
-    <ClInclude Include="SassNativeCompiler.hpp" />
-    <ClCompile Include="SassOptions.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Helpers\MarshallingHelper.cpp" />
-    <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="FileManagerMarshaller.cpp" />
-    <ClCompile Include="SassNativeCompiler.cpp" />
-  </ItemGroup>
+  <Import Project="LibSassHost.Native.targets" />
   <ItemGroup>
     <ProjectReference Include="..\libsass\libsass-x64.vcxproj">
       <Project>{01cc9091-c703-44c3-ae7a-2a0c996c0465}</Project>

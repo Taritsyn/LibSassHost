@@ -1,15 +1,12 @@
 #ifndef SASS_INSPECT_H
 #define SASS_INSPECT_H
 
-#include <string>
-
 #include "position.hpp"
 #include "operation.hpp"
 #include "emitter.hpp"
 
 namespace Sass {
   class Context;
-  using namespace std;
 
   class Inspect : public Operation_CRTP<void, Inspect>, public Emitter {
   protected:
@@ -28,7 +25,7 @@ namespace Sass {
     virtual void operator()(Ruleset*);
     virtual void operator()(Propset*);
     virtual void operator()(Bubble*);
-    virtual void operator()(Feature_Block*);
+    virtual void operator()(Supports_Block*);
     virtual void operator()(Media_Block*);
     virtual void operator()(At_Root_Block*);
     virtual void operator()(At_Rule*);
@@ -57,6 +54,8 @@ namespace Sass {
     virtual void operator()(Unary_Expression*);
     virtual void operator()(Function_Call*);
     virtual void operator()(Function_Call_Schema*);
+    // virtual void operator()(Custom_Warning*);
+    // virtual void operator()(Custom_Error*);
     virtual void operator()(Variable*);
     virtual void operator()(Textual*);
     virtual void operator()(Number*);
@@ -65,8 +64,10 @@ namespace Sass {
     virtual void operator()(String_Schema*);
     virtual void operator()(String_Constant*);
     virtual void operator()(String_Quoted*);
-    virtual void operator()(Feature_Query*);
-    virtual void operator()(Feature_Query_Condition*);
+    virtual void operator()(Supports_Operator*);
+    virtual void operator()(Supports_Negation*);
+    virtual void operator()(Supports_Declaration*);
+    virtual void operator()(Supports_Interpolation*);
     virtual void operator()(Media_Query*);
     virtual void operator()(Media_Query_Expression*);
     virtual void operator()(At_Root_Expression*);
@@ -79,7 +80,6 @@ namespace Sass {
     virtual void operator()(Arguments*);
     // selectors
     virtual void operator()(Selector_Schema*);
-    virtual void operator()(Selector_Reference*);
     virtual void operator()(Selector_Placeholder*);
     virtual void operator()(Type_Selector*);
     virtual void operator()(Selector_Qualifier*);

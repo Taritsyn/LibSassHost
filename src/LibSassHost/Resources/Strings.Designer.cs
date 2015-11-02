@@ -106,6 +106,51 @@ namespace LibSassHost.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Column number.
+        /// </summary>
+        internal static string ErrorDetails_ColumnNumber {
+            get {
+                return ResourceManager.GetString("ErrorDetails_ColumnNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        internal static string ErrorDetails_File {
+            get {
+                return ResourceManager.GetString("ErrorDetails_File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line number.
+        /// </summary>
+        internal static string ErrorDetails_LineNumber {
+            get {
+                return ResourceManager.GetString("ErrorDetails_LineNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message.
+        /// </summary>
+        internal static string ErrorDetails_Message {
+            get {
+                return ResourceManager.GetString("ErrorDetails_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source fragment.
+        /// </summary>
+        internal static string ErrorDetails_SourceFragment {
+            get {
+                return ResourceManager.GetString("ErrorDetails_SourceFragment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Found &apos;{0}.dll&apos; assembly, that should not exist. Must instead have &apos;{1}32.dll&apos; and &apos;{1}64.dll&apos; assemblies.
         ///
         ///Check your build settings..
