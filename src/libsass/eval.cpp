@@ -1325,6 +1325,12 @@ namespace Sass {
     if (ltype == Expression::NULL_VAL) error("Invalid null operation: \"null plus "+quote(unquote(rstr), '"')+"\".", lhs.pstate());
     if (rtype == Expression::NULL_VAL) error("Invalid null operation: \""+quote(unquote(lstr), '"')+" plus null\".", rhs.pstate());
 
+    if (ltype == Expression::NUMBER && sep == "/" && rtype == Expression::STRING)
+    {
+      return SASS_MEMORY_NEW(mem, String_Constant, lhs.pstate(),
+        lhs.to_string() + sep + rhs.to_string());
+    }
+
     if ( (ltype == Expression::STRING || sep == "") &&
          (sep != "/" || !rqstr || !rqstr->quote_mark())
     ) {
@@ -1439,7 +1445,8 @@ namespace Sass {
   {
     To_String to_string;
     // the parser will look for a brace to end the selector
-    std::string result_str(s->contents()->perform(this)->perform(&to_string) + "{");
+    std::string result_str(s->contents()->perform(this)->perform(&to_string));
+    result_str = unquote(Util::rtrim(result_str)) + "{";
     Parser p = Parser::from_c_str(result_str.c_str(), ctx, s->pstate());
     return operator()(p.parse_selector_list(exp.block_stack.back()->is_root()));
   }
