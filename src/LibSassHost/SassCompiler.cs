@@ -249,11 +249,8 @@ namespace LibSassHost
 			{
 				_disposed = true;
 
-				lock (_compilationSynchronizer)
-				{
-					_sassNativeCompiler = null;
-					_fileManager = null;
-				}
+				_sassNativeCompiler = null;
+				_fileManager = null;
 			}
 		}
 

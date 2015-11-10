@@ -10,12 +10,6 @@ namespace LibSassHost
 				IntPtr^ GetCurrentDirectoryDelegate;
 				IntPtr^ FileExistsDelegate;
 				IntPtr^ IsAbsolutePathDelegate;
-				IntPtr^ GetDirectoryNameDelegate;
-				IntPtr^ GetFileNameDelegate;
-				IntPtr^ GetCanonicalPathDelegate;
-				IntPtr^ CombinePathsDelegate;
-				IntPtr^ ToAbsolutePathDelegate;
-				IntPtr^ MakeRelativePathDelegate;
 				IntPtr^ ReadFileDelegate;
 		};
 	}

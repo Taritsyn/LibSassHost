@@ -9,7 +9,7 @@ namespace LibSassHost
 	/// <summary>
 	/// File manager
 	/// </summary>
-	public sealed class FileManager : FileManagerBase
+	public sealed class FileManager : IFileManager
 	{
 		/// <summary>
 		/// Regular expression for working with the path with a drive letter
@@ -54,7 +54,6 @@ namespace LibSassHost
 		public FileManager()
 		{
 			_currentDirectoryName = GetDefaultDirectory();
-			UseCaseSensitiveFileNames = false;
 		}
 
 
@@ -67,7 +66,7 @@ namespace LibSassHost
 			string defaultDirectoryName = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
 
 			// Convert back slashes to forward slashes
-			defaultDirectoryName = BackSlashesToForwardSlashes(defaultDirectoryName);
+			defaultDirectoryName = defaultDirectoryName.Replace('\\', '/');
 
 			return defaultDirectoryName;
 		}
@@ -75,12 +74,12 @@ namespace LibSassHost
 
 		#region IFileManager implementation
 
-		public override string GetCurrentDirectory()
+		public string GetCurrentDirectory()
 		{
 			return _currentDirectoryName;
 		}
 
-		public override bool FileExists(string path)
+		public bool FileExists(string path)
 		{
 			if (path == null)
 			{
@@ -93,7 +92,7 @@ namespace LibSassHost
 			return result;
 		}
 
-		public override bool IsAbsolutePath(string path)
+		public bool IsAbsolutePath(string path)
 		{
 			if (path == null)
 			{
@@ -106,7 +105,7 @@ namespace LibSassHost
 			return result;
 		}
 
-		public override string ReadFile(string path)
+		public string ReadFile(string path)
 		{
 			if (path == null)
 			{

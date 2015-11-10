@@ -45,7 +45,6 @@
     <Compile Include="CompilationOptions.cs" />
     <Compile Include="CompilationResult.cs" />
     <Compile Include="FileManager.cs" />
-    <Compile Include="FileManagerBase.cs" />
     <Compile Include="FileManagerMarshallingProxy.cs" />
     <Compile Include="Helpers\SassErrorHelpers.cs" />
     <Compile Include="IFileManager.cs" />

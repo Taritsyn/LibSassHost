@@ -1,19 +1,19 @@
-//#ifdef _WIN32
-//#ifdef __MINGW32__
-//#ifndef off64_t
-//#define off64_t _off64_t    /* Workaround for http://sourceforge.net/p/mingw/bugs/2024/ */
-//#endif
-//#endif
-//#include <direct.h>
-//#define getcwd _getcwd
-//#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
-//#else
-//#include <unistd.h>
-//#endif
-//#ifdef _MSC_VER
-//#define NOMINMAX
-//#endif
-//
+#ifdef _WIN32
+#ifdef __MINGW32__
+#ifndef off64_t
+#define off64_t _off64_t    /* Workaround for http://sourceforge.net/p/mingw/bugs/2024/ */
+#endif
+#endif
+#include <direct.h>
+#define getcwd _getcwd
+#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+#else
+#include <unistd.h>
+#endif
+#ifdef _MSC_VER
+#define NOMINMAX
+#endif
+
 //#include <iostream>
 //#include <fstream>
 //#include <cctype>
@@ -22,22 +22,22 @@
 //#include <sys/stat.h>
 #include "file.hpp"
 #include "file_manager.h"
-//#include "context.hpp"
-//#include "prelexer.hpp"
-//#include "utf8_string.hpp"
+#include "context.hpp"
+#include "prelexer.hpp"
+#include "utf8_string.hpp"
 #include "sass2scss.h"
 
 //#ifdef _WIN32
 //#include <windows.h>
 //#endif
-//
-//#ifndef FS_CASE_SENSITIVE
-//#ifdef _WIN32
-//#define FS_CASE_SENSITIVE 0
-//#else
-//#define FS_CASE_SENSITIVE 1
-//#endif
-//#endif
+
+#ifndef FS_CASE_SENSITIVE
+#ifdef _WIN32
+#define FS_CASE_SENSITIVE 0
+#else
+#define FS_CASE_SENSITIVE 1
+#endif
+#endif
 
 namespace Sass {
   namespace File {
@@ -95,46 +95,42 @@ namespace Sass {
       return File_Manager::get_instance().is_absolute_path(path);
     }
 
-    //// helper function to find the last directory seperator
-    //inline size_t find_last_folder_separator(const std::string& path, size_t limit = std::string::npos)
-    //{
-    //  size_t pos = std::string::npos;
-    //  size_t pos_p = path.find_last_of('/', limit);
-    //  #ifdef _WIN32
-    //    size_t pos_w = path.find_last_of('\\', limit);
-    //  #else
-    //    size_t pos_w = std::string::npos;
-    //  #endif
-    //  if (pos_p != std::string::npos && pos_w != std::string::npos) {
-    //    pos = std::max(pos_p, pos_w);
-    //  }
-    //  else if (pos_p != std::string::npos) {
-    //    pos = pos_p;
-    //  }
-    //  else {
-    //    pos = pos_w;
-    //  }
-    //  return pos;
-    //}
+    // helper function to find the last directory seperator
+    inline size_t find_last_folder_separator(const std::string& path, size_t limit = std::string::npos)
+    {
+      size_t pos = std::string::npos;
+      size_t pos_p = path.find_last_of('/', limit);
+      #ifdef _WIN32
+        size_t pos_w = path.find_last_of('\\', limit);
+      #else
+        size_t pos_w = std::string::npos;
+      #endif
+      if (pos_p != std::string::npos && pos_w != std::string::npos) {
+        pos = std::max(pos_p, pos_w);
+      }
+      else if (pos_p != std::string::npos) {
+        pos = pos_p;
+      }
+      else {
+        pos = pos_w;
+      }
+      return pos;
+    }
 
     // return only the directory part of path
     std::string dir_name(const std::string& path)
     {
-      //size_t pos = find_last_folder_separator(path);
-      //if (pos == std::string::npos) return "";
-      //else return path.substr(0, pos+1);
-
-      return File_Manager::get_instance().get_directory_name(path);
+      size_t pos = find_last_folder_separator(path);
+      if (pos == std::string::npos) return "";
+      else return path.substr(0, pos+1);
     }
 
     // return only the filename part of path
     std::string base_name(const std::string& path)
     {
-      //size_t pos = find_last_folder_separator(path);
-      //if (pos == std::string::npos) return path;
-      //else return path.substr(pos+1);
-
-      return File_Manager::get_instance().get_file_name(path);
+      size_t pos = find_last_folder_separator(path);
+      if (pos == std::string::npos) return path;
+      else return path.substr(pos+1);
     }
 
     // do a locigal clean up of the path
@@ -142,40 +138,39 @@ namespace Sass {
     std::string make_canonical_path (std::string path)
     {
 
-      //// declarations
-      //size_t pos;
+      // declarations
+      size_t pos;
 
-      //#ifdef _WIN32
-      //  //convert backslashes to forward slashes
-      //  replace(path.begin(), path.end(), '\\', '/');
-      //#endif
+      #ifdef _WIN32
+        //convert backslashes to forward slashes
+        replace(path.begin(), path.end(), '\\', '/');
+      #endif
 
-      //pos = 0; // remove all self references inside the path string
-      //while((pos = path.find("/./", pos)) != std::string::npos) path.erase(pos, 2);
+      pos = 0; // remove all self references inside the path string
+      while((pos = path.find("/./", pos)) != std::string::npos) path.erase(pos, 2);
 
-      //pos = 0; // remove all leading and trailing self references
-      //while(path.length() > 1 && path.substr(0, 2) == "./") path.erase(0, 2);
-      //while((pos = path.length()) > 1 && path.substr(pos - 2) == "/.") path.erase(pos - 2);
+      pos = 0; // remove all leading and trailing self references
+      while(path.length() > 1 && path.substr(0, 2) == "./") path.erase(0, 2);
+      while((pos = path.length()) > 1 && path.substr(pos - 2) == "/.") path.erase(pos - 2);
 
 
-      //size_t proto = 0;
-      //// check if we have a protocol
-      //if (path[proto] && Prelexer::is_alpha(path[proto])) {
-      //  // skip over all alphanumeric characters
-      //  while (path[proto] && Prelexer::is_alnum(path[proto++])) {}
-      //  // then skip over the mandatory colon
-      //  if (proto && path[proto] == ':') ++ proto;
-      //}
+      size_t proto = 0;
+      // check if we have a protocol
+      if (path[proto] && Prelexer::is_alpha(path[proto])) {
+        // skip over all alphanumeric characters
+        while (path[proto] && Prelexer::is_alnum(path[proto++])) {}
+        // then skip over the mandatory colon
+        if (proto && path[proto] == ':') ++ proto;
+      }
 
-      //// then skip over start slashes
-      //while (path[proto++] == '/') {}
+      // then skip over start slashes
+      while (path[proto++] == '/') {}
 
-      //pos = proto; // collapse multiple delimiters into a single one
-      //while((pos = path.find("//", pos)) != std::string::npos) path.erase(pos, 1);
+      pos = proto; // collapse multiple delimiters into a single one
+      while((pos = path.find("//", pos)) != std::string::npos) path.erase(pos, 1);
 
-      //return path;
+      return path;
 
-      return File_Manager::get_instance().get_canonical_path(path);
     }
 
     // join two path segments cleanly together
@@ -183,35 +178,31 @@ namespace Sass {
     std::string join_paths(std::string l, std::string r)
     {
 
-      //#ifdef _WIN32
-      //  // convert Windows backslashes to URL forward slashes
-      //  replace(l.begin(), l.end(), '\\', '/');
-      //  replace(r.begin(), r.end(), '\\', '/');
-      //#endif
+      #ifdef _WIN32
+        // convert Windows backslashes to URL forward slashes
+        replace(l.begin(), l.end(), '\\', '/');
+        replace(r.begin(), r.end(), '\\', '/');
+      #endif
 
-      //if (l.empty()) return r;
-      //if (r.empty()) return l;
+      if (l.empty()) return r;
+      if (r.empty()) return l;
 
-      //if (is_absolute_path(r)) return r;
-      //if (l[l.length()-1] != '/') l += '/';
+      if (is_absolute_path(r)) return r;
+      if (l[l.length()-1] != '/') l += '/';
 
-      //while ((r.length() > 3) && ((r.substr(0, 3) == "../") || (r.substr(0, 3)) == "..\\")) {
-      //  r = r.substr(3);
-      //  size_t pos = find_last_folder_separator(l, l.length() - 2);
-      //  l = l.substr(0, pos == std::string::npos ? pos : pos + 1);
-      //}
+      while ((r.length() > 3) && ((r.substr(0, 3) == "../") || (r.substr(0, 3)) == "..\\")) {
+        r = r.substr(3);
+        size_t pos = find_last_folder_separator(l, l.length() - 2);
+        l = l.substr(0, pos == std::string::npos ? pos : pos + 1);
+      }
 
-      //return l + r;
-
-      return File_Manager::get_instance().combine_paths(l, r);
+      return l + r;
     }
 
     // create an absolute path by resolving relative paths with cwd
     std::string make_absolute_path(const std::string& path, const std::string& cwd)
     {
-      //return make_canonical_path((is_absolute_path(path) ? path : join_paths(cwd, path)));
-
-      return File_Manager::get_instance().to_absolute_path(path, cwd);
+      return make_canonical_path((is_absolute_path(path) ? path : join_paths(cwd, path)));
     }
 
     // create a path that is relative to the given base directory
@@ -219,76 +210,74 @@ namespace Sass {
     std::string resolve_relative_path(const std::string& uri, const std::string& base, const std::string& cwd)
     {
 
-      //std::string absolute_uri = make_absolute_path(uri, cwd);
-      //std::string absolute_base = make_absolute_path(base, cwd);
+      std::string absolute_uri = make_absolute_path(uri, cwd);
+      std::string absolute_base = make_absolute_path(base, cwd);
 
-      //size_t proto = 0;
-      //// check if we have a protocol
-      //if (uri[proto] && Prelexer::is_alpha(uri[proto])) {
-      //  // skip over all alphanumeric characters
-      //  while (uri[proto] && Prelexer::is_alnum(uri[proto++])) {}
-      //  // then skip over the mandatory colon
-      //  if (proto && uri[proto] == ':') ++ proto;
-      //}
+      size_t proto = 0;
+      // check if we have a protocol
+      if (uri[proto] && Prelexer::is_alpha(uri[proto])) {
+        // skip over all alphanumeric characters
+        while (uri[proto] && Prelexer::is_alnum(uri[proto++])) {}
+        // then skip over the mandatory colon
+        if (proto && uri[proto] == ':') ++ proto;
+      }
 
-      //// distinguish between windows absolute paths and valid protocols
-      //// we assume that protocols must at least have two chars to be valid
-      //if (proto && uri[proto++] == '/' && proto > 3) return uri;
+      // distinguish between windows absolute paths and valid protocols
+      // we assume that protocols must at least have two chars to be valid
+      if (proto && uri[proto++] == '/' && proto > 3) return uri;
 
-      //#ifdef _WIN32
-      //  // absolute link must have a drive letter, and we know that we
-      //  // can only create relative links if both are on the same drive
-      //  if (absolute_base[0] != absolute_uri[0]) return absolute_uri;
-      //#endif
+      #ifdef _WIN32
+        // absolute link must have a drive letter, and we know that we
+        // can only create relative links if both are on the same drive
+        if (absolute_base[0] != absolute_uri[0]) return absolute_uri;
+      #endif
 
-      //std::string stripped_uri = "";
-      //std::string stripped_base = "";
+      std::string stripped_uri = "";
+      std::string stripped_base = "";
 
-      //size_t index = 0;
-      //size_t minSize = std::min(absolute_uri.size(), absolute_base.size());
-      //for (size_t i = 0; i < minSize; ++i) {
-      //  #ifdef FS_CASE_SENSITIVE
-      //    if (absolute_uri[i] != absolute_base[i]) break;
-      //  #else
-      //    // compare the charactes in a case insensitive manner
-      //    // windows fs is only case insensitive in ascii ranges
-      //    if (tolower(absolute_uri[i]) != tolower(absolute_base[i])) break;
-      //  #endif
-      //  if (absolute_uri[i] == '/') index = i + 1;
-      //}
-      //for (size_t i = index; i < absolute_uri.size(); ++i) {
-      //  stripped_uri += absolute_uri[i];
-      //}
-      //for (size_t i = index; i < absolute_base.size(); ++i) {
-      //  stripped_base += absolute_base[i];
-      //}
+      size_t index = 0;
+      size_t minSize = std::min(absolute_uri.size(), absolute_base.size());
+      for (size_t i = 0; i < minSize; ++i) {
+        #ifdef FS_CASE_SENSITIVE
+          if (absolute_uri[i] != absolute_base[i]) break;
+        #else
+          // compare the charactes in a case insensitive manner
+          // windows fs is only case insensitive in ascii ranges
+          if (tolower(absolute_uri[i]) != tolower(absolute_base[i])) break;
+        #endif
+        if (absolute_uri[i] == '/') index = i + 1;
+      }
+      for (size_t i = index; i < absolute_uri.size(); ++i) {
+        stripped_uri += absolute_uri[i];
+      }
+      for (size_t i = index; i < absolute_base.size(); ++i) {
+        stripped_base += absolute_base[i];
+      }
 
-      //size_t left = 0;
-      //size_t directories = 0;
-      //for (size_t right = 0; right < stripped_base.size(); ++right) {
-      //  if (stripped_base[right] == '/') {
-      //    if (stripped_base.substr(left, 2) != "..") {
-      //      ++directories;
-      //    }
-      //    else if (directories > 1) {
-      //      --directories;
-      //    }
-      //    else {
-      //      directories = 0;
-      //    }
-      //    left = right + 1;
-      //  }
-      //}
+      size_t left = 0;
+      size_t directories = 0;
+      for (size_t right = 0; right < stripped_base.size(); ++right) {
+        if (stripped_base[right] == '/') {
+          if (stripped_base.substr(left, 2) != "..") {
+            ++directories;
+          }
+          else if (directories > 1) {
+            --directories;
+          }
+          else {
+            directories = 0;
+          }
+          left = right + 1;
+        }
+      }
 
-      //std::string result = "";
-      //for (size_t i = 0; i < directories; ++i) {
-      //  result += "../";
-      //}
-      //result += stripped_uri;
+      std::string result = "";
+      for (size_t i = 0; i < directories; ++i) {
+        result += "../";
+      }
+      result += stripped_uri;
 
-      //return result;
-
-      return File_Manager::get_instance().make_relative_path(base, uri, cwd);
+      return result;
     }
 
     // Resolution order for ambiguous imports:
