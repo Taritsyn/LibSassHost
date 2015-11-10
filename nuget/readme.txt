@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-                 README file for LibSass Host for .Net v0.3.1
+                 README file for LibSass Host for .Net v0.4.0
 
    -----------------------------------------------------------------------
 
@@ -20,7 +20,8 @@
    =============
    RELEASE NOTES
    =============
-   Added support of libSass version 3.3.1.
+   From `IFileManager` interface were removed redundant methods and
+   properties.
 
    ====================
    POST-INSTALL ACTIONS
