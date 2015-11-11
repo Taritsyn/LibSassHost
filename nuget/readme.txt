@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-                 README file for LibSass Host for .Net v0.4.0
+                 README file for LibSass Host for .Net v0.4.1
 
    -----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    .NET wrapper around the libSass (http://sass-lang.com/libsass) version
-   3.3.1 with the ability to support a virtual file system. For correct
+   3.3.2 with the ability to support a virtual file system. For correct
    working of the LibSass Host require assemblies `msvcp120.dll` and
    `msvcr120.dll` from the Visual C++ Redistributable Packages for Visual
    Studio 2013.
@@ -20,8 +20,8 @@
    =============
    RELEASE NOTES
    =============
-   From `IFileManager` interface were removed redundant methods and
-   properties.
+   1. Added support of libSass version 3.3.2;
+   2. In NuGet package solved the problem with restoring native assemblies.
 
    ====================
    POST-INSTALL ACTIONS
