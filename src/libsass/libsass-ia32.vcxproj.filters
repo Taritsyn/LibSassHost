@@ -126,7 +126,16 @@
     <ClInclude Include="remove_placeholders.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sass_context.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sass_functions.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="sass_util.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sass_values.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source_map.hpp">

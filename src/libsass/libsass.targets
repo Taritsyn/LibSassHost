@@ -36,7 +36,10 @@
     <ClInclude Include="position.hpp" />
     <ClInclude Include="prelexer.hpp" />
     <ClInclude Include="remove_placeholders.hpp" />
+	<ClInclude Include="sass_context.hpp" />
+	<ClInclude Include="sass_functions.hpp" />
     <ClInclude Include="sass_util.hpp" />
+	<ClInclude Include="sass_values.hpp" />
     <ClInclude Include="source_map.hpp" />
     <ClInclude Include="subset_map.hpp" />
     <ClInclude Include="to_c.hpp" />

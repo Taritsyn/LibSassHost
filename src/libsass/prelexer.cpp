@@ -398,7 +398,7 @@ namespace Sass {
     }
     const char* elseif_directive(const char* src) {
       return sequence< exactly< else_kwd >,
-                                optional_css_whitespace,
+                                optional_css_comments,
                                 word< if_after_else_kwd > >(src);
     }
 
@@ -759,14 +759,17 @@ namespace Sass {
     const char* kwd_false(const char* src) {
       return word<false_kwd>(src);
     }
+    const char* kwd_only(const char* src) {
+      return keyword < only_kwd >(src);
+    }
     const char* kwd_and(const char* src) {
-      return word<and_kwd>(src);
+      return keyword < and_kwd >(src);
     }
     const char* kwd_or(const char* src) {
-      return word<or_kwd>(src);
+      return keyword < or_kwd >(src);
     }
     const char* kwd_not(const char* src) {
-      return word<not_kwd>(src);
+      return keyword < not_kwd >(src);
     }
     const char* kwd_eq(const char* src) {
       return exactly<eq>(src);
@@ -1016,7 +1019,7 @@ namespace Sass {
                            hex,
                            exactly<'|'>,
                            // exactly<'+'>,
-                           sequence < number, identifier >,
+                           sequence < number, unit_identifier >,
                            number,
                            sequence< exactly<'!'>, word<important_kwd> >
                           >(src);
