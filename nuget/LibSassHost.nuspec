@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost</id>
-		<version>0.4.1</version>
+		<version>0.4.2-alpha1</version>
 		<title>LibSass Host for .Net</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
@@ -11,9 +11,8 @@
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>.NET wrapper around the libSass (http://sass-lang.com/libsass) version 3.3.2 with the ability to support a virtual file system. For correct working of the LibSass Host require assemblies `msvcp120.dll` and `msvcr120.dll` from the Visual C++ Redistributable Packages for Visual Studio 2013.</description>
 		<summary>.NET wrapper around the libSass version 3.3.2 with the ability to support a virtual file system.</summary>
-		<releaseNotes>1. Added support of libSass version 3.3.2;
-2. In NuGet package solved the problem with restoring native assemblies.</releaseNotes>
-		<copyright>Copyright (c) 2015 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
+		<releaseNotes>libSass was updated to commit ed6a057.</releaseNotes>
+		<copyright>Copyright (c) 2015-2016 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
 		<language>en-US</language>
 		<tags>libSass Sass SCSS CSS</tags>
 		<references>

@@ -1,11 +1,11 @@
 ﻿
 
    -----------------------------------------------------------------------
-                 README file for LibSass Host for .Net v0.4.1
+             README file for LibSass Host for .Net v0.4.2 Alpha 1
 
    -----------------------------------------------------------------------
 
-         Copyright (c) 2015 Andrey Taritsyn - http://www.taritsyn.ru
+         Copyright (c) 2015-2016 Andrey Taritsyn - http://www.taritsyn.ru
 
 
    ===========
@@ -20,8 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   1. Added support of libSass version 3.3.2;
-   2. In NuGet package solved the problem with restoring native assemblies.
+   libSass was updated to commit ed6a057.
 
    ====================
    POST-INSTALL ACTIONS
