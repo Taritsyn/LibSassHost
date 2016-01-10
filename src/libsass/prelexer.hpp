@@ -296,7 +296,6 @@ namespace Sass {
     // const char* rgb_prefix(const char* src);
     // Match CSS uri specifiers.
     const char* uri_prefix(const char* src);
-    const char* uri_value(const char* src);
     // Match CSS "!important" keyword.
     const char* kwd_important(const char* src);
     // Match CSS "!optional" keyword.
@@ -376,6 +375,18 @@ namespace Sass {
       while ((beg < end) && *beg) {
         if (esc) esc = false;
         else if (*beg == '\\') esc = true;
+        else if (mx(beg)) return beg;
+        ++beg;
+      }
+      return 0;
+    }
+    template<prelexer mx, prelexer skip>
+    const char* find_first_in_interval(const char* beg, const char* end) {
+      bool esc = false;
+      while ((beg < end) && *beg) {
+        if (esc) esc = false;
+        else if (*beg == '\\') esc = true;
+        else if (const char* pos = skip(beg)) beg = pos;
         else if (mx(beg)) return beg;
         ++beg;
       }
