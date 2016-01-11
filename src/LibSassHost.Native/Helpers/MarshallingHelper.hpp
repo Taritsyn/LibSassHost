@@ -8,7 +8,7 @@ namespace LibSassHost
 	{
 		namespace Helpers
 		{
-			static class MarshallingHelper
+			ref class MarshallingHelper
 			{
 				public:
 

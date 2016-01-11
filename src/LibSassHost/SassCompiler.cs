@@ -115,16 +115,16 @@ namespace LibSassHost
 				throw new ArgumentException(string.Format(Strings.Common_ArgumentIsEmpty, "inputPath"), "inputPath");
 			}
 
-			if (!FileManager.Current.FileExists(inputPath))
-			{
-				throw new FileNotFoundException(string.Format(Strings.Common_FileNotExist, inputPath), inputPath);
-			}
-
 			CompilationResult result;
 			var fileContext = new SassFileContext();
 
 			lock (_compilationSynchronizer)
 			{
+				if (!_fileManager.FileExists(inputPath))
+				{
+					throw new FileNotFoundException(string.Format(Strings.Common_FileNotExist, inputPath), inputPath);
+				}
+
 				BeginCompile(fileContext, inputPath, outputPath, options);
 
 				_sassNativeCompiler.CompileFile(fileContext);
@@ -249,8 +249,11 @@ namespace LibSassHost
 			{
 				_disposed = true;
 
-				_sassNativeCompiler = null;
-				_fileManager = null;
+				lock (_compilationSynchronizer)
+				{
+					_sassNativeCompiler = null;
+					_fileManager = null;
+				}
 			}
 		}
 
