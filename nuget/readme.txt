@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-             README file for LibSass Host for .Net v0.4.2 Alpha 1
+             README file for LibSass Host for .Net v0.4.2 Alpha 2
 
    -----------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   libSass was updated to commit ed6a057.
+   Solved a problem with lack of unmanaged memory.
 
    ====================
    POST-INSTALL ACTIONS
