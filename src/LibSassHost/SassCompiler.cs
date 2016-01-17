@@ -13,11 +13,6 @@ namespace LibSassHost
 	public sealed class SassCompiler : IDisposable
 	{
 		/// <summary>
-		/// Additional amount of unmanaged memory that has been allocated
-		/// </summary>
-		private const long ADDITIONAL_BYTES_ALLOCATED = 128 * 1024;
-
-		/// <summary>
 		/// Instance of file manager
 		/// </summary>
 		private IFileManager _fileManager;
@@ -175,14 +170,12 @@ namespace LibSassHost
 			};
 			context.OutputPath = outputFilePath;
 
-			GC.AddMemoryPressure(ADDITIONAL_BYTES_ALLOCATED);
 			FileManagerMarshallingProxy.SetFileManager(_fileManager);
 		}
 
 		private CompilationResult EndCompile(SassContext context)
 		{
 			FileManagerMarshallingProxy.UnsetFileManager();
-			GC.RemoveMemoryPressure(ADDITIONAL_BYTES_ALLOCATED);
 
 			CompilationResult result;
 
