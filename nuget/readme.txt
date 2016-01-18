@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-             README file for LibSass Host for .Net v0.4.2 Alpha 2
+             README file for LibSass Host for .Net v0.4.2 Alpha 3
 
    -----------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   Solved a problem with lack of unmanaged memory.
+   Fixed a problem with untimely garbage collection.
 
    ====================
    POST-INSTALL ACTIONS
