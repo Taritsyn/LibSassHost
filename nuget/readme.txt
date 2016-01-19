@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-             README file for LibSass Host for .Net v0.4.2 Alpha 3
+                 README file for LibSass Host for .Net v0.4.2
 
    -----------------------------------------------------------------------
 
@@ -20,7 +20,8 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a problem with untimely garbage collection.
+   Fixed a bug “Sass compilation sometimes fails with native exception in
+   32 bit mode”.
 
    ====================
    POST-INSTALL ACTIONS
