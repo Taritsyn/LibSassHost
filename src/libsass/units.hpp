@@ -1,6 +1,5 @@
 #ifndef SASS_UNITS_H
 #define SASS_UNITS_H
-#undef SEC
 
 #include <cmath>
 #include <string>
@@ -8,7 +7,7 @@
 
 namespace Sass {
 
-  const double PI = std::acos(-1);
+  const double PI = acos(-1);
 
   enum SassUnitType {
     LENGTH = 0x000,
@@ -59,9 +58,9 @@ namespace Sass {
   extern const double frequency_conversion_factors[2][2];
   extern const double resolution_conversion_factors[3][3];
 
-  enum Sass::SassUnit string_to_unit(const std::string&);
-  const char* unit_to_string(Sass::SassUnit unit);
-  enum Sass::SassUnitType get_unit_type(Sass::SassUnit unit);
+  enum SassUnit string_to_unit(const std::string&);
+  const char* unit_to_string(SassUnit unit);
+  enum SassUnitType get_unit_type(SassUnit unit);
   // throws incompatibleUnits exceptions
   double conversion_factor(const std::string&, const std::string&, bool = true);
 
@@ -69,7 +68,7 @@ namespace Sass {
   {
     public:
       const char* msg;
-      incompatibleUnits(Sass::SassUnit a, Sass::SassUnit b)
+      incompatibleUnits(SassUnit a, SassUnit b)
       : exception()
       {
         std::stringstream ss;

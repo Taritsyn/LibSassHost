@@ -94,6 +94,7 @@ namespace Sass {
     { ss.insert(s[i]); }
     for (size_t i = 0, S = s.size(); i < S; ++i)
     {
+      hash_[s[i]];
       hash_[s[i]].push_back(make_triple(s, ss, index));
     }
   }

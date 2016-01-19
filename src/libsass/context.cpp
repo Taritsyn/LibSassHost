@@ -28,7 +28,6 @@
 #include "extend.hpp"
 #include "remove_placeholders.hpp"
 #include "functions.hpp"
-#include "sass_functions.hpp"
 #include "backtrace.hpp"
 #include "sass2scss.h"
 #include "prelexer.hpp"
@@ -255,7 +254,7 @@ namespace Sass {
 
   // register include with resolved path and its content
   // memory of the resources will be freed by us on exit
-  void Context::register_resource(const Include& inc, const Resource& res, ParserState* prstate)
+  void Context::register_resource(const Include& inc, const Resource& res)
   {
 
     // do not parse same resource twice
@@ -298,24 +297,6 @@ namespace Sass {
     strings.push_back(sass_strdup(inc.abs_path.c_str()));
     // create the initial parser state from resource
     ParserState pstate(strings.back(), contents, idx);
-
-    // check existing import stack for possible recursion
-    for (size_t i = 0; i < import_stack.size() - 2; ++i) {
-      auto parent = import_stack[i];
-      if (std::strcmp(parent->abs_path, import->abs_path) == 0) {
-        std::string stack("An @import loop has been found:");
-        for (size_t n = 1; n < i + 2; ++n) {
-          stack += "\n    " + std::string(import_stack[n]->imp_path) +
-            " imports " + std::string(import_stack[n+1]->imp_path);
-        }
-        // implement error throw directly until we
-        // decided how to handle full stack traces
-        ParserState state = prstate ? *prstate : pstate;
-        throw Exception::InvalidSyntax(state, stack, &import_stack);
-        // error(stack, prstate ? *prstate : pstate, import_stack);
-      }
-    }
-
     // create a parser instance from the given c_str buffer
     Parser p(Parser::from_c_str(contents, *this, pstate));
     // do not yet dispose these buffers
@@ -363,7 +344,7 @@ namespace Sass {
       // the memory buffer returned must be freed by us!
       if (char* contents = read_file(resolved[0].abs_path)) {
         // register the newly resolved file resource
-        register_resource(resolved[0], { contents, 0 }, &pstate);
+        register_resource(resolved[0], { contents, 0 });
         // return resolved entry
         return resolved[0];
       }
@@ -452,7 +433,7 @@ namespace Sass {
           // handle error message passed back from custom importer
           // it may (or may not) override the line and column info
           if (const char* err_message = sass_import_get_error_message(include)) {
-            if (source || srcmap) register_resource({ importer, uniq_path }, { source, srcmap }, &pstate);
+            if (source || srcmap) register_resource({ importer, uniq_path }, { source, srcmap });
             if (line == std::string::npos && column == std::string::npos) error(err_message, pstate);
             else error(err_message, ParserState(ctx_path, source, Position(line, column)));
           }
@@ -466,7 +447,7 @@ namespace Sass {
             // attach information to AST node
             imp->incs().push_back(include);
             // register the resource buffers
-            register_resource(include, { source, srcmap }, &pstate);
+            register_resource(include, { source, srcmap });
           }
           // only a path was retuned
           // try to load it like normal
@@ -658,7 +639,6 @@ namespace Sass {
     Expand expand(*this, &global, &backtrace);
     Cssize cssize(*this, &backtrace);
     // expand and eval the tree
-    // debug_ast(root);
     root = root->perform(&expand)->block();
     // merge and bubble certain rules
     root = root->perform(&cssize)->block();

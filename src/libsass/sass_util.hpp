@@ -221,28 +221,28 @@ namespace Sass {
 
     std::map<unsigned int, KeyType> order;
 
-    std::map<size_t, std::vector<EnumType> > grouped;
+    std::map<KeyType, std::vector<EnumType> > grouped;
 
     for (typename std::vector<EnumType>::iterator enumIter = enumeration.begin(), enumIterEnd = enumeration.end(); enumIter != enumIterEnd; enumIter++) {
       EnumType& e = *enumIter;
 
       KeyType key = keyFunc(e);
 
-      if (grouped.find(key.hash()) == grouped.end()) {
+      if (grouped.find(key) == grouped.end()) {
         order.insert(std::make_pair((unsigned int)order.size(), key));
 
         std::vector<EnumType> newCollection;
         newCollection.push_back(e);
-        grouped.insert(std::make_pair(key.hash(), newCollection));
+        grouped.insert(std::make_pair(key, newCollection));
       } else {
-        std::vector<EnumType>& collection = grouped.at(key.hash());
+        std::vector<EnumType>& collection = grouped.at(key);
         collection.push_back(e);
       }
     }
 
     for (unsigned int index = 0; index < order.size(); index++) {
       KeyType& key = order.at(index);
-      std::vector<EnumType>& values = grouped.at(key.hash());
+      std::vector<EnumType>& values = grouped.at(key);
 
       std::pair<KeyType, std::vector<EnumType> > grouping = std::make_pair(key, values);
 

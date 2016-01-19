@@ -253,7 +253,6 @@ namespace Sass {
     Function_Call* parse_function_call();
     Function_Call_Schema* parse_function_call_schema();
     String* parse_url_function_string();
-    String* parse_url_function_argument();
     String* parse_interpolated_chunk(Token, bool constant = false);
     String* parse_string();
     String_Constant* parse_static_expression();
@@ -299,8 +298,8 @@ namespace Sass {
     Lookahead lookahead_for_selector(const char* start = 0);
     Lookahead lookahead_for_include(const char* start = 0);
 
-    Expression* fold_operands(Expression* base, std::vector<Expression*>& operands, Operand op);
-    Expression* fold_operands(Expression* base, std::vector<Expression*>& operands, std::vector<Operand>& ops);
+    Expression* fold_operands(Expression* base, std::vector<Expression*>& operands, Sass_OP op);
+    Expression* fold_operands(Expression* base, std::vector<Expression*>& operands, std::vector<Sass_OP>& ops);
 
     void throw_syntax_error(std::string message, size_t ln = 0);
     void throw_read_error(std::string message, size_t ln = 0);

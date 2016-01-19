@@ -10,10 +10,9 @@ namespace Sass {
 
   namespace Exception {
 
-    Base::Base(ParserState pstate, std::string msg, std::vector<Sass_Import_Entry>* import_stack)
+    Base::Base(ParserState pstate, std::string msg)
     : std::runtime_error(msg),
-      msg(msg), pstate(pstate),
-      import_stack(import_stack)
+      msg(msg), pstate(pstate)
     { }
 
     const char* Base::what() const throw()
@@ -45,8 +44,8 @@ namespace Sass {
       msg += " for `" + fn + "'";
     }
 
-    InvalidSyntax::InvalidSyntax(ParserState pstate, std::string msg, std::vector<Sass_Import_Entry>* import_stack)
-    : Base(pstate, msg, import_stack)
+    InvalidSyntax::InvalidSyntax(ParserState pstate, std::string msg)
+    : Base(pstate, msg)
     { }
 
   }

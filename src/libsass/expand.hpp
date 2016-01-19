@@ -37,9 +37,6 @@ namespace Sass {
 
     Statement* fallback_impl(AST_Node* n);
 
-  private:
-    void expand_selector_list(Selector*, Selector_List* extender);
-
   public:
     Expand(Context&, Env*, Backtrace*);
     virtual ~Expand() { }

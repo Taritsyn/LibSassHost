@@ -4,20 +4,11 @@
 namespace Sass {
 
   template <typename T>
-  Environment<T>::Environment(bool is_shadow)
-  : local_frame_(std::map<std::string, T>()),
-    parent_(0), is_shadow_(false)
-  { }
+  Environment<T>::Environment() : local_frame_(std::map<std::string, T>()), parent_(0) { }
   template <typename T>
-  Environment<T>::Environment(Environment<T>* env, bool is_shadow)
-  : local_frame_(std::map<std::string, T>()),
-    parent_(env), is_shadow_(is_shadow)
-  { }
+  Environment<T>::Environment(Environment<T>* env) : local_frame_(std::map<std::string, T>()), parent_(env) { }
   template <typename T>
-  Environment<T>::Environment(Environment<T>& env, bool is_shadow)
-  : local_frame_(std::map<std::string, T>()),
-    parent_(&env), is_shadow_(is_shadow)
-  { }
+  Environment<T>::Environment(Environment<T>& env) : local_frame_(std::map<std::string, T>()), parent_(&env) { }
 
   // link parent to create a stack
   template <typename T>
@@ -127,13 +118,12 @@ namespace Sass {
   template <typename T>
   void Environment<T>::set_lexical(const std::string& key, T val)
   {
-    auto cur = this; bool shadow = false;
-    while (cur->is_lexical() || shadow) {
+    auto cur = this;
+    while (cur->is_lexical()) {
       if (cur->has_local(key)) {
         cur->set_local(key, val);
         return;
       }
-      shadow = cur->is_shadow();
       cur = cur->parent_;
     }
     set_local(key, val);
