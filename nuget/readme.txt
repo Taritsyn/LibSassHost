@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-                 README file for LibSass Host for .Net v0.4.2
+                 README file for LibSass Host for .Net v0.4.3
 
    -----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    .NET wrapper around the libSass (http://sass-lang.com/libsass) version
-   3.3.2 with the ability to support a virtual file system. For correct
+   3.3.3 with the ability to support a virtual file system. For correct
    working of the LibSass Host require assemblies `msvcp120.dll` and
    `msvcr120.dll` from the Visual C++ Redistributable Packages for Visual
    Studio 2013.
@@ -20,8 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a bug “Sass compilation sometimes fails with native exception in
-   32 bit mode”.
+   Added support of libSass version 3.3.3.
 
    ====================
    POST-INSTALL ACTIONS
