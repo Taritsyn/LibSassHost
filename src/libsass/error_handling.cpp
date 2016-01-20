@@ -1,7 +1,7 @@
+#include "sass.hpp"
 #include "ast.hpp"
 #include "prelexer.hpp"
 #include "backtrace.hpp"
-#include "to_string.hpp"
 #include "error_handling.hpp"
 
 #include <iostream>
@@ -10,15 +10,11 @@ namespace Sass {
 
   namespace Exception {
 
-    Base::Base(ParserState pstate, std::string msg)
-    : std::runtime_error(msg),
-      msg(msg), pstate(pstate)
+    Base::Base(ParserState pstate, std::string msg, std::vector<Sass_Import_Entry>* import_stack)
+    : std::runtime_error(msg), msg(msg),
+      prefix("Error"), pstate(pstate),
+      import_stack(import_stack)
     { }
-
-    const char* Base::what() const throw()
-    {
-      return msg.c_str();
-    }
 
     InvalidSass::InvalidSass(ParserState pstate, std::string msg)
     : Base(pstate, msg)
@@ -29,9 +25,9 @@ namespace Sass {
     : Base(selector->pstate()), parent(parent), selector(selector)
     {
       msg = "Invalid parent selector for \"";
-      msg += selector->to_string(false);
+      msg += selector->to_string(Sass_Inspect_Options());
       msg += "\": \"";
-      msg += parent->to_string(false);;
+      msg += parent->to_string(Sass_Inspect_Options());
       msg += "\"";
     }
 
@@ -39,14 +35,95 @@ namespace Sass {
     : Base(pstate), fn(fn), arg(arg), type(type), value(value)
     {
       msg  = arg + ": \"";
-      msg += value->to_string(true, 5);
+      msg += value->to_string(Sass_Inspect_Options());
       msg += "\" is not a " + type;
       msg += " for `" + fn + "'";
     }
 
-    InvalidSyntax::InvalidSyntax(ParserState pstate, std::string msg)
-    : Base(pstate, msg)
+    InvalidSyntax::InvalidSyntax(ParserState pstate, std::string msg, std::vector<Sass_Import_Entry>* import_stack)
+    : Base(pstate, msg, import_stack)
     { }
+
+    UndefinedOperation::UndefinedOperation(const Expression* lhs, const Expression* rhs, const std::string& op)
+    : lhs(lhs), rhs(rhs), op(op)
+    {
+      msg  = def_op_msg + ": \"";
+      msg += lhs->to_string({ NESTED, 5 });
+      msg += " " + op + " ";
+      msg += rhs->to_string({ TO_SASS, 5 });
+      msg += "\".";
+    }
+
+    InvalidNullOperation::InvalidNullOperation(const Expression* lhs, const Expression* rhs, const std::string& op)
+    : UndefinedOperation(lhs, rhs, op)
+    {
+      msg  = def_op_null_msg + ": \"";
+      msg += lhs->inspect();
+      msg += " " + op + " ";
+      msg += rhs->inspect();
+      msg += "\".";
+    }
+
+    ZeroDivisionError::ZeroDivisionError(const Expression& lhs, const Expression& rhs)
+    : lhs(lhs), rhs(rhs)
+    {
+      msg  = "divided by 0";
+    }
+
+    DuplicateKeyError::DuplicateKeyError(const Map& dup, const Expression& org)
+    : Base(org.pstate()), dup(dup), org(org)
+    {
+      msg  = "Duplicate key ";
+      dup.get_duplicate_key()->is_delayed(false);
+      msg += dup.get_duplicate_key()->inspect();
+      msg += " in map (";
+      msg += org.inspect();
+      msg += ").";
+    }
+
+    TypeMismatch::TypeMismatch(const Expression& var, const std::string type)
+    : Base(var.pstate()), var(var), type(type)
+    {
+      msg  = var.to_string();
+      msg += " is not an ";
+      msg += type;
+      msg += ".";
+    }
+
+    InvalidValue::InvalidValue(const Expression& val)
+    : Base(val.pstate()), val(val)
+    {
+      msg  = val.to_string();
+      msg += " isn't a valid CSS value.";
+    }
+
+    IncompatibleUnits::IncompatibleUnits(const Number& lhs, const Number& rhs)
+    : lhs(lhs), rhs(rhs)
+    {
+      msg  = "Incompatible units: '";
+      msg += rhs.unit();
+      msg += "' and '";
+      msg += lhs.unit();
+      msg += "'.";
+    }
+
+    AlphaChannelsNotEqual::AlphaChannelsNotEqual(const Expression* lhs, const Expression* rhs, const std::string& op)
+    : lhs(lhs), rhs(rhs), op(op)
+    {
+      msg  = "Alpha channels must be equal: ";
+      msg += lhs->to_string({ NESTED, 5 });
+      msg += " " + op + " ";
+      msg += rhs->to_string({ NESTED, 5 });
+      msg += ".";
+    }
+
+
+    SassValueError::SassValueError(ParserState pstate, OperationError& err)
+    : Base(pstate, err.what())
+    {
+      msg = err.what();
+      prefix = err.errtype();
+    }
 
   }
 

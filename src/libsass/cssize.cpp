@@ -1,9 +1,9 @@
+#include "sass.hpp"
 #include <iostream>
 #include <typeinfo>
 #include <vector>
 
 #include "cssize.hpp"
-#include "to_string.hpp"
 #include "context.hpp"
 #include "backtrace.hpp"
 
@@ -99,6 +99,10 @@ namespace Sass {
                                   r->block()->perform(this)->block());
     // rr->tabs(r->block()->tabs());
     p_stack.pop_back();
+
+    if (!rr->block()) {
+      error("Illegal nesting: Only properties may be nested beneath properties.", r->block()->pstate());
+    }
 
     Block* props = SASS_MEMORY_NEW(ctx.mem, Block, rr->block()->pstate());
     Block* rules = SASS_MEMORY_NEW(ctx.mem, Block, rr->block()->pstate());
@@ -513,15 +517,14 @@ namespace Sass {
 
   Media_Query* Cssize::merge_media_query(Media_Query* mq1, Media_Query* mq2)
   {
-    To_String to_string(&ctx);
 
     std::string type;
     std::string mod;
 
     std::string m1 = std::string(mq1->is_restricted() ? "only" : mq1->is_negated() ? "not" : "");
-    std::string t1 = mq1->media_type() ? mq1->media_type()->perform(&to_string) : "";
+    std::string t1 = mq1->media_type() ? mq1->media_type()->to_string(ctx.c_options) : "";
     std::string m2 = std::string(mq2->is_restricted() ? "only" : mq1->is_negated() ? "not" : "");
-    std::string t2 = mq2->media_type() ? mq2->media_type()->perform(&to_string) : "";
+    std::string t2 = mq2->media_type() ? mq2->media_type()->to_string(ctx.c_options) : "";
 
 
     if (t1.empty()) t1 = t2;

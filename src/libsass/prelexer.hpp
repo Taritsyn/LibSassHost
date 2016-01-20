@@ -200,6 +200,8 @@ namespace Sass {
     const char* strict_identifier_alpha(const char* src);
     const char* strict_identifier_alnum(const char* src);
     // Match a CSS unit identifier.
+    const char* one_unit(const char* src);
+    const char* multiple_units(const char* src);
     const char* unit_identifier(const char* src);
     // const char* strict_identifier_alnums(const char* src);
     // Match reference selector.
@@ -210,6 +212,7 @@ namespace Sass {
     // Match interpolant schemas
     const char* identifier_schema(const char* src);
     const char* value_schema(const char* src);
+    const char* sass_value(const char* src);
     // const char* filename(const char* src);
     // const char* filename_schema(const char* src);
     // const char* url_schema(const char* src);
@@ -252,6 +255,7 @@ namespace Sass {
     const char* re_nothing(const char* src);
     const char* re_type_selector2(const char* src);
 
+    const char* re_special_fun(const char* src);
 
     const char* kwd_warn(const char* src);
     const char* kwd_err(const char* src);
@@ -282,6 +286,7 @@ namespace Sass {
     // Match placeholder selectors.
     const char* placeholder(const char* src);
     // Match CSS numeric constants.
+    const char* op(const char* src);
     const char* sign(const char* src);
     const char* unsigned_number(const char* src);
     const char* number(const char* src);
@@ -296,7 +301,6 @@ namespace Sass {
     // const char* rgb_prefix(const char* src);
     // Match CSS uri specifiers.
     const char* uri_prefix(const char* src);
-    const char* uri_value(const char* src);
     // Match CSS "!important" keyword.
     const char* kwd_important(const char* src);
     // Match CSS "!optional" keyword.
@@ -381,6 +385,18 @@ namespace Sass {
       }
       return 0;
     }
+    template<prelexer mx, prelexer skip>
+    const char* find_first_in_interval(const char* beg, const char* end) {
+      bool esc = false;
+      while ((beg < end) && *beg) {
+        if (esc) esc = false;
+        else if (*beg == '\\') esc = true;
+        else if (const char* pos = skip(beg)) beg = pos;
+        else if (mx(beg)) return beg;
+        ++beg;
+      }
+      return 0;
+    }
     template <prelexer mx>
     unsigned int count_interval(const char* beg, const char* end) {
       unsigned int counter = 0;
@@ -405,10 +421,42 @@ namespace Sass {
     }
 
     template <size_t size, prelexer mx, prelexer pad>
-    const char* padded_token(const char* src);
+    const char* padded_token(const char* src)
+    {
+      size_t got = 0;
+      const char* pos = src;
+      while (got < size) {
+        if (!mx(pos)) break;
+        ++ pos; ++ got;
+      }
+      while (got < size) {
+        if (!pad(pos)) break;
+        ++ pos; ++ got;
+      }
+      return got ? pos : 0;
+    }
 
     template <size_t min, size_t max, prelexer mx>
-    const char* minmax_range(const char* src);
+    const char* minmax_range(const char* src)
+    {
+      size_t got = 0;
+      const char* pos = src;
+      while (got < max) {
+        if (!mx(pos)) break;
+        ++ pos; ++ got;
+      }
+      if (got < min) return 0;
+      if (got > max) return 0;
+      return pos;
+    }
+
+    template <char min, char max>
+    const char* char_range(const char* src)
+    {
+      if (*src < min) return 0;
+      if (*src > max) return 0;
+      return src + 1;
+    }
 
   }
 }

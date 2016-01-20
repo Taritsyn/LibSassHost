@@ -1,8 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Main" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LIBSASS_VERSION>3.3.2</LIBSASS_VERSION>
+    <LIBSASS_VERSION>3.3.3</LIBSASS_VERSION>
+    <LIBSASS_SRC_DIR>.\</LIBSASS_SRC_DIR>
+    <LIBSASS_HEADERS_DIR>.\</LIBSASS_HEADERS_DIR>
+    <LIBSASS_INCLUDES_DIR>.\include</LIBSASS_INCLUDES_DIR>
   </PropertyGroup>
+  <Target Name="VersionMacros">
+    <ItemGroup>
+      <ClCompile>
+        <PreprocessorDefinitions>%(PreprocessorDefinitions);LIBSASS_VERSION="$(LIBSASS_VERSION)";</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
+  <Target Name="Main">
+    <Message Text="libsass: $(LIBSASS_VERSION)" />
+    <CallTarget Targets="VersionMacros" />
+    <CallTarget Targets="Build" />
+  </Target>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -65,7 +80,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;LIBSASS_VERSION="$(LIBSASS_VERSION)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;$(PreprocessorDefinitions);</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -82,7 +97,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;LIBSASS_VERSION="$(LIBSASS_VERSION)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;$(PreprocessorDefinitions);</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

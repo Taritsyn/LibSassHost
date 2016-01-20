@@ -1,3 +1,4 @@
+#include "sass.hpp"
 #include <cstring>
 #include <stdexcept>
 #include <sstream>
@@ -10,6 +11,7 @@
 #include "util.hpp"
 #include "context.hpp"
 #include "sass_context.hpp"
+#include "sass_functions.hpp"
 #include "ast_fwd_decl.hpp"
 #include "error_handling.hpp"
 
@@ -41,11 +43,10 @@ extern "C" {
     catch (Exception::Base& e) {
       std::stringstream msg_stream;
       std::string cwd(Sass::File::get_cwd());
-      std::string rel_path(Sass::File::abs2rel(e.pstate.path, cwd, cwd));
 
-      std::string msg_prefix("Error: ");
+      std::string msg_prefix(e.errtype());
       bool got_newline = false;
-      msg_stream << msg_prefix;
+      msg_stream << msg_prefix << ": ";
       const char* msg = e.what();
       while(msg && *msg) {
         if (*msg == '\r') {
@@ -53,15 +54,26 @@ extern "C" {
         } else if (*msg == '\n') {
           got_newline = true;
         } else if (got_newline) {
-          msg_stream << std::string(msg_prefix.size(), ' ');
+          msg_stream << std::string(msg_prefix.size() + 2, ' ');
           got_newline = false;
         }
         msg_stream << *msg;
         ++ msg;
       }
       if (!got_newline) msg_stream << "\n";
-      msg_stream << std::string(msg_prefix.size(), ' ');
-      msg_stream << " on line " << e.pstate.line+1 << " of " << rel_path << "\n";
+      if (e.import_stack) {
+        for (size_t i = 1; i < e.import_stack->size() - 1; ++i) {
+          std::string path((*e.import_stack)[i]->imp_path);
+          std::string rel_path(Sass::File::abs2rel(path, cwd, cwd));
+          msg_stream << std::string(msg_prefix.size() + 2, ' ');
+          msg_stream << (i == 1 ? " on line " : " from line ");
+          msg_stream << e.pstate.line+1 << " of " << rel_path << "\n";
+        }
+      } else {
+        std::string rel_path(Sass::File::abs2rel(e.pstate.path, cwd, cwd));
+        msg_stream << std::string(msg_prefix.size() + 2, ' ');
+        msg_stream << " on line " << e.pstate.line+1 << " of " << rel_path << "\n";
+      }
 
       // now create the code trace (ToDo: maybe have util functions?)
       if (e.pstate.line != std::string::npos && e.pstate.column != std::string::npos) {
@@ -111,6 +123,7 @@ extern "C" {
       msg_stream << "Unable to allocate memory: " << ba.what() << std::endl;
       json_append_member(json_err, "status", json_mknumber(2));
       json_append_member(json_err, "message", json_mkstring(ba.what()));
+      json_append_member(json_err, "formatted", json_mkstring(msg_stream.str().c_str()));
       c_ctx->error_json = json_stringify(json_err, "  ");;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_text = sass_strdup(ba.what());
@@ -122,9 +135,10 @@ extern "C" {
     catch (std::exception& e) {
       std::stringstream msg_stream;
       JsonNode* json_err = json_mkobject();
-      msg_stream << "Error: " << e.what() << std::endl;
+      msg_stream << "Internal Error: " << e.what() << std::endl;
       json_append_member(json_err, "status", json_mknumber(3));
       json_append_member(json_err, "message", json_mkstring(e.what()));
+      json_append_member(json_err, "formatted", json_mkstring(msg_stream.str().c_str()));
       c_ctx->error_json = json_stringify(json_err, "  ");;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_text = sass_strdup(e.what());
@@ -136,9 +150,10 @@ extern "C" {
     catch (std::string& e) {
       std::stringstream msg_stream;
       JsonNode* json_err = json_mkobject();
-      msg_stream << "Error: " << e << std::endl;
+      msg_stream << "Internal Error: " << e << std::endl;
       json_append_member(json_err, "status", json_mknumber(4));
       json_append_member(json_err, "message", json_mkstring(e.c_str()));
+      json_append_member(json_err, "formatted", json_mkstring(msg_stream.str().c_str()));
       c_ctx->error_json = json_stringify(json_err, "  ");;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_text = sass_strdup(e.c_str());
@@ -150,9 +165,10 @@ extern "C" {
     catch (const char* e) {
       std::stringstream msg_stream;
       JsonNode* json_err = json_mkobject();
-      msg_stream << "Error: " << e << std::endl;
+      msg_stream << "Internal Error: " << e << std::endl;
       json_append_member(json_err, "status", json_mknumber(4));
       json_append_member(json_err, "message", json_mkstring(e));
+      json_append_member(json_err, "formatted", json_mkstring(msg_stream.str().c_str()));
       c_ctx->error_json = json_stringify(json_err, "  ");;
       c_ctx->error_message = sass_strdup(msg_stream.str().c_str());
       c_ctx->error_text = sass_strdup(e);
@@ -398,14 +414,14 @@ extern "C" {
   struct Sass_Compiler* ADDCALL sass_make_data_compiler (struct Sass_Data_Context* data_ctx)
   {
     if (data_ctx == 0) return 0;
-    Context* cpp_ctx = new Data_Context(data_ctx);
+    Context* cpp_ctx = new Data_Context(*data_ctx);
     return sass_prepare_context(data_ctx, cpp_ctx);
   }
 
   struct Sass_Compiler* ADDCALL sass_make_file_compiler (struct Sass_File_Context* file_ctx)
   {
     if (file_ctx == 0) return 0;
-    Context* cpp_ctx = new File_Context(file_ctx);
+    Context* cpp_ctx = new File_Context(*file_ctx);
     return sass_prepare_context(file_ctx, cpp_ctx);
   }
 
@@ -416,10 +432,11 @@ extern "C" {
       return data_ctx->error_status;
     try {
       if (data_ctx->source_string == 0) { throw(std::runtime_error("Data context has no source string")); }
-      if (*data_ctx->source_string == 0) { throw(std::runtime_error("Data context has empty source string")); }
+      // empty source string is a valid case, even if not really usefull (different than with file context)
+      // if (*data_ctx->source_string == 0) { throw(std::runtime_error("Data context has empty source string")); }
     }
     catch (...) { return handle_errors(data_ctx) | 1; }
-    Context* cpp_ctx = new Data_Context(data_ctx);
+    Context* cpp_ctx = new Data_Context(*data_ctx);
     return sass_compile_context(data_ctx, cpp_ctx);
   }
 
@@ -433,7 +450,7 @@ extern "C" {
       if (*file_ctx->input_path == 0) { throw(std::runtime_error("File context has empty input path")); }
     }
     catch (...) { return handle_errors(file_ctx) | 1; }
-    Context* cpp_ctx = new File_Context(file_ctx);
+    Context* cpp_ctx = new File_Context(*file_ctx);
     return sass_compile_context(file_ctx, cpp_ctx);
   }
 

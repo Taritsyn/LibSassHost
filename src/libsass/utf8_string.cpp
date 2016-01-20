@@ -1,3 +1,4 @@
+#include "sass.hpp"
 #include <string>
 #include <vector>
 #include <cstdlib>
@@ -68,6 +69,8 @@ namespace Sass {
       }
     }
 
+    #ifdef _WIN32
+
     // utf16 functions
     using std::wstring;
 
@@ -92,6 +95,8 @@ namespace Sass {
                      back_inserter(utf16));
       return utf16;
     }
+
+    #endif
 
   }
 }

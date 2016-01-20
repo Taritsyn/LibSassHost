@@ -1,10 +1,6 @@
-#ifdef _MSC_VER
-#pragma warning(disable : 4503)
-#endif
-
+#include "sass.hpp"
 #include "extend.hpp"
 #include "context.hpp"
-#include "to_string.hpp"
 #include "backtrace.hpp"
 #include "paths.hpp"
 #include "parser.hpp"
@@ -85,23 +81,20 @@ namespace Sass {
 
 
   std::ostream& operator<<(std::ostream& os, Compound_Selector& compoundSelector) {
-    To_String to_string;
     for (size_t i = 0, L = compoundSelector.length(); i < L; ++i) {
       if (i > 0) os << ", ";
-      os << compoundSelector[i]->perform(&to_string);
+      os << compoundSelector[i]->to_string();
     }
     return os;
   }
 
   std::ostream& operator<<(std::ostream& os, Simple_Selector& simpleSelector) {
-    To_String to_string;
-    os << simpleSelector.perform(&to_string);
+    os << simpleSelector.to_string();
     return os;
   }
 
   // Print a string representation of a Compound_Selector
   static void printSimpleSelector(Simple_Selector* pSimpleSelector, const char* message=NULL, bool newline=true) {
-    To_String to_string;
 
     if (message) {
       std::cerr << message;
@@ -125,7 +118,6 @@ namespace Sass {
 
   // Print a string representation of a Compound_Selector
   static void printCompoundSelector(Compound_Selector* pCompoundSelector, const char* message=NULL, bool newline=true) {
-    To_String to_string;
 
     if (message) {
       std::cerr << message;
@@ -144,7 +136,6 @@ namespace Sass {
 
 
   std::ostream& operator<<(std::ostream& os, Complex_Selector& complexSelector) {
-    To_String to_string;
 
     os << "[";
     Complex_Selector* pIter = &complexSelector;
@@ -164,7 +155,7 @@ namespace Sass {
       first = false;
 
       if (pIter->head()) {
-        os << pIter->head()->perform(&to_string);
+        os << pIter->head()->to_string();
       } else {
         os << "NULL_HEAD";
       }
@@ -179,7 +170,6 @@ namespace Sass {
 
   // Print a string representation of a Complex_Selector
   static void printComplexSelector(Complex_Selector* pComplexSelector, const char* message=NULL, bool newline=true) {
-    To_String to_string;
 
     if (message) {
       std::cerr << message;
@@ -197,7 +187,6 @@ namespace Sass {
   }
 
   static void printSelsNewSeqPairCollection(SelsNewSeqPairCollection& collection, const char* message=NULL, bool newline=true) {
-    To_String to_string;
 
     if (message) {
       std::cerr << message;
@@ -225,7 +214,6 @@ namespace Sass {
 
   // Print a string representation of a SourcesSet
   static void printSourcesSet(SourcesSet& sources, Context& ctx, const char* message=NULL, bool newline=true) {
-    To_String to_string;
 
     if (message) {
       std::cerr << message;
@@ -1558,8 +1546,6 @@ namespace Sass {
     Node extendedSelectors = Node::createCollection();
     // extendedSelectors.got_line_feed = true;
 
-    To_String to_string;
-
     SubsetMapEntries entries = subset_map.get_v(pSelector->to_str_vec());
 
     typedef std::vector<std::pair<Complex_Selector, std::vector<ExtensionPair> > > GroupedByToAResult;
@@ -1591,6 +1577,7 @@ namespace Sass {
         for (size_t index = 0; index < pCompound->length(); index++) {
           Simple_Selector* pSimpleSelector = (*pCompound)[index];
           (*pSels) << pSimpleSelector;
+          pCompound->extended(true);
         }
       }
 
@@ -1732,18 +1719,32 @@ namespace Sass {
       Compound_Selector* pHead = pIter->head();
 
       if (pHead) {
+        for (Simple_Selector* pSimple : *pHead) {
+          if (Wrapped_Selector* ws = dynamic_cast<Wrapped_Selector*>(pSimple)) {
+            if (Selector_List* sl = dynamic_cast<Selector_List*>(ws->selector())) {
+              for (Complex_Selector* cs : sl->elements()) {
+                while (cs) {
+                  if (complexSelectorHasExtension(cs, ctx, subset_map)) {
+                    hasExtension = true;
+                    break;
+                  }
+                  cs = cs->tail();
+                }
+              }
+            }
+          }
+        }
         SubsetMapEntries entries = subset_map.get_v(pHead->to_str_vec());
         for (ExtensionPair ext : entries) {
           // check if both selectors have the same media block parent
           if (ext.first->media_block() == pComplexSelector->media_block()) continue;
-          To_String to_string(&ctx);
           if (ext.second->media_block() == 0) continue;
           if (pComplexSelector->media_block() &&
               ext.second->media_block()->media_queries() &&
               pComplexSelector->media_block()->media_queries()
           ) {
-            std::string query_left(ext.second->media_block()->media_queries()->perform(&to_string));
-            std::string query_right(pComplexSelector->media_block()->media_queries()->perform(&to_string));
+            std::string query_left(ext.second->media_block()->media_queries()->to_string(ctx.c_options));
+            std::string query_right(pComplexSelector->media_block()->media_queries()->to_string(ctx.c_options));
             if (query_left == query_right) continue;
           }
 
@@ -1754,7 +1755,7 @@ namespace Sass {
           std::string rel_path(Sass::File::abs2rel(pstate.path, cwd, cwd));
           err << "You may not @extend an outer selector from within @media.\n";
           err << "You may only @extend selectors within the same directive.\n";
-          err << "From \"@extend " << ext.second->perform(&to_string) << "\"";
+          err << "From \"@extend " << ext.second->to_string(ctx.c_options) << "\"";
           err << " on line " << pstate.line+1 << " of " << rel_path << "\n";
           error(err.str(), pComplexSelector->pstate());
         }
@@ -1762,29 +1763,6 @@ namespace Sass {
       }
 
       pIter = pIter->tail();
-    }
-
-    if (!hasExtension) {
-      /* ToDo: don't break stuff
-      std::stringstream err;
-      To_String to_string(&ctx);
-      std::string cwd(Sass::File::get_cwd());
-      std::string sel1(pComplexSelector->perform(&to_string));
-      Compound_Selector* pExtendSelector = 0;
-      for (auto i : subset_map.values()) {
-        if (i.first == pComplexSelector) {
-          pExtendSelector = i.second;
-          break;
-        }
-      }
-      if (!pExtendSelector || !pExtendSelector->is_optional()) {
-        std::string sel2(pExtendSelector ? pExtendSelector->perform(&to_string) : "[unknown]");
-        err << "\"" << sel1 << "\" failed to @extend \"" << sel2 << "\"\n";
-        err << "The selector \"" << sel2 << "\" was not found.\n";
-        err << "Use \"@extend " << sel2 << " !optional\" if the extend should be able to fail.";
-        error(err.str(), pExtendSelector ? pExtendSelector->pstate() : pComplexSelector->pstate());
-      }
-      */
     }
 
     return hasExtension;
@@ -1928,8 +1906,6 @@ namespace Sass {
   */
   Selector_List* Extend::extendSelectorList(Selector_List* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, bool isReplace, bool& extendedSomething) {
 
-    To_String to_string(&ctx);
-
     Selector_List* pNewSelectors = SASS_MEMORY_NEW(ctx.mem, Selector_List, pSelectorList->pstate(), pSelectorList->length());
 
     extendedSomething = false;
@@ -1967,6 +1943,21 @@ namespace Sass {
       }
     }
 
+    for (Complex_Selector* cs : *pNewSelectors) {
+      while (cs) {
+        if (cs->head()) {
+        for (Simple_Selector* ss : *cs->head()) {
+          if (Wrapped_Selector* ws = dynamic_cast<Wrapped_Selector*>(ss)) {
+            if (Selector_List* sl = dynamic_cast<Selector_List*>(ws->selector())) {
+              bool extended = false;
+              ws->selector(extendSelectorList(sl, ctx, subset_map, false, extended));
+            }
+          }
+        }
+        }
+        cs = cs->tail();
+      }
+    }
     return pNewSelectors;
 
   }
@@ -2006,9 +1997,8 @@ namespace Sass {
   // Extend a ruleset by extending the selectors and updating them on the ruleset. The block's rules don't need to change.
   template <typename ObjectType>
   static void extendObjectWithSelectorAndBlock(ObjectType* pObject, Context& ctx, ExtensionSubsetMap& subset_map) {
-    To_String to_string(&ctx);
 
-    DEBUG_PRINTLN(EXTEND_OBJECT, "FOUND SELECTOR: " << static_cast<Selector_List*>(pObject->selector())->perform(&to_string))
+    DEBUG_PRINTLN(EXTEND_OBJECT, "FOUND SELECTOR: " << static_cast<Selector_List*>(pObject->selector())->to_string(ctx.c_options))
 
     // Ruby sass seems to filter nodes that don't have any content well before we get here. I'm not sure the repercussions
     // of doing so, so for now, let's just not extend things that won't be output later.
@@ -2021,8 +2011,8 @@ namespace Sass {
     Selector_List* pNewSelectorList = Extend::extendSelectorList(static_cast<Selector_List*>(pObject->selector()), ctx, subset_map, false, extendedSomething);
 
     if (extendedSomething && pNewSelectorList) {
-      DEBUG_PRINTLN(EXTEND_OBJECT, "EXTEND ORIGINAL SELECTORS: " << static_cast<Selector_List*>(pObject->selector())->perform(&to_string))
-      DEBUG_PRINTLN(EXTEND_OBJECT, "EXTEND SETTING NEW SELECTORS: " << pNewSelectorList->perform(&to_string))
+      DEBUG_PRINTLN(EXTEND_OBJECT, "EXTEND ORIGINAL SELECTORS: " << static_cast<Selector_List*>(pObject->selector())->to_string(ctx.c_options))
+      DEBUG_PRINTLN(EXTEND_OBJECT, "EXTEND SETTING NEW SELECTORS: " << pNewSelectorList->to_string(ctx.c_options))
       pNewSelectorList->remove_parent_selectors();
       pObject->selector(pNewSelectorList);
     } else {
@@ -2041,6 +2031,25 @@ namespace Sass {
     for (size_t i = 0, L = b->length(); i < L; ++i) {
       (*b)[i]->perform(this);
     }
+    // do final check if everything was extended
+    // we set `extended` flag on extended selectors
+    if (b->is_root()) {
+      // debug_subset_map(subset_map);
+      for(auto const &it : subset_map.values()) {
+        Complex_Selector* sel = it.first ? it.first->first() : NULL;
+        Compound_Selector* ext = it.second ? it.second : NULL;
+        if (ext && (ext->extended() || ext->is_optional())) continue;
+        std::string str_sel(sel->to_string({ NESTED, 5 }));
+        std::string str_ext(ext->to_string({ NESTED, 5 }));
+        // debug_ast(sel, "sel: ");
+        // debug_ast(ext, "ext: ");
+        error("\"" + str_sel + "\" failed to @extend \"" + str_ext + "\".\n"
+              "The selector \"" + str_ext + "\" was not found.\n"
+              "Use \"@extend " + str_ext + " !optional\" if the"
+                " extend should be able to fail.", ext->pstate());
+      }
+    }
+
   }
 
   void Extend::operator()(Ruleset* pRuleset)

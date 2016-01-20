@@ -81,7 +81,6 @@ namespace Sass {
     extern const char rgb_kwd[];
     extern const char url_kwd[];
     // extern const char url_prefix_kwd[];
-    extern const char image_url_kwd[];
     extern const char important_kwd[];
     extern const char pseudo_not_kwd[];
     extern const char even_kwd[];
@@ -89,6 +88,7 @@ namespace Sass {
     extern const char progid_kwd[];
     extern const char expression_kwd[];
     extern const char calc_kwd[];
+    extern const char calc_fn_kwd[];
     extern const char moz_calc_kwd[];
     extern const char webkit_calc_kwd[];
     extern const char ms_calc_kwd[];
@@ -126,6 +126,7 @@ namespace Sass {
     extern const char rbrace[];
     extern const char rparen[];
     extern const char sign_chars[];
+    extern const char op_chars[];
     extern const char hyphen[];
     extern const char ellipsis[];
     // extern const char url_space_chars[];

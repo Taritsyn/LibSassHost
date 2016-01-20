@@ -1,3 +1,4 @@
+#include "sass.hpp"
 #include "constants.hpp"
 
 namespace Sass {
@@ -78,7 +79,7 @@ namespace Sass {
     extern const char keyframes_kwd[]    = "keyframes";
     extern const char only_kwd[]         = "only";
     extern const char rgb_kwd[]          = "rgb(";
-    extern const char url_kwd[]          = "url(";
+    extern const char url_kwd[]          = "url";
     // extern const char url_prefix_kwd[]   = "url-prefix(";
     extern const char important_kwd[]    = "important";
     extern const char pseudo_not_kwd[]   = ":not(";
@@ -86,6 +87,7 @@ namespace Sass {
     extern const char odd_kwd[]          = "odd";
     extern const char progid_kwd[]       = "progid";
     extern const char expression_kwd[]   = "expression";
+    extern const char calc_fn_kwd[]      = "calc";
     extern const char calc_kwd[]         = "calc(";
     extern const char moz_calc_kwd[]     = "-moz-calc(";
     extern const char webkit_calc_kwd[]  = "-webkit-calc(";
@@ -124,6 +126,7 @@ namespace Sass {
     extern const char rbrace[]          = "}";
     extern const char rparen[]          = ")";
     extern const char sign_chars[]      = "-+";
+    extern const char op_chars[]        = "-+";
     extern const char hyphen[]          = "-";
     extern const char ellipsis[]        = "...";
     // extern const char url_space_chars[] = " \t\r\n\f";
