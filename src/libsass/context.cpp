@@ -351,8 +351,9 @@ namespace Sass {
 
     // process the resolved entry
     else if (resolved.size() == 1) {
+      bool use_cache = c_importers.size() == 0;
       // use cache for the resource loading
-      if (sheets.count(resolved[0].abs_path)) return resolved[0];
+      if (use_cache && sheets.count(resolved[0].abs_path)) return resolved[0];
       // try to read the content of the resolved file entry
       // the memory buffer returned must be freed by us!
       if (char* contents = read_file(resolved[0].abs_path)) {
@@ -436,7 +437,7 @@ namespace Sass {
           // query data from the current include
           Sass_Import_Entry include = *it_includes;
           char* source = sass_import_take_source(include);
-          char* srcmap = sass_import_take_source(include);
+          char* srcmap = sass_import_take_srcmap(include);
           size_t line = sass_import_get_error_line(include);
           size_t column = sass_import_get_error_column(include);
           const char *abs_path = sass_import_get_abs_path(include);

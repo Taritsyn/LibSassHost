@@ -949,6 +949,7 @@ namespace Sass {
 
   Selector_List* Selector_List::parentize(Selector_List* ps, Context& ctx)
   {
+    if (!this->has_parent_ref()) return this;
     Selector_List* ss = SASS_MEMORY_NEW(ctx.mem, Selector_List, pstate());
     for (size_t pi = 0, pL = ps->length(); pi < pL; ++pi) {
       Selector_List* list = SASS_MEMORY_NEW(ctx.mem, Selector_List, pstate());
@@ -1085,18 +1086,16 @@ namespace Sass {
   Complex_Selector* Complex_Selector::first()
   {
     // declare variables used in loop
-    Complex_Selector* cur = this->tail_;
-    const Compound_Selector* head = head_;
+    Complex_Selector* cur = this;
+    const Compound_Selector* head;
     // processing loop
     while (cur)
     {
       // get the head
       head = cur->head_;
-      // check for single parent ref
-      if (head && head->length() == 1)
-      {
-        // abort (and return) if it is not a parent selector
-        if (!dynamic_cast<Parent_Selector*>((*head)[0])) break;
+      // abort (and return) if it is not a parent selector
+      if (!head || head->length() != 1 || !dynamic_cast<Parent_Selector*>((*head)[0])) {
+        break;
       }
       // advance to next
       cur = cur->tail_;
@@ -1897,6 +1896,10 @@ namespace Sass {
     return false;
   }
 
+  bool String_Constant::is_invisible() const {
+    return value_.empty() && quote_mark_ == 0;
+  }
+
   bool String_Constant::operator== (const Expression& rhs) const
   {
     if (const String_Quoted* qstr = dynamic_cast<const String_Quoted*>(&rhs)) {
@@ -2030,14 +2033,6 @@ namespace Sass {
     return to_string({ NESTED, 5 });
   }
 
-  // helper function for serializing colors
-  template <size_t range>
-  static double cap_channel(double c) {
-    if      (c > range) return range;
-    else if (c < 0)     return 0;
-    else                return c;
-  }
-
   std::string String_Quoted::inspect() const
   {
     return quote(value_, '*');
@@ -2064,4 +2059,3 @@ namespace Sass {
   }
 
 }
-

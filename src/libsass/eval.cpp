@@ -504,22 +504,22 @@ namespace Sass {
     }
 
     // only the last item will be used to eval the binary expression
-    if (String_Schema* s_1 = dynamic_cast<String_Schema*>(b->left())) {
-      if (!s_1->is_right_interpolant()) {
-        ret_schema = SASS_MEMORY_NEW(ctx.mem, String_Schema, s_1->pstate());
+    if (String_Schema* s_l = dynamic_cast<String_Schema*>(b->left())) {
+      if (!s_l->has_interpolant() && (!s_l->is_right_interpolant())) {
+        ret_schema = SASS_MEMORY_NEW(ctx.mem, String_Schema, s_l->pstate());
         Binary_Expression* bin_ex = SASS_MEMORY_NEW(ctx.mem, Binary_Expression, b->pstate(),
-                                                    b->op(), s_1->last(), b->right());
+                                                    b->op(), s_l->last(), b->right());
         bin_ex->is_delayed(b->left()->is_delayed() || b->right()->is_delayed());
         // bin_ex->is_interpolant(b->left()->is_interpolant());
-        for (size_t i = 0; i < s_1->length() - 1; ++i) {
-          *ret_schema << s_1->at(i)->perform(this);
+        for (size_t i = 0; i < s_l->length() - 1; ++i) {
+          *ret_schema << s_l->at(i)->perform(this);
         }
         *ret_schema << bin_ex->perform(this);
         return ret_schema->perform(this);
       }
     }
     if (String_Schema* s_r = dynamic_cast<String_Schema*>(b->right())) {
-      if (!s_r->is_left_interpolant() || op_type == Sass_OP::DIV) {
+      if (!s_r->has_interpolant() && (!s_r->is_left_interpolant() || op_type == Sass_OP::DIV)) {
         ret_schema = SASS_MEMORY_NEW(ctx.mem, String_Schema, s_r->pstate());
         Binary_Expression* bin_ex = SASS_MEMORY_NEW(ctx.mem, Binary_Expression, b->pstate(),
                                                     b->op(), b->left(), s_r->first());
@@ -691,7 +691,7 @@ namespace Sass {
         }
       }
 
-    if (force_delay) {
+      if (force_delay) {
         std::string str("");
         str += v_l->to_string(ctx.c_options);
         if (b->op().ws_before) str += " ";
@@ -1125,11 +1125,12 @@ namespace Sass {
     if (List* l = dynamic_cast<List*>(ex)) {
       List* ll = SASS_MEMORY_NEW(ctx.mem, List, l->pstate(), 0, l->separator());
       // this fixes an issue with bourbon sample, not really sure why
-      if (l->size() && dynamic_cast<Null*>((*l)[0])) { res += " "; }
+      // if (l->size() && dynamic_cast<Null*>((*l)[0])) { res += ""; }
       for(auto item : *l) {
         item->is_interpolant(l->is_interpolant());
         std::string rl(""); interpolation(ctx, rl, item, into_quotes, l->is_interpolant());
-        if (rl != "") *ll << SASS_MEMORY_NEW(ctx.mem, String_Quoted, item->pstate(), rl);
+        bool is_null = dynamic_cast<Null*>(item) != 0; // rl != ""
+        if (!is_null) *ll << SASS_MEMORY_NEW(ctx.mem, String_Quoted, item->pstate(), rl);
       }
       res += (ll->to_string(ctx.c_options));
       ll->is_interpolant(l->is_interpolant());
@@ -1170,15 +1171,22 @@ namespace Sass {
       }
       }
     }
+    bool was_quoted = false;
+    bool was_interpolant = false;
     std::string res("");
     for (size_t i = 0; i < L; ++i) {
+      bool is_quoted = dynamic_cast<String_Quoted*>((*s)[i]) != NULL;
       (*s)[i]->perform(this);
+      if (was_quoted && !(*s)[i]->is_interpolant() && !was_interpolant) { res += " "; }
+      else if (i > 0 && is_quoted && !(*s)[i]->is_interpolant() && !was_interpolant) { res += " "; }
       Expression* ex = (*s)[i]->is_delayed() ? (*s)[i] : (*s)[i]->perform(this);
       interpolation(ctx, res, ex, into_quotes, ex->is_interpolant());
+      was_quoted = dynamic_cast<String_Quoted*>((*s)[i]) != NULL;
+      was_interpolant = (*s)[i]->is_interpolant();
 
     }
     if (!s->is_interpolant()) {
-      if (res == "") return SASS_MEMORY_NEW(ctx.mem, Null, s->pstate());
+      if (s->length() > 1 && res == "") return SASS_MEMORY_NEW(ctx.mem, Null, s->pstate());
       return SASS_MEMORY_NEW(ctx.mem, String_Constant, s->pstate(), res);
     }
     String_Quoted* str = SASS_MEMORY_NEW(ctx.mem, String_Quoted, s->pstate(), res);
