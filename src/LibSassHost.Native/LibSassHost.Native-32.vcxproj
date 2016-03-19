@@ -48,7 +48,7 @@
     <TargetName>LibSassHost.Native-Proxy</TargetName>
     <OutDir>bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\</IntDir>
-    <LinkKeyFile>$(SolutionDir)LibSassHost.snk</LinkKeyFile>
+    <LinkKeyFile>$(ProjectDir)..\..\LibSassHost.snk</LinkKeyFile>
     <LinkDelaySign>false</LinkDelaySign>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -56,7 +56,7 @@
     <OutDir>bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>LibSassHost.Native-Proxy</TargetName>
-    <LinkKeyFile>$(SolutionDir)LibSassHost.snk</LinkKeyFile>
+    <LinkKeyFile>$(ProjectDir)..\..\LibSassHost.snk</LinkKeyFile>
     <LinkDelaySign>false</LinkDelaySign>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
