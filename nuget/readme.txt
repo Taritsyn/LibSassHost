@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-                 README file for LibSass Host for .Net v0.4.4
+                 README file for LibSass Host for .Net v0.4.5
 
    -----------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of libSass version 3.3.4.
+   Fixed a error #6 “Mixin rendering problem”.
 
    ====================
    POST-INSTALL ACTIONS

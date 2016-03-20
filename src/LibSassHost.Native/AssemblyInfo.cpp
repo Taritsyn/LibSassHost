@@ -14,5 +14,5 @@ using namespace System::Runtime::InteropServices;
 [assembly:ComVisible(false)];
 [assembly:CLSCompliant(true)];
 
-[assembly:AssemblyVersion("0.4.4.0")];
-[assembly:AssemblyFileVersion("0.4.4.0")];
+[assembly:AssemblyVersion("0.4.5.0")];
+[assembly:AssemblyFileVersion("0.4.5.0")];
