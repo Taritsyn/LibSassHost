@@ -42,12 +42,20 @@ namespace LibSassHost
 				}
 
 				size_t byteCount = strlen(value) * sizeof(*value);
-				array<unsigned char, 1>^ bytes = gcnew array<Byte>(byteCount);
+				String^ result;
 
-				pin_ptr<Byte> pinnedBytes = &bytes[0];
-				memcpy(pinnedBytes, value, byteCount);
+				if (byteCount > 0)
+				{
+					array<unsigned char, 1>^ bytes = gcnew array<Byte>(byteCount);
+					pin_ptr<Byte> pinnedBytes = &bytes[0];
+					memcpy(pinnedBytes, value, byteCount);
 
-				String^ result = Encoding::UTF8->GetString(bytes);
+					result = Encoding::UTF8->GetString(bytes);
+				}
+				else
+				{
+					result = String::Empty;
+				}
 
 				return result;
 			}
