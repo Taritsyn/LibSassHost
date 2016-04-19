@@ -277,8 +277,24 @@ namespace Sass {
   // extra <std::vector> internally to maintain insertion order for interation.
   /////////////////////////////////////////////////////////////////////////////
   class Hashed {
+  struct HashExpression {
+    size_t operator() (Expression* ex) const {
+      return ex ? ex->hash() : 0;
+    }
+  };
+  struct CompareExpression {
+    bool operator()(const Expression* lhs, const Expression* rhs) const {
+      return lhs && rhs && *lhs == *rhs;
+    }
+  };
+  typedef std::unordered_map<
+    Expression*, // key
+    Expression*, // value
+    HashExpression, // hasher
+    CompareExpression // compare
+  > ExpressionMap;
   private:
-    std::unordered_map<Expression*, Expression*> elements_;
+    ExpressionMap elements_;
     std::vector<Expression*> list_;
   protected:
     size_t hash_;
@@ -287,7 +303,7 @@ namespace Sass {
     void reset_duplicate_key() { duplicate_key_ = 0; }
     virtual void adjust_after_pushing(std::pair<Expression*, Expression*> p) { }
   public:
-    Hashed(size_t s = 0) : elements_(std::unordered_map<Expression*, Expression*>(s)), list_(std::vector<Expression*>())
+    Hashed(size_t s = 0) : elements_(ExpressionMap(s)), list_(std::vector<Expression*>())
     { elements_.reserve(s); list_.reserve(s); reset_duplicate_key(); }
     virtual ~Hashed();
     size_t length() const                  { return list_.size(); }
@@ -296,7 +312,7 @@ namespace Sass {
     Expression* at(Expression* k) const;
     bool has_duplicate_key() const         { return duplicate_key_ != 0; }
     Expression* get_duplicate_key() const  { return duplicate_key_; }
-    const std::unordered_map<Expression*, Expression*> elements() { return elements_; }
+    const ExpressionMap elements() { return elements_; }
     Hashed& operator<<(std::pair<Expression*, Expression*> p)
     {
       reset_hash();
@@ -324,7 +340,7 @@ namespace Sass {
       reset_duplicate_key();
       return *this;
     }
-    const std::unordered_map<Expression*, Expression*>& pairs() const { return elements_; }
+    const ExpressionMap& pairs() const { return elements_; }
     const std::vector<Expression*>& keys() const { return list_; }
 
     std::unordered_map<Expression*, Expression*>::iterator end() { return elements_.end(); }
@@ -660,7 +676,7 @@ namespace Sass {
     : Statement(pstate), text_(txt), is_important_(is_important)
     { statement_type(COMMENT); }
     virtual bool is_invisible() const
-    { return is_important() == false; }
+    { return /* is_important() == */ false; }
     ATTACH_OPERATIONS()
   };
 
@@ -840,6 +856,7 @@ namespace Sass {
   // The @content directive for mixin content blocks.
   ///////////////////////////////////////////////////
   class Content : public Statement {
+    ADD_PROPERTY(Media_Block*, media_block)
   public:
     Content(ParserState pstate) : Statement(pstate)
     { statement_type(CONTENT); }
@@ -1010,6 +1027,12 @@ namespace Sass {
     {
       return is_left_interpolant() ||
              is_right_interpolant();
+    }
+    virtual bool can_delay() const;
+    void reset_whitespace()
+    {
+      op_.ws_before = false;
+      op_.ws_after = false;
     }
     virtual void set_delayed(bool delayed)
     {
@@ -1878,6 +1901,9 @@ namespace Sass {
     virtual unsigned long specificity() {
       return Constants::Specificity_Universal;
     }
+    virtual void set_media_block(Media_Block* mb) {
+      media_block(mb);
+    }
   };
   inline Selector::~Selector() { }
 
@@ -1892,6 +1918,7 @@ namespace Sass {
     Selector_Schema(ParserState pstate, String* c)
     : Selector(pstate), contents_(c), at_root_(false)
     { }
+    virtual bool has_parent_ref();
     virtual size_t hash() {
       if (hash_ == 0) {
         hash_combine(hash_, contents_->hash());
@@ -2140,6 +2167,10 @@ namespace Sass {
         return Constants::Specificity_Type;
       return Constants::Specificity_Pseudo;
     }
+    bool operator==(const Simple_Selector& rhs) const;
+    bool operator==(const Pseudo_Selector& rhs) const;
+    bool operator<(const Simple_Selector& rhs) const;
+    bool operator<(const Pseudo_Selector& rhs) const;
     virtual Compound_Selector* unify_with(Compound_Selector*, Context&);
     ATTACH_OPERATIONS()
   };
@@ -2377,6 +2408,11 @@ namespace Sass {
       if (tail()) sum += tail()->specificity();
       return sum;
     }
+    virtual void set_media_block(Media_Block* mb) {
+      media_block(mb);
+      if (tail_) tail_->set_media_block(mb);
+      if (head_) head_->set_media_block(mb);
+    }
     bool operator<(const Complex_Selector& rhs) const;
     bool operator==(const Complex_Selector& rhs) const;
     inline bool operator!=(const Complex_Selector& rhs) const { return !(*this == rhs); }
@@ -2478,6 +2514,12 @@ namespace Sass {
         if (sum < specificity) sum = specificity;
       }
       return sum;
+    }
+    virtual void set_media_block(Media_Block* mb) {
+      media_block(mb);
+      for (Complex_Selector* cs : elements()) {
+        cs->set_media_block(mb);
+      }
     }
     Selector_List* clone(Context&) const;      // does not clone Compound_Selector*s
     Selector_List* cloneFully(Context&) const; // clones Compound_Selector*s

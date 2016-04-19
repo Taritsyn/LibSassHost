@@ -19,6 +19,7 @@ namespace Sass {
     call_stack(std::vector<AST_Node*>()),
     property_stack(std::vector<String*>()),
     selector_stack(std::vector<Selector_List*>()),
+    media_block_stack(std::vector<Media_Block*>()),
     backtrace_stack(std::vector<Backtrace*>()),
     in_keyframes(false)
   {
@@ -29,6 +30,7 @@ namespace Sass {
     // import_stack.push_back(0);
     property_stack.push_back(0);
     selector_stack.push_back(0);
+    media_block_stack.push_back(0);
     backtrace_stack.push_back(0);
     backtrace_stack.push_back(bt);
   }
@@ -134,6 +136,7 @@ namespace Sass {
       env = new Env(environment());
       env_stack.push_back(env);
     }
+    sel->set_media_block(media_block_stack.back());
     Block* blk = r->block()->perform(this)->block();
     Ruleset* rr = SASS_MEMORY_NEW(ctx.mem, Ruleset,
                                   r->pstate(),
@@ -195,9 +198,10 @@ namespace Sass {
 
   Statement* Expand::operator()(Media_Block* m)
   {
+    media_block_stack.push_back(m);
     Expression* mq = m->media_queries()->perform(&eval);
     std::string str_mq(mq->to_string(ctx.c_options));
-    char* str = sass_strdup(str_mq.c_str());
+    char* str = sass_copy_c_string(str_mq.c_str());
     ctx.strings.push_back(str);
     Parser p(Parser::from_c_str(str, ctx, mq->pstate()));
     mq = p.parse_media_queries();
@@ -206,6 +210,7 @@ namespace Sass {
                                       static_cast<List*>(mq->perform(&eval)),
                                       m->block()->perform(this)->block(),
                                       0);
+    media_block_stack.pop_back();
     mm->tabs(m->tabs());
     return mm;
   }
@@ -593,7 +598,7 @@ namespace Sass {
         error("Can't extend " + sel_str + ": can't extend nested selectors", c->pstate(), backtrace());
       }
       Compound_Selector* placeholder = c->head();
-      placeholder->is_optional(s->is_optional());
+      if (contextualized->is_optional()) placeholder->is_optional(true);
       for (size_t i = 0, L = extender->length(); i < L; ++i) {
         Complex_Selector* sel = (*extender)[i];
         if (!(sel->head() && sel->head()->length() > 0 &&
@@ -621,8 +626,18 @@ namespace Sass {
   Statement* Expand::operator()(Extension* e)
   {
     if (Selector_List* extender = dynamic_cast<Selector_List*>(selector())) {
-      selector_stack.push_back(0);
       Selector* s = e->selector();
+      if (Selector_Schema* schema = dynamic_cast<Selector_Schema*>(s)) {
+        if (schema->has_parent_ref()) s = eval(schema);
+      }
+      if (Selector_List* sl = dynamic_cast<Selector_List*>(s)) {
+        for (Complex_Selector* cs : *sl) {
+          if (cs != NULL && cs->head() != NULL) {
+            cs->head()->media_block(media_block_stack.back());
+          }
+        }
+      }
+      selector_stack.push_back(0);
       expand_selector_list(s, extender);
       selector_stack.pop_back();
     }

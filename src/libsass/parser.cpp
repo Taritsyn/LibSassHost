@@ -1773,6 +1773,7 @@ namespace Sass {
       prefix = std::string(lexed);
     }
 
+    lex < optional_spaces >();
     String* url_string = parse_url_function_argument();
 
     std::string suffix("");
@@ -1809,7 +1810,7 @@ namespace Sass {
     if (peek< exactly< hash_lbrace > >()) {
       const char* pp = position;
       // TODO: error checking for unclosed interpolants
-      while (peek< exactly< hash_lbrace > >(pp)) {
+      while (pp && peek< exactly< hash_lbrace > >(pp)) {
         pp = sequence< interpolant, real_uri_value >(pp);
       }
       position = pp;

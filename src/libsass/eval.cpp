@@ -832,17 +832,34 @@ namespace Sass {
         stm << "Stack depth exceeded max of " << Constants::MaxCallStack;
         error(stm.str(), c->pstate(), backtrace());
     }
+
     std::string name(Util::normalize_underscores(c->name()));
     std::string full_name(name + "[f]");
-    Arguments* args = c->arguments();
-    if (full_name != "if[f]") {
-      args = static_cast<Arguments*>(args->perform(this));
+    Arguments* args = SASS_MEMORY_NEW(ctx.mem, Arguments, *c->arguments());
+
+    // handle call here if valid arg
+    // otherwise we eval arguments to early
+    if (name == "call" && args->length() > 0) {
+      Expression* redirect = args->at(0)->perform(this);
+      args->erase(args->begin());
+      Function_Call* lit = SASS_MEMORY_NEW(ctx.mem, Function_Call,
+                                           c->pstate(),
+                                           unquote(redirect->to_string()),
+                                           args);
+      return operator()(lit);
     }
 
     Env* env = environment();
     if (!env->has(full_name)) {
       if (!env->has("*[f]")) {
         // just pass it through as a literal
+        for (Argument* arg : *args) {
+          if (Binary_Expression* b = dynamic_cast<Binary_Expression*>(arg->value())) {
+            b->reset_whitespace();
+            arg->is_delayed(b->can_delay()); // delay
+          }
+        }
+        args = static_cast<Arguments*>(args->perform(this));
         Function_Call* lit = SASS_MEMORY_NEW(ctx.mem, Function_Call,
                                              c->pstate(),
                                              c->name(),
@@ -859,6 +876,10 @@ namespace Sass {
         // call generic function
         full_name = "*[f]";
       }
+    }
+
+    if (full_name != "if[f]") {
+      args = static_cast<Arguments*>(args->perform(this));
     }
 
     Definition* def = static_cast<Definition*>((*env)[full_name]);
@@ -1087,7 +1108,7 @@ namespace Sass {
   void Eval::interpolation(Context& ctx, std::string& res, Expression* ex, bool into_quotes, bool was_itpl) {
 
     bool needs_closing_brace = false;
-//debug_ast(ex);
+
     if (Arguments* args = dynamic_cast<Arguments*>(ex)) {
       List* ll = SASS_MEMORY_NEW(ctx.mem, List, args->pstate(), 0, SASS_COMMA);
       for(auto arg : *args) {
@@ -1176,7 +1197,6 @@ namespace Sass {
     std::string res("");
     for (size_t i = 0; i < L; ++i) {
       bool is_quoted = dynamic_cast<String_Quoted*>((*s)[i]) != NULL;
-      (*s)[i]->perform(this);
       if (was_quoted && !(*s)[i]->is_interpolant() && !was_interpolant) { res += " "; }
       else if (i > 0 && is_quoted && !(*s)[i]->is_interpolant() && !was_interpolant) { res += " "; }
       Expression* ex = (*s)[i]->is_delayed() ? (*s)[i] : (*s)[i]->perform(this);
@@ -1322,7 +1342,8 @@ namespace Sass {
   Expression* Eval::operator()(Argument* a)
   {
     Expression* val = a->value();
-    val->is_delayed(false);
+    // delay missin function arguments?
+    val->is_delayed(a->is_delayed());
     val = val->perform(this);
     val->is_delayed(false);
 
@@ -1355,6 +1376,7 @@ namespace Sass {
   Expression* Eval::operator()(Arguments* a)
   {
     Arguments* aa = SASS_MEMORY_NEW(ctx.mem, Arguments, a->pstate());
+    if (a->length() == 0) return aa;
     for (size_t i = 0, L = a->length(); i < L; ++i) {
       Argument* arg = static_cast<Argument*>((*a)[i]->perform(this));
       if (!(arg->is_rest_argument() || arg->is_keyword_argument())) {
@@ -1661,6 +1683,7 @@ namespace Sass {
     std::vector<Selector_List*> rv;
     Selector_List* sl = SASS_MEMORY_NEW(ctx.mem, Selector_List, s->pstate());
     sl->media_block(s->media_block());
+    sl->is_optional(s->is_optional());
     for (size_t i = 0, iL = s->length(); i < iL; ++i) {
       rv.push_back(operator()((*s)[i]));
     }
@@ -1707,9 +1730,12 @@ namespace Sass {
   {
     // the parser will look for a brace to end the selector
     std::string result_str(s->contents()->perform(this)->to_string(ctx.c_options));
-    result_str = unquote(Util::rtrim(result_str)) + "{";
+    result_str = unquote(Util::rtrim(result_str)) + "\n{";
     Parser p = Parser::from_c_str(result_str.c_str(), ctx, s->pstate());
-    return operator()(p.parse_selector_list(exp.block_stack.back()->is_root()));
+    p.last_media_block = s->media_block();
+    Selector_List* sl = p.parse_selector_list(exp.block_stack.back()->is_root());
+    if (s->has_parent_ref()) sl->remove_parent_selectors();
+    return operator()(sl);
   }
 
   Expression* Eval::operator()(Parent_Selector* p)

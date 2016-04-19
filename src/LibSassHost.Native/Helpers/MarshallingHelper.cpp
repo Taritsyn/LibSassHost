@@ -134,12 +134,9 @@ namespace LibSassHost
 					return nullptr;
 				}
 
-				char* result = (char*)malloc(strlen(value) + 1);
-				if (result == NULL)
-				{
-					throw gcnew InvalidCastException("Out of memory.");
-				}
-				strcpy(result, value);
+				size_t length = strlen(value) + 1;
+				char* result = (char*)sass_alloc_memory(length);
+				std::memcpy(result, value, length);
 
 				return result;
 			}

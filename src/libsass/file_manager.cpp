@@ -127,7 +127,7 @@ namespace Sass
 		const wchar_t* wcontent = _read_file_delegate(wpath.c_str());
 		std::string content = UTF_8::convert_from_utf16(std::wstring(wcontent));
 
-		return sass_strdup(content.c_str());
+		return sass_copy_c_string(content.c_str());
 	}
 
 #pragma endregion
