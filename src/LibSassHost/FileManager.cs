@@ -105,6 +105,11 @@ namespace LibSassHost
 			return result;
 		}
 
+		public string ToAbsolutePath(string path)
+		{
+			return path;
+		}
+
 		public string ReadFile(string path)
 		{
 			if (path == null)

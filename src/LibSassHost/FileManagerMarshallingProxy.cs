@@ -24,6 +24,8 @@ namespace LibSassHost
 
 		private static FuncStringBoolean _isAbsolutePathDelegate;
 
+		private static FuncStringString _toAbsolutePathDelegate;
+
 		private static FuncStringString _readFileDelegate;
 
 
@@ -34,6 +36,7 @@ namespace LibSassHost
 				_getCurrentDirectoryDelegate = fileManager.GetCurrentDirectory;
 				_fileExistsDelegate = fileManager.FileExists;
 				_isAbsolutePathDelegate = fileManager.IsAbsolutePath;
+				_toAbsolutePathDelegate = fileManager.ToAbsolutePath;
 				_readFileDelegate = fileManager.ReadFile;
 
 				var delegates = new FileManagerDelegates
@@ -44,6 +47,8 @@ namespace LibSassHost
 						Marshal.GetFunctionPointerForDelegate(_fileExistsDelegate),
 					IsAbsolutePathDelegate =
 						Marshal.GetFunctionPointerForDelegate(_isAbsolutePathDelegate),
+					ToAbsolutePathDelegate =
+						Marshal.GetFunctionPointerForDelegate(_toAbsolutePathDelegate),
 					ReadFileDelegate =
 						Marshal.GetFunctionPointerForDelegate(_readFileDelegate)
 				};
@@ -62,6 +67,7 @@ namespace LibSassHost
 			_getCurrentDirectoryDelegate = null;
 			_fileExistsDelegate = null;
 			_isAbsolutePathDelegate = null;
+			_toAbsolutePathDelegate = null;
 			_readFileDelegate = null;
 		}
 	}

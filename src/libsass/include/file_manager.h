@@ -12,6 +12,7 @@ namespace Sass
 			Func_String _get_current_directory_delegate;
 			Func_String_Boolean _file_exists_delegate;
 			Func_String_Boolean _is_absolute_path_delegate;
+			Func_String_String _to_absolute_path_delegate;
 			Func_String_String _read_file_delegate;
 
 			File_Manager();
@@ -42,6 +43,14 @@ namespace Sass
 			void set_is_absolute_path_delegate(Func_String_Boolean delegate);
 			void unset_is_absolute_path_delegate();
 			bool is_absolute_path(const std::string& path);
+
+#pragma endregion
+
+#pragma region to_absolute_path
+
+			void set_to_absolute_path_delegate(Func_String_String delegate);
+			void unset_to_absolute_path_delegate();
+			std::string to_absolute_path(const std::string& path);
 
 #pragma endregion
 

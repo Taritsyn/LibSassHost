@@ -27,6 +27,13 @@
 		bool IsAbsolutePath(string path);
 
 		/// <summary>
+		/// Converts a relative path to an application absolute path
+		/// </summary>
+		/// <param name="path">The relative path</param>
+		/// <returns>The absolute path representation of the specified relative path</returns>
+		string ToAbsolutePath(string path);
+
+		/// <summary>
 		/// Opens a file, reads all lines of the file, and then closes the file
 		/// </summary>
 		/// <param name="path">The file to open for reading</param>

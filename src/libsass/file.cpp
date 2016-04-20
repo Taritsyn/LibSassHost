@@ -192,6 +192,16 @@ namespace Sass {
         replace(r.begin(), r.end(), '\\', '/');
       #endif
 
+      File_Manager& file_manager = File_Manager::get_instance();
+
+      if (!l.empty()) {
+        l = file_manager.to_absolute_path(l);
+      }
+
+      if (!r.empty()) {
+        r = file_manager.to_absolute_path(r);
+      }
+
       if (l.empty()) return r;
       if (r.empty()) return l;
 

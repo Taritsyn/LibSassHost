@@ -9,6 +9,7 @@ namespace Sass
 		_get_current_directory_delegate = NULL;
 		_file_exists_delegate = NULL;
 		_is_absolute_path_delegate = NULL;
+		_to_absolute_path_delegate = NULL;
 		_read_file_delegate = NULL;
 	}
 
@@ -99,6 +100,34 @@ namespace Sass
 		bool result = _is_absolute_path_delegate(wpath.c_str());
 
 		return result;
+	}
+
+#pragma endregion
+
+#pragma region to_absolute_path
+
+	void File_Manager::set_to_absolute_path_delegate(Func_String_String delegate)
+	{
+		_to_absolute_path_delegate = delegate;
+	}
+
+	void File_Manager::unset_to_absolute_path_delegate()
+	{
+		_to_absolute_path_delegate = NULL;
+	}
+
+	std::string File_Manager::to_absolute_path(const std::string& path)
+	{
+		if (_to_absolute_path_delegate == NULL)
+		{
+			throw std::runtime_error("The delegate for 'to_absolute_path' method is null.");
+		}
+
+		std::wstring wpath = UTF_8::convert_to_utf16(path);
+
+		std::string absolute_path = UTF_8::convert_from_utf16(_to_absolute_path_delegate(wpath.c_str()));
+
+		return absolute_path;
 	}
 
 #pragma endregion

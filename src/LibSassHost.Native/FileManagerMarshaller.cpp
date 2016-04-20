@@ -20,6 +20,8 @@ namespace LibSassHost
 				(Func_String_Boolean)delegates->FileExistsDelegate->ToPointer());
 			file_manager.set_is_absolute_path_delegate(
 				(Func_String_Boolean)delegates->IsAbsolutePathDelegate->ToPointer());
+			file_manager.set_to_absolute_path_delegate(
+				(Func_String_String)delegates->ToAbsolutePathDelegate->ToPointer());
 			file_manager.set_read_file_delegate(
 				(Func_String_String)delegates->ReadFileDelegate->ToPointer());
 		}
@@ -31,6 +33,7 @@ namespace LibSassHost
 			file_manager.unset_get_current_directory_delegate();
 			file_manager.unset_file_exists_delegate();
 			file_manager.unset_is_absolute_path_delegate();
+			file_manager.unset_to_absolute_path_delegate();
 			file_manager.unset_read_file_delegate();
 		}
 	}
