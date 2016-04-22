@@ -7,6 +7,7 @@
 #include <typeinfo>
 
 #include "file.hpp"
+#include "file_manager.h"
 #include "eval.hpp"
 #include "ast.hpp"
 #include "bind.hpp"
@@ -847,6 +848,27 @@ namespace Sass {
                                            unquote(redirect->to_string()),
                                            args);
       return operator()(lit);
+    }
+
+    if (name == "url" && args->length() > 0) {
+      Argument* path_arg = args->at(0);
+      std::string path = path_arg->perform(this)->to_string();
+      std::string processed_path = path;
+
+      if (!path.empty()) {
+        char quote_mark = 0;
+
+        processed_path = unquote(path, &quote_mark, true);
+        processed_path = File_Manager::get_instance().to_absolute_path(processed_path);
+        if (quote_mark && quote_mark != '*') {
+          processed_path = quote(processed_path, quote_mark);
+        }
+      }
+
+      if (processed_path != path) {
+        String_Constant* new_path_value = SASS_MEMORY_NEW(ctx.mem, String_Constant, c->pstate(), processed_path);
+        path_arg->value(new_path_value);
+      }
     }
 
     Env* env = environment();
