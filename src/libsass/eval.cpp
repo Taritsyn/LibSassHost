@@ -1200,6 +1200,18 @@ namespace Sass {
 
   }
 
+  bool Eval::is_url_function(const std::string& value) {
+    return value.length() > 6 && value.substr(0, 4) == "url(" && *value.rbegin() == ')';
+  }
+
+  std::string Eval::get_uri_from_url_function(const std::string& value) {
+    return value.substr(4, value.length() - 5);
+  }
+
+  std::string Eval::wrap_uri_in_url_function(const std::string& value) {
+    return "url(" + value + ")";
+  }
+
   Expression* Eval::operator()(String_Schema* s)
   {
     size_t L = s->length();
@@ -1227,6 +1239,11 @@ namespace Sass {
       was_interpolant = (*s)[i]->is_interpolant();
 
     }
+    if (is_url_function(res)) {
+      std::string path = get_uri_from_url_function(res);
+      std::string processed_path = File_Manager::get_instance().to_absolute_path(path);
+      res = wrap_uri_in_url_function(processed_path);
+    }
     if (!s->is_interpolant()) {
       if (s->length() > 1 && res == "") return SASS_MEMORY_NEW(ctx.mem, Null, s->pstate());
       return SASS_MEMORY_NEW(ctx.mem, String_Constant, s->pstate(), res);
@@ -1248,6 +1265,11 @@ namespace Sass {
       c->pstate(s->pstate());
       c->disp(s->value());
       return c;
+    }
+    if (is_url_function(s->value())) {
+      std::string path = get_uri_from_url_function(s->value());
+      std::string processed_path = File_Manager::get_instance().to_absolute_path(path);
+      s->value(wrap_uri_in_url_function(processed_path));
     }
     return s;
   }

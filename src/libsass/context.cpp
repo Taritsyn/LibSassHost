@@ -399,12 +399,7 @@ namespace Sass {
       imp->urls().push_back(SASS_MEMORY_NEW(mem, String_Quoted, imp->pstate(), processed_load_path));
     }
     else if (imp_path.length() > 4 && imp_path.substr(imp_path.length() - 4, 4) == ".css") {
-      std::string processed_load_path = unquote(load_path);
-      if (!processed_load_path.empty()) {
-        processed_load_path = File_Manager::get_instance().to_absolute_path(processed_load_path);
-      }
-
-      String_Constant* loc = SASS_MEMORY_NEW(mem, String_Constant, pstate, processed_load_path);
+      String_Constant* loc = SASS_MEMORY_NEW(mem, String_Constant, pstate, unquote(load_path));
       Argument* loc_arg = SASS_MEMORY_NEW(mem, Argument, pstate, loc);
       Arguments* loc_args = SASS_MEMORY_NEW(mem, Arguments, pstate);
       (*loc_args) << loc_arg;

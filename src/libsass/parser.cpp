@@ -4,7 +4,6 @@
 #include <vector>
 #include "parser.hpp"
 #include "file.hpp"
-#include "file_manager.h"
 #include "inspect.hpp"
 #include "constants.hpp"
 #include "util.hpp"
@@ -1785,9 +1784,6 @@ namespace Sass {
     std::string uri("");
     if (url_string) {
       uri = url_string->to_string({ NESTED, 5 });
-      if (!uri.empty()) {
-        uri = File_Manager::get_instance().to_absolute_path(uri);
-      }
     }
 
     if (String_Schema* schema = dynamic_cast<String_Schema*>(url_string)) {
