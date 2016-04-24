@@ -1822,7 +1822,7 @@ namespace Sass {
             }
 
             // Cannot be a Universal selector
-            Type_Selector* pType = dynamic_cast<Type_Selector*>(base->head()->first());
+            Type_Selector* pType = dynamic_cast<Type_Selector*>(childSeq->head()->first());
             if(pType && pType->name() == "*") {
               std::string msg("Can't append  `");
               msg += childSeq->to_string();
@@ -1889,8 +1889,7 @@ namespace Sass {
       ExtensionSubsetMap subset_map;
       extender->populate_extends(extendee, ctx, subset_map);
 
-      bool extendedSomething;
-      Selector_List* result = Extend::extendSelectorList(selector, ctx, subset_map, false, extendedSomething);
+      Selector_List* result = Extend::extendSelectorList(selector, ctx, subset_map, false);
 
       Listize listize(ctx.mem);
       return result->perform(&listize);
@@ -1906,8 +1905,7 @@ namespace Sass {
       ExtensionSubsetMap subset_map;
       replacement->populate_extends(original, ctx, subset_map);
 
-      bool extendedSomething;
-      Selector_List* result = Extend::extendSelectorList(selector, ctx, subset_map, true, extendedSomething);
+      Selector_List* result = Extend::extendSelectorList(selector, ctx, subset_map, true);
 
       Listize listize(ctx.mem);
       return result->perform(&listize);
