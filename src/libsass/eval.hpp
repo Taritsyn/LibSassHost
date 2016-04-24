@@ -96,9 +96,9 @@ namespace Sass {
 
   private:
     void interpolation(Context& ctx, std::string& res, Expression* ex, bool into_quotes, bool was_itpl = false);
-    bool is_url_function(const std::string& value);
-    std::string get_uri_from_url_function(const std::string& value);
-    std::string wrap_uri_in_url_function(const std::string& value);
+    bool is_url_function(const std::string& value); //LSH+
+    std::string get_uri_from_url_function(const std::string& value); //LSH+
+    std::string wrap_uri_in_url_function(const std::string& value); //LSH+
   };
 
   Expression* cval_to_astnode(Memory_Manager& mem, union Sass_Value* v, Context& ctx, Backtrace* backtrace, ParserState pstate = ParserState("[AST]"));

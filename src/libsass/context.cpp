@@ -14,7 +14,7 @@
 #include "constants.hpp"
 #include "parser.hpp"
 #include "file.hpp"
-#include "file_manager.h"
+#include "file_manager.h" //LSH+
 #include "inspect.hpp"
 #include "output.hpp"
 #include "expand.hpp"
@@ -385,18 +385,18 @@ namespace Sass {
     // add urls (protocol other than file) and urls without procotol to `urls` member
     // ToDo: if ctx_path is already a file resource, we should not add it here?
     if (imp->media_queries() || protocol != "file" || imp_path.substr(0, 2) == "//") {
-      std::string processed_load_path = load_path;
-      if (!load_path.empty()) {
-        char quote_mark = 0;
+      std::string processed_load_path = load_path; //LSH+
+      if (!load_path.empty()) { //LSH+
+        char quote_mark = 0; //LSH+
 
-        processed_load_path = unquote(load_path, &quote_mark, true);
-        processed_load_path = File_Manager::get_instance().to_absolute_path(processed_load_path);
-        if (quote_mark && quote_mark != '*') {
-          processed_load_path = quote(processed_load_path, quote_mark);
-        }
-      }
+        processed_load_path = unquote(load_path, &quote_mark, true); //LSH+
+        processed_load_path = File_Manager::get_instance().to_absolute_path(processed_load_path); //LSH+
+        if (quote_mark && quote_mark != '*') { //LSH+
+          processed_load_path = quote(processed_load_path, quote_mark); //LSH+
+        } //LSH+
+      } //LSH+
 
-      imp->urls().push_back(SASS_MEMORY_NEW(mem, String_Quoted, imp->pstate(), processed_load_path));
+      imp->urls().push_back(SASS_MEMORY_NEW(mem, String_Quoted, imp->pstate(), /*LSH- load_path*/processed_load_path));
     }
     else if (imp_path.length() > 4 && imp_path.substr(imp_path.length() - 4, 4) == ".css") {
       String_Constant* loc = SASS_MEMORY_NEW(mem, String_Constant, pstate, unquote(load_path));
