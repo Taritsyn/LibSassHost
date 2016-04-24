@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-                 README file for LibSass Host for .Net v0.4.6
+                 README file for LibSass Host for .Net v0.5.0
 
    -----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    .NET wrapper around the libSass (http://sass-lang.com/libsass) version
-   3.3.5 with the ability to support a virtual file system. For correct
+   3.3.6 with the ability to support a virtual file system. For correct
    working of the LibSass Host require assemblies `msvcp120.dll` and
    `msvcr120.dll` from the Visual C++ Redistributable Packages for Visual
    Studio 2013.
@@ -20,7 +20,8 @@
    =============
    RELEASE NOTES
    =============
-   Added support of libSass version 3.3.5.
+   1. In `IFileManager` interface was added `ToAbsolutePath` method;
+   2. Added support of libSass version 3.3.6.
 
    ====================
    POST-INSTALL ACTIONS
