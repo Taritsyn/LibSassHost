@@ -1,7 +1,7 @@
 ﻿
 
    -----------------------------------------------------------------------
-                 README file for LibSass Host for .Net v0.5.0
+                 README file for LibSass Host for .Net v0.5.1
 
    -----------------------------------------------------------------------
 
@@ -20,8 +20,8 @@
    =============
    RELEASE NOTES
    =============
-   1. In `IFileManager` interface was added `ToAbsolutePath` method;
-   2. Added support of libSass version 3.3.6.
+   Improved a “hooks” for processing of paths in CSS `url()` functions by
+   using `ToAbsolutePath` method.
 
    ====================
    POST-INSTALL ACTIONS
