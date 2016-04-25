@@ -1271,7 +1271,7 @@ namespace Sass {
       c->disp(s->value());
       return c;
     }
-    if (is_url_function(s->value())) { //LSH+
+    if (!s->is_delayed() && is_url_function(s->value())) { //LSH+
       std::string path = get_uri_from_url_function(s->value()); //LSH+
       std::string processed_path = File_Manager::get_instance().to_absolute_path(path); //LSH+
 
