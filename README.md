@@ -11,7 +11,7 @@ The main difference between this library from other .NET wrappers around the lib
 ```csharp
 using (var compiler = new SassCompiler(new CustomFileManager()))
 {
-	...
+	…
 }
 ```
 
@@ -36,13 +36,11 @@ It should also be noted, that this library does not write the result of compilat
 		<tr valign="top">
 			<td><code>IncludedFilePaths</code></td>
 			<td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
-
 			<td>List of included files.</td>
 		</tr>
 		<tr valign="top">
 			<td><code>SourceMap</code></td>
 			<td><code title="System.String">String</code></td>
-
 			<td>Source map.</td>
 		</tr>
 	</tbody>
@@ -75,11 +73,14 @@ body {
 				try
 				{
 					var options = new CompilationOptions { SourceMap = true };
-					CompilationResult result = compiler.Compile(inputContent, "input.scss", "output.css", options);
+					CompilationResult result = compiler.Compile(inputContent, "input.scss", "output.css",
+						options);
 
-					Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent, Environment.NewLine);
+					Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
+						Environment.NewLine);
 					Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
-					Console.WriteLine("Included file paths: {0}", string.Join(", ", result.IncludedFilePaths));
+					Console.WriteLine("Included file paths: {0}", 
+						string.Join(", ", result.IncludedFilePaths));
 				}
 				catch (SassСompilationException e)
 				{
@@ -100,7 +101,7 @@ First we create an instance of the <code title="LibSassHost.SassCompiler">SassCo
  3. `outputPath` (optional) - path to output CSS file. Needed for generation of source map. If path to output file is not specified, but specified a path to input file, then value of this parameter is obtained by replacing extension in the input file path by `.css` extension.
  4. `options` (optional) - compilation options (instance of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class)
 
-Then output its result to the console. In addition, we provide handling of the <code title="LibSassHost.SassСompilationException">SassСompilationException</code> exception type.
+Then output result of compilation to the console. In addition, we provide handling of the <code title="LibSassHost.SassСompilationException">SassСompilationException</code> exception.
 
 And now let's consider in detail properties of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class:
 
@@ -174,10 +175,10 @@ And now let's consider in detail properties of the <code title="LibSassHost.Comp
 			<td><code>Nested</code></td>
 			<td>Output style for the generated css code. Can take the following values:
 				<ul>
-					<li>Nested</li>
-					<li>Expanded</li>
-					<li>Compact</li>
-					<li>Compressed</li>
+					<li><code>Nested</code></li>
+					<li><code>Expanded</code></li>
+					<li><code>Compact</code></li>
+					<li><code>Compressed</code></li>
 				</ul>
 			</td>
 		</tr>
@@ -220,7 +221,7 @@ And now let's consider in detail properties of the <code title="LibSassHost.Comp
 	</tbody>
 </table>
 
-Using of `CompileFile` method quite a bit different from using of `Compile` method:
+Using of the `CompileFile` method quite a bit different from using of the `Compile` method:
 
 ```csharp
 using System;
@@ -246,9 +247,11 @@ namespace LibSassHost.Example.ConsoleApplication
 					var options = new CompilationOptions { SourceMap = true };
 					CompilationResult result = compiler.CompileFile(inputFilePath, outputFilePath, options);
 
-					Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent, Environment.NewLine);
+					Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
+						Environment.NewLine);
 					Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
-					Console.WriteLine("Included file paths: {0}", string.Join(", ", result.IncludedFilePaths));
+					Console.WriteLine("Included file paths: {0}",
+						string.Join(", ", result.IncludedFilePaths));
 				}
 				catch (SassСompilationException e)
 				{
