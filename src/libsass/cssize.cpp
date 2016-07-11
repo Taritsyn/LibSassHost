@@ -13,20 +13,12 @@ namespace Sass {
   : ctx(ctx),
     block_stack(std::vector<Block*>()),
     p_stack(std::vector<Statement*>()),
-    s_stack(std::vector<Selector_List*>()),
     backtrace(bt)
-  {
-    s_stack.push_back(NULL);
-  }
+  { }
 
   Statement* Cssize::parent()
   {
     return p_stack.size() ? p_stack.back() : block_stack.front();
-  }
-
-  Selector_List* Cssize::selector()
-  {
-    return s_stack.size() ? s_stack.back() : NULL;
   }
 
   Statement* Cssize::operator()(Block* b)
@@ -37,6 +29,50 @@ namespace Sass {
     append_block(b);
     block_stack.pop_back();
     return bb;
+  }
+
+  Statement* Cssize::operator()(Trace* t)
+  {
+    return t->block()->perform(this);
+  }
+
+  Statement* Cssize::operator()(Declaration* d)
+  {
+    String* property = dynamic_cast<String*>(d->property());
+
+    if (Declaration* dd = dynamic_cast<Declaration*>(parent())) {
+      String* parent_property = dynamic_cast<String*>(dd->property());
+      property = SASS_MEMORY_NEW(ctx.mem, String_Constant,
+                                 d->property()->pstate(),
+                                 parent_property->to_string() + "-" + property->to_string());
+      if (!dd->value()) {
+        d->tabs(dd->tabs() + 1);
+      }
+    }
+
+    Declaration* dd = SASS_MEMORY_NEW(ctx.mem, Declaration,
+                                      d->pstate(),
+                                      property,
+                                      d->value(),
+                                      d->is_important());
+    dd->is_indented(d->is_indented());
+    dd->tabs(d->tabs());
+
+    p_stack.push_back(dd);
+    Block* bb = d->block() ? d->block()->perform(this)->block() : 0;
+    p_stack.pop_back();
+
+    if (bb && bb->length()) {
+      if (dd->value() && !dd->value()->is_invisible()) {
+        bb->unshift(dd);
+      }
+      return bb;
+    }
+    else if (dd->value() && !dd->value()->is_invisible()) {
+      return dd;
+    }
+
+    return 0;
   }
 
   Statement* Cssize::operator()(Directive* r)
@@ -101,14 +137,22 @@ namespace Sass {
   Statement* Cssize::operator()(Ruleset* r)
   {
     p_stack.push_back(r);
-    s_stack.push_back(dynamic_cast<Selector_List*>(r->selector()));
+    // this can return a string schema
+    // string schema is not a statement!
+    // r->block() is already a string schema
+    // and that is comming from propset expand
+    Statement* stmt = r->block()->perform(this);
+    // this should protect us (at least a bit) from our mess
+    // fixing this properly is harder that it should be ...
+    if (dynamic_cast<Statement*>((AST_Node*)stmt) == NULL) {
+      error("Illegal nesting: Only properties may be nested beneath properties.", r->block()->pstate());
+    }
     Ruleset* rr = SASS_MEMORY_NEW(ctx.mem, Ruleset,
                                   r->pstate(),
                                   r->selector(),
-                                  r->block()->perform(this)->block());
+                                  stmt->block());
     rr->is_root(r->is_root());
     // rr->tabs(r->block()->tabs());
-    s_stack.pop_back();
     p_stack.pop_back();
 
     if (!rr->block()) {

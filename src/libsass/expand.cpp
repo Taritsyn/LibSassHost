@@ -18,10 +18,12 @@ namespace Sass {
     block_stack(std::vector<Block*>()),
     call_stack(std::vector<AST_Node*>()),
     property_stack(std::vector<String*>()),
-    selector_stack(std::vector<Selector_List*>()),
+    selector_stack(std::vector<CommaSequence_Selector*>()),
     media_block_stack(std::vector<Media_Block*>()),
     backtrace_stack(std::vector<Backtrace*>()),
-    in_keyframes(false)
+    in_keyframes(false),
+    at_root_without_rule(false),
+    old_at_root_without_rule(false)
   {
     env_stack.push_back(0);
     env_stack.push_back(env);
@@ -47,7 +49,7 @@ namespace Sass {
     return 0;
   }
 
-  Selector_List* Expand::selector()
+  CommaSequence_Selector* Expand::selector()
   {
     if (selector_stack.size() > 0)
       return selector_stack.back();
@@ -86,23 +88,26 @@ namespace Sass {
 
   Statement* Expand::operator()(Ruleset* r)
   {
-    // reset when leaving scope
+    LOCAL_FLAG(old_at_root_without_rule, at_root_without_rule);
 
     if (in_keyframes) {
       Keyframe_Rule* k = SASS_MEMORY_NEW(ctx.mem, Keyframe_Rule, r->pstate(), r->block()->perform(this)->block());
       if (r->selector()) {
         selector_stack.push_back(0);
-        k->selector(static_cast<Selector_List*>(r->selector()->perform(&eval)));
+        k->selector(static_cast<CommaSequence_Selector*>(r->selector()->perform(&eval)));
         selector_stack.pop_back();
       }
       return k;
     }
 
+    // reset when leaving scope
+    LOCAL_FLAG(at_root_without_rule, false);
+
     // do some special checks for the base level rules
     if (r->is_root()) {
-      if (Selector_List* selector_list = dynamic_cast<Selector_List*>(r->selector())) {
-        for (Complex_Selector* complex_selector : selector_list->elements()) {
-          Complex_Selector* tail = complex_selector;
+      if (CommaSequence_Selector* selector_list = dynamic_cast<CommaSequence_Selector*>(r->selector())) {
+        for (Sequence_Selector* complex_selector : selector_list->elements()) {
+          Sequence_Selector* tail = complex_selector;
           while (tail) {
             if (tail->head()) for (Simple_Selector* header : tail->head()->elements()) {
               if (dynamic_cast<Parent_Selector*>(header) == NULL) continue; // skip all others
@@ -116,13 +121,13 @@ namespace Sass {
     }
 
     Expression* ex = r->selector()->perform(&eval);
-    Selector_List* sel = dynamic_cast<Selector_List*>(ex);
+    CommaSequence_Selector* sel = dynamic_cast<CommaSequence_Selector*>(ex);
     if (sel == 0) throw std::runtime_error("Expanded null selector");
 
     if (sel->length() == 0 || sel->has_parent_ref()) {
       bool has_parent_selector = false;
       for (size_t i = 0, L = selector_stack.size(); i < L && !has_parent_selector; i++) {
-        Selector_List* ll = selector_stack.at(i);
+        CommaSequence_Selector* ll = selector_stack.at(i);
         has_parent_selector = ll != 0 && ll->length() > 0;
       }
       if (!has_parent_selector) {
@@ -151,40 +156,6 @@ namespace Sass {
     rr->tabs(r->tabs());
 
     return rr;
-  }
-
-  Statement* Expand::operator()(Propset* p)
-  {
-    property_stack.push_back(p->property_fragment());
-    Block* expanded_block = p->block()->perform(this)->block();
-
-    for (size_t i = 0, L = expanded_block->length(); i < L; ++i) {
-      Statement* stm = (*expanded_block)[i];
-      if (Declaration* dec = static_cast<Declaration*>(stm)) {
-        String_Schema* combined_prop = SASS_MEMORY_NEW(ctx.mem, String_Schema, p->pstate());
-        if (!property_stack.empty()) {
-          *combined_prop << property_stack.back()->perform(&eval)
-                         << SASS_MEMORY_NEW(ctx.mem, String_Quoted,
-             p->pstate(), "-")
-             << dec->property(); // TODO: eval the prop into a string constant
-        }
-        else {
-          *combined_prop << dec->property();
-        }
-        dec->property(combined_prop);
-        *block_stack.back() << dec;
-      }
-      else if (typeid(*stm) == typeid(Comment)) {
-        // drop comments in propsets
-      }
-      else {
-        error("contents of namespaced properties must result in style declarations only", stm->pstate(), backtrace());
-      }
-    }
-
-    property_stack.pop_back();
-
-    return 0;
   }
 
   Statement* Expand::operator()(Supports_Block* f)
@@ -219,16 +190,19 @@ namespace Sass {
   Statement* Expand::operator()(At_Root_Block* a)
   {
     Block* ab = a->block();
-    // if (ab) ab->is_root(true);
     Expression* ae = a->expression();
+
     if (ae) ae = ae->perform(&eval);
     else ae = SASS_MEMORY_NEW(ctx.mem, At_Root_Query, a->pstate());
+
+    LOCAL_FLAG(at_root_without_rule, true);
+    LOCAL_FLAG(in_keyframes, false);
+
     Block* bb = ab ? ab->perform(this)->block() : 0;
     At_Root_Block* aa = SASS_MEMORY_NEW(ctx.mem, At_Root_Block,
                                         a->pstate(),
                                         bb,
                                         static_cast<At_Root_Query*>(ae));
-    // aa->block()->is_root(true);
     return aa;
   }
 
@@ -254,15 +228,20 @@ namespace Sass {
 
   Statement* Expand::operator()(Declaration* d)
   {
+    Block* ab = d->block();
     String* old_p = d->property();
     String* new_p = static_cast<String*>(old_p->perform(&eval));
     Expression* value = d->value()->perform(&eval);
-    if (!value || (value->is_invisible() && !d->is_important())) return 0;
+    Block* bb = ab ? ab->perform(this)->block() : 0;
+    if (!bb) {
+      if (!value || (value->is_invisible() && !d->is_important())) return 0;
+    }
     Declaration* decl = SASS_MEMORY_NEW(ctx.mem, Declaration,
                                         d->pstate(),
                                         new_p,
                                         value,
-                                        d->is_important());
+                                        d->is_important(),
+                                        bb);
     decl->tabs(d->tabs());
     return decl;
   }
@@ -477,7 +456,7 @@ namespace Sass {
     if (expr->concrete_type() == Expression::MAP) {
       map = static_cast<Map*>(expr);
     }
-    else if (Selector_List* ls = dynamic_cast<Selector_List*>(expr)) {
+    else if (CommaSequence_Selector* ls = dynamic_cast<CommaSequence_Selector*>(expr)) {
       Listize listize(ctx.mem);
       list = dynamic_cast<List*>(ls->perform(&listize));
     }
@@ -513,7 +492,7 @@ namespace Sass {
     }
     else {
       // bool arglist = list->is_arglist();
-      if (list->length() == 1 && dynamic_cast<Selector_List*>(list)) {
+      if (list->length() == 1 && dynamic_cast<CommaSequence_Selector*>(list)) {
         list = dynamic_cast<Vectorized<Expression*>*>(list);
       }
       for (size_t i = 0, L = list->length(); i < L; ++i) {
@@ -573,11 +552,11 @@ namespace Sass {
   }
 
 
-  void Expand::expand_selector_list(Selector* s, Selector_List* extender) {
+  void Expand::expand_selector_list(Selector* s, CommaSequence_Selector* extender) {
 
-    if (Selector_List* sl = dynamic_cast<Selector_List*>(s)) {
-      for (Complex_Selector* complex_selector : sl->elements()) {
-        Complex_Selector* tail = complex_selector;
+    if (CommaSequence_Selector* sl = dynamic_cast<CommaSequence_Selector*>(s)) {
+      for (Sequence_Selector* complex_selector : sl->elements()) {
+        Sequence_Selector* tail = complex_selector;
         while (tail) {
           if (tail->head()) for (Simple_Selector* header : tail->head()->elements()) {
             if (dynamic_cast<Parent_Selector*>(header) == NULL) continue; // skip all others
@@ -590,24 +569,24 @@ namespace Sass {
     }
 
 
-    Selector_List* contextualized = dynamic_cast<Selector_List*>(s->perform(&eval));
+    CommaSequence_Selector* contextualized = dynamic_cast<CommaSequence_Selector*>(s->perform(&eval));
     if (contextualized == NULL) return;
     for (auto complex_sel : contextualized->elements()) {
-      Complex_Selector* c = complex_sel;
+      Sequence_Selector* c = complex_sel;
       if (!c->head() || c->tail()) {
         std::string sel_str(contextualized->to_string(ctx.c_options));
         error("Can't extend " + sel_str + ": can't extend nested selectors", c->pstate(), backtrace());
       }
-      Compound_Selector* placeholder = c->head();
+      SimpleSequence_Selector* placeholder = c->head();
       if (contextualized->is_optional()) placeholder->is_optional(true);
       for (size_t i = 0, L = extender->length(); i < L; ++i) {
-        Complex_Selector* sel = (*extender)[i];
+        Sequence_Selector* sel = (*extender)[i];
         if (!(sel->head() && sel->head()->length() > 0 &&
             dynamic_cast<Parent_Selector*>((*sel->head())[0])))
         {
-          Compound_Selector* hh = SASS_MEMORY_NEW(ctx.mem, Compound_Selector, (*extender)[i]->pstate());
+          SimpleSequence_Selector* hh = SASS_MEMORY_NEW(ctx.mem, SimpleSequence_Selector, (*extender)[i]->pstate());
           hh->media_block((*extender)[i]->media_block());
-          Complex_Selector* ssel = SASS_MEMORY_NEW(ctx.mem, Complex_Selector, (*extender)[i]->pstate());
+          Sequence_Selector* ssel = SASS_MEMORY_NEW(ctx.mem, Sequence_Selector, (*extender)[i]->pstate());
           ssel->media_block((*extender)[i]->media_block());
           if (sel->has_line_feed()) ssel->has_line_feed(true);
           Parent_Selector* ps = SASS_MEMORY_NEW(ctx.mem, Parent_Selector, (*extender)[i]->pstate());
@@ -626,13 +605,13 @@ namespace Sass {
 
   Statement* Expand::operator()(Extension* e)
   {
-    if (Selector_List* extender = dynamic_cast<Selector_List*>(selector())) {
+    if (CommaSequence_Selector* extender = dynamic_cast<CommaSequence_Selector*>(selector())) {
       Selector* s = e->selector();
       if (Selector_Schema* schema = dynamic_cast<Selector_Schema*>(s)) {
         if (schema->has_parent_ref()) s = eval(schema);
       }
-      if (Selector_List* sl = dynamic_cast<Selector_List*>(s)) {
-        for (Complex_Selector* cs : *sl) {
+      if (CommaSequence_Selector* sl = dynamic_cast<CommaSequence_Selector*>(s)) {
+        for (Sequence_Selector* cs : *sl) {
           if (cs != NULL && cs->head() != NULL) {
             cs->head()->media_block(media_block_stack.back());
           }
@@ -704,10 +683,22 @@ namespace Sass {
     }
 
     bind(std::string("Mixin"), c->name(), params, args, &ctx, &new_env, &eval);
-    append_block(body);
-    backtrace_stack.pop_back();
+
+    Block* trace_block = SASS_MEMORY_NEW(ctx.mem, Block, c->pstate());
+    Trace* trace = SASS_MEMORY_NEW(ctx.mem, Trace, c->pstate(), c->name(), trace_block);
+
+
+    block_stack.push_back(trace_block);
+    for (auto bb : *body) {
+      Statement* ith = bb->perform(this);
+      if (ith) *trace->block() << ith;
+    }
+    block_stack.pop_back();
+
     env_stack.pop_back();
-    return 0;
+    backtrace_stack.pop_back();
+
+    return trace;
   }
 
   Statement* Expand::operator()(Content* c)
@@ -715,18 +706,23 @@ namespace Sass {
     Env* env = environment();
     // convert @content directives into mixin calls to the underlying thunk
     if (!env->has("@content[m]")) return 0;
+
     if (block_stack.back()->is_root()) {
       selector_stack.push_back(0);
     }
+
     Mixin_Call* call = SASS_MEMORY_NEW(ctx.mem, Mixin_Call,
                                        c->pstate(),
                                        "@content",
                                        SASS_MEMORY_NEW(ctx.mem, Arguments, c->pstate()));
-    Statement* stm = call->perform(this);
+
+    Trace* trace = dynamic_cast<Trace*>(call->perform(this));
+
     if (block_stack.back()->is_root()) {
       selector_stack.pop_back();
     }
-    return stm;
+
+    return trace;
   }
 
   // produce an error if something is not implemented

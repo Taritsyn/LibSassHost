@@ -13,12 +13,12 @@ namespace Sass {
     // statements
     virtual T operator()(Block* x)                  = 0;
     virtual T operator()(Ruleset* x)                = 0;
-    virtual T operator()(Propset* x)                = 0;
     virtual T operator()(Bubble* x)                 = 0;
+    virtual T operator()(Trace* x)                  = 0;
     virtual T operator()(Supports_Block* x)         = 0;
     virtual T operator()(Media_Block* x)            = 0;
     virtual T operator()(At_Root_Block* x)          = 0;
-    virtual T operator()(Directive* x)                = 0;
+    virtual T operator()(Directive* x)              = 0;
     virtual T operator()(Keyframe_Rule* x)          = 0;
     virtual T operator()(Declaration* x)            = 0;
     virtual T operator()(Assignment* x)             = 0;
@@ -61,7 +61,7 @@ namespace Sass {
     virtual T operator()(Supports_Interpolation* x) = 0;
     virtual T operator()(Media_Query* x)            = 0;
     virtual T operator()(Media_Query_Expression* x) = 0;
-    virtual T operator()(At_Root_Query* x)     = 0;
+    virtual T operator()(At_Root_Query* x)          = 0;
     virtual T operator()(Null* x)                   = 0;
     virtual T operator()(Parent_Selector* x)        = 0;
     // parameters and arguments
@@ -71,15 +71,16 @@ namespace Sass {
     virtual T operator()(Arguments* x)              = 0;
     // selectors
     virtual T operator()(Selector_Schema* x)        = 0;
-    virtual T operator()(Selector_Placeholder* x)   = 0;
-    virtual T operator()(Type_Selector* x)          = 0;
-    virtual T operator()(Selector_Qualifier* x)     = 0;
+    virtual T operator()(Placeholder_Selector* x)   = 0;
+    virtual T operator()(Element_Selector* x)       = 0;
+    virtual T operator()(Class_Selector* x)         = 0;
+    virtual T operator()(Id_Selector* x)            = 0;
     virtual T operator()(Attribute_Selector* x)     = 0;
     virtual T operator()(Pseudo_Selector* x)        = 0;
     virtual T operator()(Wrapped_Selector* x)       = 0;
-    virtual T operator()(Compound_Selector* x)      = 0;
-    virtual T operator()(Complex_Selector* x)       = 0;
-    virtual T operator()(Selector_List* x)          = 0;
+    virtual T operator()(SimpleSequence_Selector* x)= 0;
+    virtual T operator()(Sequence_Selector* x)      = 0;
+    virtual T operator()(CommaSequence_Selector* x) = 0;
 
     template <typename U>
     T fallback(U x) { return T(); }
@@ -94,12 +95,12 @@ namespace Sass {
     // statements
     T operator()(Block* x)                  { return static_cast<D*>(this)->fallback(x); }
     T operator()(Ruleset* x)                { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Propset* x)                { return static_cast<D*>(this)->fallback(x); }
     T operator()(Bubble* x)                 { return static_cast<D*>(this)->fallback(x); }
+    T operator()(Trace* x)                  { return static_cast<D*>(this)->fallback(x); }
     T operator()(Supports_Block* x)         { return static_cast<D*>(this)->fallback(x); }
     T operator()(Media_Block* x)            { return static_cast<D*>(this)->fallback(x); }
     T operator()(At_Root_Block* x)          { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Directive* x)                { return static_cast<D*>(this)->fallback(x); }
+    T operator()(Directive* x)              { return static_cast<D*>(this)->fallback(x); }
     T operator()(Keyframe_Rule* x)          { return static_cast<D*>(this)->fallback(x); }
     T operator()(Declaration* x)            { return static_cast<D*>(this)->fallback(x); }
     T operator()(Assignment* x)             { return static_cast<D*>(this)->fallback(x); }
@@ -142,7 +143,7 @@ namespace Sass {
     T operator()(Supports_Interpolation* x) { return static_cast<D*>(this)->fallback(x); }
     T operator()(Media_Query* x)            { return static_cast<D*>(this)->fallback(x); }
     T operator()(Media_Query_Expression* x) { return static_cast<D*>(this)->fallback(x); }
-    T operator()(At_Root_Query* x)     { return static_cast<D*>(this)->fallback(x); }
+    T operator()(At_Root_Query* x)          { return static_cast<D*>(this)->fallback(x); }
     T operator()(Null* x)                   { return static_cast<D*>(this)->fallback(x); }
     T operator()(Parent_Selector* x)        { return static_cast<D*>(this)->fallback(x); }
     // parameters and arguments
@@ -152,18 +153,19 @@ namespace Sass {
     T operator()(Arguments* x)              { return static_cast<D*>(this)->fallback(x); }
     // selectors
     T operator()(Selector_Schema* x)        { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Selector_Placeholder* x)   { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Type_Selector* x)          { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Selector_Qualifier* x)     { return static_cast<D*>(this)->fallback(x); }
+    T operator()(Placeholder_Selector* x)   { return static_cast<D*>(this)->fallback(x); }
+    T operator()(Element_Selector* x)       { return static_cast<D*>(this)->fallback(x); }
+    T operator()(Class_Selector* x)         { return static_cast<D*>(this)->fallback(x); }
+    T operator()(Id_Selector* x)            { return static_cast<D*>(this)->fallback(x); }
     T operator()(Attribute_Selector* x)     { return static_cast<D*>(this)->fallback(x); }
     T operator()(Pseudo_Selector* x)        { return static_cast<D*>(this)->fallback(x); }
     T operator()(Wrapped_Selector* x)       { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Compound_Selector* x)      { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Complex_Selector* x)       { return static_cast<D*>(this)->fallback(x); }
-    T operator()(Selector_List* x)          { return static_cast<D*>(this)->fallback(x); }
+    T operator()(SimpleSequence_Selector* x){ return static_cast<D*>(this)->fallback(x); }
+    T operator()(Sequence_Selector* x)      { return static_cast<D*>(this)->fallback(x); }
+    T operator()(CommaSequence_Selector* x) { return static_cast<D*>(this)->fallback(x); }
 
     template <typename U>
-    T fallback(U x)                                 { return T(); }
+    T fallback(U x)                         { return T(); }
   };
 
 }

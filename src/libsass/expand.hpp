@@ -21,26 +21,28 @@ namespace Sass {
 
     Env* environment();
     Context& context();
-    Selector_List* selector();
+    CommaSequence_Selector* selector();
     Backtrace* backtrace();
 
     Context&          ctx;
     Eval              eval;
 
     // it's easier to work with vectors
-    std::vector<Env*>      env_stack;
-    std::vector<Block*>    block_stack;
-    std::vector<AST_Node*> call_stack;
-    std::vector<String*>   property_stack;
-    std::vector<Selector_List*> selector_stack;
-    std::vector<Media_Block*> media_block_stack;
-    std::vector<Backtrace*>backtrace_stack;
-    bool              in_keyframes;
+    std::vector<Env*>           env_stack;
+    std::vector<Block*>         block_stack;
+    std::vector<AST_Node*>      call_stack;
+    std::vector<String*>        property_stack;
+    std::vector<CommaSequence_Selector*> selector_stack;
+    std::vector<Media_Block*>   media_block_stack;
+    std::vector<Backtrace*>     backtrace_stack;
+    bool                        in_keyframes;
+    bool                        at_root_without_rule;
+    bool                        old_at_root_without_rule;
 
     Statement* fallback_impl(AST_Node* n);
 
   private:
-    void expand_selector_list(Selector*, Selector_List* extender);
+    void expand_selector_list(Selector*, CommaSequence_Selector* extender);
 
   public:
     Expand(Context&, Env*, Backtrace*);
@@ -48,7 +50,6 @@ namespace Sass {
 
     Statement* operator()(Block*);
     Statement* operator()(Ruleset*);
-    Statement* operator()(Propset*);
     Statement* operator()(Media_Block*);
     Statement* operator()(Supports_Block*);
     Statement* operator()(At_Root_Block*);

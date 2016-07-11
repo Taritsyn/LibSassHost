@@ -21,7 +21,6 @@ namespace Sass {
         // force optional quotes (only if needed)
         if (str->quote_mark()) {
           str->quote_mark('*');
-          str->is_delayed(true);
         }
       }
     }
@@ -172,7 +171,7 @@ namespace Sass {
           break;
         } else {
           if (arglist->length() > LP - ip && !ps->has_rest_parameter()) {
-            int arg_count = (arglist->length() + LA - 1);
+            size_t arg_count = (arglist->length() + LA - 1);
             std::stringstream msg;
             msg << callee << " takes " << LP;
             msg << (LP == 1 ? " argument" : " arguments");
@@ -276,10 +275,7 @@ namespace Sass {
         }
         else {
           // param is unbound and has no default value -- error
-          std::stringstream msg;
-          msg << "required parameter " << leftover->name()
-              << " is missing in call to " << callee;
-          error(msg.str(), as->pstate());
+          throw Exception::MissingArgument(as->pstate(), name, leftover->name(), type);
         }
       }
     }

@@ -65,6 +65,14 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " " << bubble->tabs();
     std::cerr << std::endl;
+    debug_ast(bubble->node(), ind + " ", env);
+  } else if (dynamic_cast<Trace*>(node)) {
+    Trace* trace = dynamic_cast<Trace*>(node);
+    std::cerr << ind << "Trace " << trace;
+    std::cerr << " (" << pstate_source_position(node) << ")"
+    << " [name:" << trace->name() << "]"
+    << std::endl;
+    debug_ast(trace->block(), ind + " ", env);
   } else if (dynamic_cast<At_Root_Block*>(node)) {
     At_Root_Block* root_block = dynamic_cast<At_Root_Block*>(node);
     std::cerr << ind << "At_Root_Block " << root_block;
@@ -73,9 +81,9 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << std::endl;
     debug_ast(root_block->expression(), ind + ":", env);
     debug_ast(root_block->block(), ind + " ", env);
-  } else if (dynamic_cast<Selector_List*>(node)) {
-    Selector_List* selector = dynamic_cast<Selector_List*>(node);
-    std::cerr << ind << "Selector_List " << selector;
+  } else if (dynamic_cast<CommaSequence_Selector*>(node)) {
+    CommaSequence_Selector* selector = dynamic_cast<CommaSequence_Selector*>(node);
+    std::cerr << ind << "CommaSequence_Selector " << selector;
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " <" << selector->hash() << ">";
     std::cerr << " [@media:" << selector->media_block() << "]";
@@ -100,9 +108,9 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " <" << prettyprint(selector->pstate().token.ws_before()) << ">" << std::endl;
 //    debug_ast(selector->selector(), ind + "->", env);
 
-  } else if (dynamic_cast<Complex_Selector*>(node)) {
-    Complex_Selector* selector = dynamic_cast<Complex_Selector*>(node);
-    std::cerr << ind << "Complex_Selector " << selector
+  } else if (dynamic_cast<Sequence_Selector*>(node)) {
+    Sequence_Selector* selector = dynamic_cast<Sequence_Selector*>(node);
+    std::cerr << ind << "Sequence_Selector " << selector
       << " (" << pstate_source_position(node) << ")"
       << " <" << selector->hash() << ">"
       << " [weight:" << longToHex(selector->specificity()) << "]"
@@ -114,11 +122,11 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
       << " -- ";
       std::string del;
       switch (selector->combinator()) {
-        case Complex_Selector::PARENT_OF:   del = ">"; break;
-        case Complex_Selector::PRECEDES:    del = "~"; break;
-        case Complex_Selector::ADJACENT_TO: del = "+"; break;
-        case Complex_Selector::ANCESTOR_OF: del = " "; break;
-        case Complex_Selector::REFERENCE:   del = "//"; break;
+        case Sequence_Selector::PARENT_OF:   del = ">"; break;
+        case Sequence_Selector::PRECEDES:    del = "~"; break;
+        case Sequence_Selector::ADJACENT_TO: del = "+"; break;
+        case Sequence_Selector::ANCESTOR_OF: del = " "; break;
+        case Sequence_Selector::REFERENCE:   del = "//"; break;
       }
       // if (del = "/") del += selector->reference()->perform(&to_string) + "/";
     std::cerr << " <" << prettyprint(selector->pstate().token.ws_before()) << ">" << std::endl;
@@ -130,9 +138,9 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     }
     SourcesSet set = selector->sources();
     // debug_sources_set(set, ind + "  @--> ");
-  } else if (dynamic_cast<Compound_Selector*>(node)) {
-    Compound_Selector* selector = dynamic_cast<Compound_Selector*>(node);
-    std::cerr << ind << "Compound_Selector " << selector;
+  } else if (dynamic_cast<SimpleSequence_Selector*>(node)) {
+    SimpleSequence_Selector* selector = dynamic_cast<SimpleSequence_Selector*>(node);
+    std::cerr << ind << "SimpleSequence_Selector " << selector;
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " <" << selector->hash() << ">";
     std::cerr << " [weight:" << longToHex(selector->specificity()) << "]";
@@ -144,12 +152,6 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << (selector->has_line_feed() ? " [line-feed]": " -");
     std::cerr << " <" << prettyprint(selector->pstate().token.ws_before()) << ">" << std::endl;
     for(auto i : selector->elements()) { debug_ast(i, ind + " ", env); }
-  } else if (dynamic_cast<Propset*>(node)) {
-    Propset* selector = dynamic_cast<Propset*>(node);
-    std::cerr << ind << "Propset " << selector;
-    std::cerr << " (" << pstate_source_position(node) << ")";
-    std::cerr << " " << selector->tabs() << std::endl;
-    if (selector->block()) for(auto i : selector->block()->elements()) { debug_ast(i, ind + " ", env); }
   } else if (dynamic_cast<Wrapped_Selector*>(node)) {
     Wrapped_Selector* selector = dynamic_cast<Wrapped_Selector*>(node);
     std::cerr << ind << "Wrapped_Selector " << selector;
@@ -186,9 +188,9 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << (selector->has_line_feed() ? " [line-feed]": " -");
     std::cerr << std::endl;
     debug_ast(selector->value(), ind + "[" + selector->matcher() + "] ", env);
-  } else if (dynamic_cast<Selector_Qualifier*>(node)) {
-    Selector_Qualifier* selector = dynamic_cast<Selector_Qualifier*>(node);
-    std::cerr << ind << "Selector_Qualifier " << selector;
+  } else if (dynamic_cast<Class_Selector*>(node)) {
+    Class_Selector* selector = dynamic_cast<Class_Selector*>(node);
+    std::cerr << ind << "Class_Selector " << selector;
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " <" << selector->hash() << ">";
     std::cerr << " <<" << selector->ns_name() << ">>";
@@ -197,9 +199,20 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << (selector->has_line_break() ? " [line-break]": " -");
     std::cerr << (selector->has_line_feed() ? " [line-feed]": " -");
     std::cerr << std::endl;
-  } else if (dynamic_cast<Type_Selector*>(node)) {
-    Type_Selector* selector = dynamic_cast<Type_Selector*>(node);
-    std::cerr << ind << "Type_Selector " << selector;
+  } else if (dynamic_cast<Id_Selector*>(node)) {
+    Id_Selector* selector = dynamic_cast<Id_Selector*>(node);
+    std::cerr << ind << "Id_Selector " << selector;
+    std::cerr << " (" << pstate_source_position(node) << ")";
+    std::cerr << " <" << selector->hash() << ">";
+    std::cerr << " <<" << selector->ns_name() << ">>";
+    std::cerr << (selector->is_optional() ? " [is_optional]": " -");
+    std::cerr << (selector->has_parent_ref() ? " [has-parent]": " -");
+    std::cerr << (selector->has_line_break() ? " [line-break]": " -");
+    std::cerr << (selector->has_line_feed() ? " [line-feed]": " -");
+    std::cerr << std::endl;
+  } else if (dynamic_cast<Element_Selector*>(node)) {
+    Element_Selector* selector = dynamic_cast<Element_Selector*>(node);
+    std::cerr << ind << "Element_Selector " << selector;
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " <" << selector->hash() << ">";
     std::cerr << " <<" << selector->ns_name() << ">>";
@@ -209,10 +222,10 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << (selector->has_line_feed() ? " [line-feed]": " -");
     std::cerr << " <" << prettyprint(selector->pstate().token.ws_before()) << ">";
     std::cerr << std::endl;
-  } else if (dynamic_cast<Selector_Placeholder*>(node)) {
+  } else if (dynamic_cast<Placeholder_Selector*>(node)) {
 
-    Selector_Placeholder* selector = dynamic_cast<Selector_Placeholder*>(node);
-    std::cerr << ind << "Selector_Placeholder [" << selector->ns_name() << "] " << selector
+    Placeholder_Selector* selector = dynamic_cast<Placeholder_Selector*>(node);
+    std::cerr << ind << "Placeholder_Selector [" << selector->ns_name() << "] " << selector
       << " <" << selector->hash() << ">"
       << " [@media:" << selector->media_block() << "]"
       << (selector->is_optional() ? " [is_optional]": " -")
@@ -292,6 +305,13 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " (" << pstate_source_position(node) << ")"
     << std::endl;
     debug_ast(block->condition(), ind + " condition) ");
+  } else if (dynamic_cast<At_Root_Query*>(node)) {
+    At_Root_Query* block = dynamic_cast<At_Root_Query*>(node);
+    std::cerr << ind << "At_Root_Query " << block;
+    std::cerr << " (" << pstate_source_position(node) << ")"
+    << std::endl;
+    debug_ast(block->feature(), ind + " feature) ");
+    debug_ast(block->value(), ind + " value) ");
   } else if (dynamic_cast<Supports_Declaration*>(node)) {
     Supports_Declaration* block = dynamic_cast<Supports_Declaration*>(node);
     std::cerr << ind << "Supports_Declaration " << block;
@@ -311,6 +331,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << ind << "Warning " << block;
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " " << block->tabs() << std::endl;
+    debug_ast(block->message(), ind + " : ");
   } else if (dynamic_cast<Error*>(node)) {
     Error* block = dynamic_cast<Error*>(node);
     std::cerr << ind << "Error " << block;
@@ -381,6 +402,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " " << block->tabs() << std::endl;
     debug_ast(block->property(), ind + " prop: ", env);
     debug_ast(block->value(), ind + " value: ", env);
+    debug_ast(block->block(), ind + " ", env);
   } else if (dynamic_cast<Keyframe_Rule*>(node)) {
     Keyframe_Rule* has_block = dynamic_cast<Keyframe_Rule*>(node);
     std::cerr << ind << "Keyframe_Rule " << has_block;
@@ -425,14 +447,14 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " [native: " << block->native_function() << "] ";
     std::cerr << " " << block->tabs() << std::endl;
     debug_ast(block->parameters(), ind + " params: ", env);
-    if (block->block()) for(auto i : block->block()->elements()) { debug_ast(i, ind + " ", env); }
+    if (block->block()) debug_ast(block->block(), ind + " ", env);
   } else if (dynamic_cast<Mixin_Call*>(node)) {
     Mixin_Call* block = dynamic_cast<Mixin_Call*>(node);
     std::cerr << ind << "Mixin_Call " << block << " " << block->tabs();
     std::cerr << " [" <<  block->name() << "]";
     std::cerr << " [has_content: " << block->has_content() << "] " << std::endl;
     debug_ast(block->arguments(), ind + " args: ");
-    if (block->block()) for(auto i : block->block()->elements()) { debug_ast(i, ind + " ", env); }
+    if (block->block()) debug_ast(block->block(), ind + " ", env);
   } else if (Ruleset* ruleset = dynamic_cast<Ruleset*>(node)) {
     std::cerr << ind << "Ruleset " << ruleset;
     std::cerr << " (" << pstate_source_position(node) << ")";
@@ -578,6 +600,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     Color* expression = dynamic_cast<Color*>(node);
     std::cerr << ind << "Color " << expression;
     std::cerr << " (" << pstate_source_position(node) << ")";
+    std::cerr << " [delayed: " << expression->is_delayed() << "] ";
     std::cerr << " [interpolant: " << expression->is_interpolant() << "] ";
     std::cerr << " [" << expression->r() << ":"  << expression->g() << ":" << expression->b() << "@" << expression->a() << "]" << std::endl;
   } else if (dynamic_cast<Number*>(node)) {
@@ -594,7 +617,6 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " [" << prettyprint(expression->value()) << "]";
     if (expression->is_delayed()) std::cerr << " [delayed]";
-    if (expression->sass_fix_1291()) std::cerr << " [sass_fix_1291]";
     if (expression->is_interpolant()) std::cerr << " [interpolant]";
     if (expression->quote_mark()) std::cerr << " [quote_mark: " << expression->quote_mark() << "]";
     std::cerr << " <" << prettyprint(expression->pstate().token.ws_before()) << ">" << std::endl;
@@ -607,7 +629,6 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " [" << prettyprint(expression->value()) << "]";
     if (expression->is_delayed()) std::cerr << " [delayed]";
-    if (expression->sass_fix_1291()) std::cerr << " [sass_fix_1291]";
     if (expression->is_interpolant()) std::cerr << " [interpolant]";
     std::cerr << " <" << prettyprint(expression->pstate().token.ws_before()) << ">" << std::endl;
   } else if (dynamic_cast<String_Schema*>(node)) {
@@ -626,7 +647,6 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << ind << "String " << expression;
     std::cerr << " " << expression->concrete_type();
     std::cerr << " (" << pstate_source_position(node) << ")";
-    if (expression->sass_fix_1291()) std::cerr << " [sass_fix_1291]";
     if (expression->is_interpolant()) std::cerr << " [interpolant]";
     std::cerr << " <" << prettyprint(expression->pstate().token.ws_before()) << ">" << std::endl;
   } else if (dynamic_cast<Expression*>(node)) {
@@ -673,11 +693,11 @@ inline void debug_node(Node* node, std::string ind = "")
     std::cerr << node << " ";
     if (node->got_line_feed) std::cerr << "[LF] ";
     switch (node->combinator()) {
-      case Complex_Selector::ADJACENT_TO: std::cerr << "{+} "; break;
-      case Complex_Selector::PARENT_OF:   std::cerr << "{>} "; break;
-      case Complex_Selector::PRECEDES:    std::cerr << "{~} "; break;
-      case Complex_Selector::REFERENCE:   std::cerr << "{@} "; break;
-      case Complex_Selector::ANCESTOR_OF: std::cerr << "{ } "; break;
+      case Sequence_Selector::ADJACENT_TO: std::cerr << "{+} "; break;
+      case Sequence_Selector::PARENT_OF:   std::cerr << "{>} "; break;
+      case Sequence_Selector::PRECEDES:    std::cerr << "{~} "; break;
+      case Sequence_Selector::REFERENCE:   std::cerr << "{@} "; break;
+      case Sequence_Selector::ANCESTOR_OF: std::cerr << "{ } "; break;
     }
     std::cerr << std::endl;
     // debug_ast(node->combinator(), ind + "  ");
@@ -733,7 +753,7 @@ inline void debug_subset_map(Sass::ExtensionSubsetMap& map, std::string ind = ""
   if (ind == "") std::cerr << "#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n";
 }
 
-typedef std::pair<Complex_Selector*, Compound_Selector*> ExtensionPair;
+typedef std::pair<Sequence_Selector*, SimpleSequence_Selector*> ExtensionPair;
 typedef std::vector<ExtensionPair> SubsetMapEntries;
 
 inline void debug_subset_entries(SubsetMapEntries* entries, std::string ind = "")

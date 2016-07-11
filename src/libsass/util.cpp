@@ -145,13 +145,20 @@ namespace Sass {
     return out;
   }
 
-  // bell character is replaces with space
+  // bell characters are replaced with spaces
+  void newline_to_space(std::string& str)
+  {
+    std::replace(str.begin(), str.end(), '\n', ' ');
+  }
+
+  // bell characters are replaced with spaces
+  // also eats spaces after line-feeds (ltrim)
   std::string string_to_output(const std::string& str)
   {
     std::string out("");
     bool lf = false;
     for (auto i : str) {
-      if (i == 10) {
+      if (i == '\n') {
         out += ' ';
         lf = true;
       } else if (!(lf && isspace(i))) {
@@ -267,7 +274,7 @@ namespace Sass {
           // assert invalid code points
           if (cp == 0) cp = 0xFFFD;
           // replace bell character
-          // if (cp == 10) cp = 32;
+          // if (cp == '\n') cp = 32;
 
           // use a very simple approach to convert via utf8 lib
           // maybe there is a more elegant way; maybe we shoud
@@ -330,7 +337,7 @@ namespace Sass {
       int cp = utf8::next(it, end);
 
       // in case of \r, check if the next in sequence
-      // is \n and then advance the iterator.
+      // is \n and then advance the iterator and skip \r
       if (cp == '\r' && it < end && utf8::peek_next(it, end) == '\n') {
         cp = utf8::next(it, end);
       }
@@ -451,7 +458,7 @@ namespace Sass {
 
       Block* b = r->block();
 
-      bool hasSelectors = static_cast<Selector_List*>(r->selector())->length() > 0;
+      bool hasSelectors = static_cast<CommaSequence_Selector*>(r->selector())->length() > 0;
 
       if (!hasSelectors) {
         return false;
@@ -463,6 +470,8 @@ namespace Sass {
         Statement* stm = (*b)[i];
         if (dynamic_cast<Directive*>(stm)) {
           return true;
+        } else if (Declaration* d = dynamic_cast<Declaration*>(stm)) {
+          return isPrintable(d, style);
         } else if (dynamic_cast<Has_Block*>(stm)) {
           Block* pChildBlock = ((Has_Block*)stm)->block();
           if (isPrintable(pChildBlock, style)) {
@@ -477,8 +486,6 @@ namespace Sass {
           if (c->is_important()) {
             hasDeclarations = c->is_important();
           }
-        } else if (Declaration* d = dynamic_cast<Declaration*>(stm)) {
-          return isPrintable(d, style);
         } else {
           hasDeclarations = true;
         }
@@ -516,7 +523,7 @@ namespace Sass {
 
       Block* b = f->block();
 
-//      bool hasSelectors = f->selector() && static_cast<Selector_List*>(f->selector())->length() > 0;
+//      bool hasSelectors = f->selector() && static_cast<CommaSequence_Selector*>(f->selector())->length() > 0;
 
       bool hasDeclarations = false;
       bool hasPrintableChildBlocks = false;

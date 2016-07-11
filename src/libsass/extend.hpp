@@ -2,6 +2,7 @@
 #define SASS_EXTEND_H
 
 #include <string>
+#include <set>
 
 #include "ast.hpp"
 #include "operation.hpp"
@@ -12,7 +13,7 @@ namespace Sass {
   class Context;
   class Node;
 
-  typedef Subset_Map<std::string, std::pair<Complex_Selector*, Compound_Selector*> > ExtensionSubsetMap;
+  typedef Subset_Map<std::string, std::pair<Sequence_Selector*, SimpleSequence_Selector*> > ExtensionSubsetMap;
 
   class Extend : public Operation_CRTP<void, Extend> {
 
@@ -23,10 +24,16 @@ namespace Sass {
 
   public:
     static Node subweave(Node& one, Node& two, Context& ctx);
-    static Selector_List* extendSelectorList(Selector_List* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, bool isReplace, bool& extendedSomething);
-    static Selector_List* extendSelectorList(Selector_List* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, bool isReplace = false) {
+    static CommaSequence_Selector* extendSelectorList(CommaSequence_Selector* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, bool isReplace, bool& extendedSomething, std::set<SimpleSequence_Selector>& seen);
+    static CommaSequence_Selector* extendSelectorList(CommaSequence_Selector* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, bool isReplace, bool& extendedSomething);
+    static CommaSequence_Selector* extendSelectorList(CommaSequence_Selector* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, bool isReplace = false) {
       bool extendedSomething = false;
       return extendSelectorList(pSelectorList, ctx, subset_map, isReplace, extendedSomething);
+    }
+    static CommaSequence_Selector* extendSelectorList(CommaSequence_Selector* pSelectorList, Context& ctx, ExtensionSubsetMap& subset_map, std::set<SimpleSequence_Selector>& seen) {
+      bool isReplace = false;
+      bool extendedSomething = false;
+      return extendSelectorList(pSelectorList, ctx, subset_map, isReplace, extendedSomething, seen);
     }
     Extend(Context&, ExtensionSubsetMap&);
     ~Extend() { }

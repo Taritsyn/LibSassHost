@@ -19,6 +19,7 @@
 #include "output.hpp"
 #include "expand.hpp"
 #include "eval.hpp"
+#include "check_nesting.hpp"
 #include "cssize.hpp"
 #include "listize.hpp"
 #include "extend.hpp"
@@ -410,7 +411,7 @@ namespace Sass {
       const Importer importer(imp_path, ctx_path);
       Include include(load_import(importer, pstate));
       if (include.abs_path.empty()) {
-        error("File to import not found or unreadable: " + imp_path + "\nParent style sheet: " + ctx_path, pstate);
+        error("File to import not found or unreadable: " + imp_path + ".\nParent style sheet: " + ctx_path, pstate);
       }
       imp->incs().push_back(include);
     }
@@ -660,8 +661,13 @@ namespace Sass {
     // create crtp visitor objects
     Expand expand(*this, &global, &backtrace);
     Cssize cssize(*this, &backtrace);
+    CheckNesting check_nesting;
+    // check nesting
+    root->perform(&check_nesting)->block();
     // expand and eval the tree
     root = root->perform(&expand)->block();
+    // check nesting
+    root->perform(&check_nesting)->block();
     // merge and bubble certain rules
     root = root->perform(&cssize)->block();
     // should we extend something?

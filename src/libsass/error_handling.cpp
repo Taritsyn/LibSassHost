@@ -35,9 +35,17 @@ namespace Sass {
     : Base(pstate), fn(fn), arg(arg), type(type), value(value)
     {
       msg  = arg + ": \"";
-      msg += value->to_string(Sass_Inspect_Options());
+      if (value) msg += value->to_string(Sass_Inspect_Options());
       msg += "\" is not a " + type;
       msg += " for `" + fn + "'";
+    }
+
+    MissingArgument::MissingArgument(ParserState pstate, std::string fn, std::string arg, std::string fntype)
+    : Base(pstate), fn(fn), arg(arg), fntype(fntype)
+    {
+      msg  = fntype + " " + fn;
+      msg += " is missing argument ";
+      msg += arg + ".";
     }
 
     InvalidSyntax::InvalidSyntax(ParserState pstate, std::string msg, std::vector<Sass_Import_Entry>* import_stack)
@@ -74,7 +82,6 @@ namespace Sass {
     : Base(org.pstate()), dup(dup), org(org)
     {
       msg  = "Duplicate key ";
-      dup.get_duplicate_key()->is_delayed(false);
       msg += dup.get_duplicate_key()->inspect();
       msg += " in map (";
       msg += org.inspect();

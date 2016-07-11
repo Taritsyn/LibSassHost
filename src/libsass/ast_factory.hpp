@@ -13,13 +13,12 @@ namespace Sass {
     // statements
     Block* new_Block(std::string p, size_t l, size_t s = 0, bool r = false);
     Ruleset* new_Ruleset(std::string p, size_t l, Selector* s, Block* b);
-    Propset* new_Propset(std::string p, size_t l, String* pf, Block* b);
     Supports_Query* new_Supports_Query(std::string p, size_t l, Supports_Query* f, Block* b);
     Media_Query* new_Media_Query(std::string p, size_t l, List* q, Block* b);
     At_Root_Block* new_At_Root_Block(std::string p, size_t l, Selector* sel, Block* b);
     Directive* new_At_Rule(std::string p, size_t l, std::string kwd, Selector* sel, Block* b);
     Keyframe_Rule* new_Keyframe_Rule(std::string p, size_t l, Block* b);
-    Declaration* new_Declaration(std::string p, size_t l, String* prop, List* vals);
+    Declaration* new_Declaration(std::string p, size_t l, String* prop, List* vals, Block* b);
     Assignment* new_Assignment(std::string p, size_t l, std::string var, Expression* val, bool guarded = false);
     Import<Function_Call*>* new_CSS_Import(std::string p, size_t l, Function_Call* loc);
     Import<String*>* new_SASS_Import(std::string p, size_t l, String* loc);
@@ -84,9 +83,9 @@ namespace Sass {
     Placeholder_Selector* new_Placeholder_Selector(std::string p, size_t l, std::string n);
     Pseudo_Selector* new_Pseudo_Selector(std::string p, size_t l, std::string n, Expression* expr = 0);
     Wrapped_Selector* new_Wrapped_Selector(std::string p, size_t l, std::string n, Simple_Base* sel);
-    Compound_Selector* new_Compound_Selector(std::string p, size_t l, size_t s = 0);
-    Complex_Selector* new_Complex_Selector(std::string p, size_t l, Complex_Selector::Combinator c, Complex_Selector* ctx, Compound_Selector* sel);
-    Selector_List* new_Selector_List(std::string p, size_t l, size_t s = 0);
+    SimpleSequence_Selector* new_SimpleSequence_Selector(std::string p, size_t l, size_t s = 0);
+    Sequence_Selector* new_Sequence_Selector(std::string p, size_t l, Sequence_Selector::Combinator c, Sequence_Selector* ctx, SimpleSequence_Selector* sel);
+    CommaSequence_Selector* new_CommaSequence_Selector(std::string p, size_t l, size_t s = 0);
   };
 }
 
