@@ -135,6 +135,7 @@ namespace LibSassHost
 			sass_option_set_source_map_contents(ctx_options, options->SourceMapContents);
 			sass_option_set_source_map_embed(ctx_options, options->SourceMapEmbed);
 			sass_option_set_source_map_file(ctx_options, MarshallingHelper::MarshalString(options->SourceMapFile));
+			sass_option_set_source_map_file_urls(ctx_options, options->SourceMapFileUrls);
 			sass_option_set_source_map_root(ctx_options, MarshallingHelper::MarshalString(options->SourceMapRoot));
 		}
 

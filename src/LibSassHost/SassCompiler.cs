@@ -165,6 +165,7 @@ namespace LibSassHost
 				SourceMapContents = options.SourceMapIncludeContents,
 				SourceMapEmbed = options.InlineSourceMap,
 				SourceMapFile = options.SourceMap ? sourceMapFilePath : string.Empty,
+				SourceMapFileUrls = options.SourceMapFileUrls,
 				SourceMapRoot = options.SourceMapRootPath,
 				SourceComments = options.SourceComments
 			};

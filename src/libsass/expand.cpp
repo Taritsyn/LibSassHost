@@ -11,7 +11,11 @@
 
 namespace Sass {
 
-  Expand::Expand(Context& ctx, Env* env, Backtrace* bt)
+  // simple endless recursion protection
+  const unsigned int maxRecursion = 500;
+  static unsigned int recursions = 0;
+
+  Expand::Expand(Context& ctx, Env* env, Backtrace* bt, std::vector<CommaSequence_Selector*>* stack)
   : ctx(ctx),
     eval(Eval(*this)),
     env_stack(std::vector<Env*>()),
@@ -31,7 +35,8 @@ namespace Sass {
     call_stack.push_back(0);
     // import_stack.push_back(0);
     property_stack.push_back(0);
-    selector_stack.push_back(0);
+    if (stack == NULL) { selector_stack.push_back(0); }
+    else { selector_stack.insert(selector_stack.end(), stack->begin(), stack->end()); }
     media_block_stack.push_back(0);
     backtrace_stack.push_back(0);
     backtrace_stack.push_back(bt);
@@ -136,10 +141,9 @@ namespace Sass {
     }
 
     selector_stack.push_back(sel);
-    Env* env = 0;
+    Env env(environment());
     if (block_stack.back()->is_root()) {
-      env = new Env(environment());
-      env_stack.push_back(env);
+      env_stack.push_back(&env);
     }
     sel->set_media_block(media_block_stack.back());
     Block* blk = r->block()->perform(this)->block();
@@ -150,8 +154,8 @@ namespace Sass {
     selector_stack.pop_back();
     if (block_stack.back()->is_root()) {
       env_stack.pop_back();
-      delete env;
     }
+
     rr->is_root(r->is_root());
     rr->tabs(r->tabs());
 
@@ -652,6 +656,12 @@ namespace Sass {
 
   Statement* Expand::operator()(Mixin_Call* c)
   {
+    recursions ++;
+
+    if (recursions > maxRecursion) {
+      throw Exception::StackError(*c);
+    }
+
     Env* env = environment();
     std::string full_name(c->name() + "[m]");
     if (!env->has(full_name)) {
@@ -698,6 +708,7 @@ namespace Sass {
     env_stack.pop_back();
     backtrace_stack.pop_back();
 
+    recursions --;
     return trace;
   }
 

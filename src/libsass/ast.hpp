@@ -101,6 +101,7 @@ namespace Sass {
     // virtual Block* block() { return 0; }
   public:
     void update_pstate(const ParserState& pstate);
+    void set_pstate_offset(const Offset& offset);
   public:
     Offset off() { return pstate(); }
     Position pos() { return pstate(); }
@@ -141,7 +142,7 @@ namespace Sass {
                bool d = false, bool e = false, bool i = false, Concrete_Type ct = NONE)
     : AST_Node(pstate),
       is_delayed_(d),
-      is_expanded_(d),
+      is_expanded_(e),
       is_interpolant_(i),
       concrete_type_(ct)
     { }
@@ -152,6 +153,7 @@ namespace Sass {
     static std::string type_name() { return ""; }
     virtual bool is_false() { return false; }
     virtual bool operator== (const Expression& rhs) const { return false; }
+    virtual bool eq(const Expression& rhs) const { return *this == rhs; };
     virtual void set_delayed(bool delayed) { is_delayed(delayed); }
     virtual bool has_interpolant() const { return is_interpolant(); }
     virtual bool is_left_interpolant() const { return is_interpolant(); }
@@ -224,7 +226,7 @@ namespace Sass {
     void reset_hash() { hash_ = 0; }
     virtual void adjust_after_pushing(T element) { }
   public:
-    Vectorized(size_t s = 0) : elements_(std::vector<T>())
+    Vectorized(size_t s = 0) : elements_(std::vector<T>()), hash_(0)
     { elements_.reserve(s); }
     virtual ~Vectorized() = 0;
     size_t length() const   { return elements_.size(); }
@@ -234,7 +236,7 @@ namespace Sass {
     T& operator[](size_t i) { return elements_[i]; }
     virtual const T& at(size_t i) const { return elements_.at(i); }
     const T& operator[](size_t i) const { return elements_[i]; }
-    Vectorized& operator<<(T element)
+    virtual Vectorized& operator<<(T element)
     {
       if (!element) return *this;
       reset_hash();
@@ -289,7 +291,7 @@ namespace Sass {
   };
   struct CompareExpression {
     bool operator()(const Expression* lhs, const Expression* rhs) const {
-      return lhs && rhs && *lhs == *rhs;
+      return lhs && rhs && lhs->eq(*rhs);
     }
   };
   typedef std::unordered_map<
@@ -400,7 +402,6 @@ namespace Sass {
      { }
     virtual ~Statement() = 0;
     // needed for rearranging nested rulesets during CSS emission
-    virtual bool   is_hoistable() { return false; }
     virtual bool   is_invisible() const { return false; }
     virtual bool   bubbles() { return false; }
     virtual Block* block()  { return 0; }
@@ -418,22 +419,16 @@ namespace Sass {
     ADD_PROPERTY(bool, is_root)
     ADD_PROPERTY(bool, is_at_root);
     // needed for properly formatted CSS emission
-    ADD_PROPERTY(bool, has_hoistable)
-    ADD_PROPERTY(bool, has_non_hoistable)
   protected:
     void adjust_after_pushing(Statement* s)
     {
-      if (s->is_hoistable()) has_hoistable_     = true;
-      else                   has_non_hoistable_ = true;
     }
   public:
     Block(ParserState pstate, size_t s = 0, bool r = false)
     : Statement(pstate),
       Vectorized<Statement*>(s),
       is_root_(r),
-      is_at_root_(false),
-      has_hoistable_(false),
-      has_non_hoistable_(false)
+      is_at_root_(false)
     { }
     virtual bool has_content()
     {
@@ -476,8 +471,6 @@ namespace Sass {
     : Has_Block(pstate, b), selector_(s), at_root_(false), is_root_(false)
     { statement_type(RULESET); }
     bool is_invisible() const;
-    // nested rulesets need to be hoisted out of their enclosing blocks
-    bool is_hoistable() { return true; }
     ATTACH_OPERATIONS()
   };
 
@@ -520,7 +513,6 @@ namespace Sass {
     : Has_Block(pstate, b), media_queries_(mqs)
     { statement_type(MEDIA); }
     bool bubbles() { return true; }
-    bool is_hoistable() { return true; }
     bool is_invisible() const;
     ATTACH_OPERATIONS()
   };
@@ -775,7 +767,7 @@ namespace Sass {
   struct Backtrace;
   typedef Environment<AST_Node*> Env;
   typedef const char* Signature;
-  typedef Expression* (*Native_Function)(Env&, Env&, Context&, Signature, ParserState, Backtrace*);
+  typedef Expression* (*Native_Function)(Env&, Env&, Context&, Signature, ParserState, Backtrace*, std::vector<CommaSequence_Selector*>);
   typedef const char* Signature;
   class Definition : public Has_Block {
   public:
@@ -933,6 +925,7 @@ namespace Sass {
     std::string type() { return "map"; }
     static std::string type_name() { return "map"; }
     bool is_invisible() const { return empty(); }
+    List* to_list(Context& ctx, ParserState& pstate);
 
     virtual size_t hash()
     {
@@ -1369,6 +1362,7 @@ namespace Sass {
 
     virtual bool operator< (const Number& rhs) const;
     virtual bool operator== (const Expression& rhs) const;
+    virtual bool eq(const Expression& rhs) const;
 
     ATTACH_OPERATIONS()
   };
@@ -1578,10 +1572,14 @@ namespace Sass {
   ////////////////////////////////////////////////////////
   class String_Quoted : public String_Constant {
   public:
-    String_Quoted(ParserState pstate, std::string val, char q = 0, bool keep_utf8_escapes = false)
+    String_Quoted(ParserState pstate, std::string val, char q = 0,
+    	bool keep_utf8_escapes = false, bool skip_unquoting = false,
+    	bool strict_unquoting = true)
     : String_Constant(pstate, val)
     {
-      value_ = unquote(value_, &quote_mark_, keep_utf8_escapes);
+      if (skip_unquoting == false) {
+        value_ = unquote(value_, &quote_mark_, keep_utf8_escapes, strict_unquoting);
+      }
       if (q && quote_mark_) quote_mark_ = q;
     }
     virtual bool operator==(const Expression& rhs) const;
@@ -1630,7 +1628,6 @@ namespace Sass {
     Supports_Block(ParserState pstate, Supports_Condition* condition, Block* block = 0)
     : Has_Block(pstate, block), condition_(condition)
     { statement_type(SUPPORTS); }
-    bool is_hoistable() { return true; }
     bool bubbles() { return true; }
     ATTACH_OPERATIONS()
   };
@@ -1732,7 +1729,6 @@ namespace Sass {
     At_Root_Block(ParserState pstate, Block* b = 0, At_Root_Query* e = 0)
     : Has_Block(pstate, b), expression_(e)
     { statement_type(ATROOT); }
-    bool is_hoistable() { return true; }
     bool bubbles() { return true; }
     bool exclude_node(Statement* s) {
       if (expression() == 0)
@@ -1742,7 +1738,12 @@ namespace Sass {
 
       if (s->statement_type() == Statement::DIRECTIVE)
       {
-        return expression()->exclude(static_cast<Directive*>(s)->keyword().erase(0, 1));
+        if (Directive* dir = dynamic_cast<Directive*>(s))
+        {
+          std::string keyword(dir->keyword());
+          if (keyword.length() > 0) keyword.erase(0, 1);
+          return expression()->exclude(keyword);
+        }
       }
       if (s->statement_type() == Statement::MEDIA)
       {
@@ -1756,9 +1757,9 @@ namespace Sass {
       {
         return expression()->exclude("supports");
       }
-      if (static_cast<Directive*>(s)->is_keyframes())
+      if (Directive* dir = dynamic_cast<Directive*>(s))
       {
-        return expression()->exclude("keyframes");
+        if (dir->is_keyframes()) return expression()->exclude("keyframes");
       }
       return false;
     }
@@ -1865,7 +1866,6 @@ namespace Sass {
   /////////////////////////////////////////
   class Selector : public Expression {
     // ADD_PROPERTY(bool, has_reference)
-    ADD_PROPERTY(bool, has_placeholder)
     // line break before list separator
     ADD_PROPERTY(bool, has_line_feed)
     // line break after list separator
@@ -1880,7 +1880,6 @@ namespace Sass {
     Selector(ParserState pstate, bool r = false, bool h = false)
     : Expression(pstate),
       // has_reference_(r),
-      has_placeholder_(h),
       has_line_feed_(false),
       has_line_break_(false),
       is_optional_(false),
@@ -1889,9 +1888,6 @@ namespace Sass {
     { concrete_type(SELECTOR); }
     virtual ~Selector() = 0;
     virtual size_t hash() = 0;
-    virtual bool has_parent_ref() {
-      return false;
-    }
     virtual unsigned long specificity() {
       return 0;
     }
@@ -1899,6 +1895,15 @@ namespace Sass {
       media_block(mb);
     }
     virtual bool has_wrapped_selector() {
+      return false;
+    }
+    virtual bool has_placeholder() {
+      return false;
+    }
+    virtual bool has_parent_ref() {
+      return false;
+    }
+    virtual bool has_real_parent_ref() {
       return false;
     }
   };
@@ -1916,6 +1921,7 @@ namespace Sass {
     : Selector(pstate), contents_(c), at_root_(false)
     { }
     virtual bool has_parent_ref();
+    virtual bool has_real_parent_ref();
     virtual size_t hash() {
       if (hash_ == 0) {
         hash_combine(hash_, contents_->hash());
@@ -1994,6 +2000,7 @@ namespace Sass {
     virtual ~Simple_Selector() = 0;
     virtual SimpleSequence_Selector* unify_with(SimpleSequence_Selector*, Context&);
     virtual bool has_parent_ref() { return false; };
+    virtual bool has_real_parent_ref() { return false; };
     virtual bool is_pseudo_element() { return false; }
     virtual bool is_pseudo_class() { return false; }
 
@@ -2016,11 +2023,14 @@ namespace Sass {
   // inside strings in declarations (SimpleSequence_Selector).
   // only one simple parent selector means the first case.
   class Parent_Selector : public Simple_Selector {
+    ADD_PROPERTY(bool, real)
   public:
-    Parent_Selector(ParserState pstate)
-    : Simple_Selector(pstate, "&")
+    Parent_Selector(ParserState pstate, bool r = true)
+    : Simple_Selector(pstate, "&"), real_(r)
     { /* has_reference(true); */ }
+    bool is_real_parent_ref() { return real(); };
     virtual bool has_parent_ref() { return true; };
+    virtual bool has_real_parent_ref() { return is_real_parent_ref(); };
     virtual unsigned long specificity()
     {
       return 0;
@@ -2037,10 +2047,13 @@ namespace Sass {
   public:
     Placeholder_Selector(ParserState pstate, std::string n)
     : Simple_Selector(pstate, n)
-    { has_placeholder(true); }
+    { }
     virtual unsigned long specificity()
     {
       return Constants::Specificity_Base;
+    }
+    virtual bool has_placeholder() {
+      return true;
     }
     // virtual Placeholder_Selector* find_placeholder();
     virtual ~Placeholder_Selector() {};
@@ -2210,11 +2223,6 @@ namespace Sass {
     Wrapped_Selector(ParserState pstate, std::string n, Selector* sel)
     : Simple_Selector(pstate, n), selector_(sel)
     { }
-    virtual bool has_parent_ref() {
-      // if (has_reference()) return true;
-      if (!selector()) return false;
-      return selector()->has_parent_ref();
-    }
     virtual bool is_superselector_of(Wrapped_Selector* sub);
     // Selectors inside the negation pseudo-class are counted like any
     // other, but the negation itself does not count as a pseudo-class.
@@ -2225,6 +2233,16 @@ namespace Sass {
         if (selector_) hash_combine(hash_, selector_->hash());
       }
       return hash_;
+    }
+    virtual bool has_parent_ref() {
+      // if (has_reference()) return true;
+      if (!selector()) return false;
+      return selector()->has_parent_ref();
+    }
+    virtual bool has_real_parent_ref() {
+      // if (has_reference()) return true;
+      if (!selector()) return false;
+      return selector()->has_real_parent_ref();
     }
     virtual bool has_wrapped_selector()
     {
@@ -2259,7 +2277,7 @@ namespace Sass {
     void adjust_after_pushing(Simple_Selector* s)
     {
       // if (s->has_reference())   has_reference(true);
-      if (s->has_placeholder()) has_placeholder(true);
+      // if (s->has_placeholder()) has_placeholder(true);
     }
   public:
     SimpleSequence_Selector(ParserState pstate, size_t s = 0)
@@ -2275,6 +2293,8 @@ namespace Sass {
       return false;
     };
 
+    SimpleSequence_Selector& operator<<(Simple_Selector* element);
+
     bool is_universal() const
     {
       return length() == 1 && (*this)[0]->is_universal();
@@ -2284,6 +2304,7 @@ namespace Sass {
     SimpleSequence_Selector* unify_with(SimpleSequence_Selector* rhs, Context& ctx);
     // virtual Placeholder_Selector* find_placeholder();
     virtual bool has_parent_ref();
+    virtual bool has_real_parent_ref();
     Simple_Selector* base()
     {
       // Implement non-const in terms of const. Safe to const_cast since this method is non-const
@@ -2320,6 +2341,15 @@ namespace Sass {
       if (length() == 0) return false;
       if (Simple_Selector* ss = elements().front()) {
         if (ss->has_wrapped_selector()) return true;
+      }
+      return false;
+    }
+
+    virtual bool has_placeholder()
+    {
+      if (length() == 0) return false;
+      if (Simple_Selector* ss = elements().front()) {
+        if (ss->has_placeholder()) return true;
       }
       return false;
     }
@@ -2376,9 +2406,10 @@ namespace Sass {
       reference_(r)
     {
       // if ((h && h->has_reference())   || (t && t->has_reference()))   has_reference(true);
-      if ((h && h->has_placeholder()) || (t && t->has_placeholder())) has_placeholder(true);
+      // if ((h && h->has_placeholder()) || (t && t->has_placeholder())) has_placeholder(true);
     }
     virtual bool has_parent_ref();
+    virtual bool has_real_parent_ref();
 
     Sequence_Selector* skip_empty_reference()
     {
@@ -2421,7 +2452,7 @@ namespace Sass {
     Sequence_Selector* innermost() { return last(); };
 
     size_t length() const;
-    CommaSequence_Selector* resolve_parent_refs(Context& ctx, CommaSequence_Selector* parents, bool implicit_parent);
+    CommaSequence_Selector* resolve_parent_refs(Context& ctx, CommaSequence_Selector* parents, bool implicit_parent = true);
     virtual bool is_superselector_of(SimpleSequence_Selector* sub, std::string wrapping = "");
     virtual bool is_superselector_of(Sequence_Selector* sub, std::string wrapping = "");
     virtual bool is_superselector_of(CommaSequence_Selector* sub, std::string wrapping = "");
@@ -2455,6 +2486,11 @@ namespace Sass {
     virtual bool has_wrapped_selector() {
       if (head_ && head_->has_wrapped_selector()) return true;
       if (tail_ && tail_->has_wrapped_selector()) return true;
+      return false;
+    }
+    virtual bool has_placeholder() {
+      if (head_ && head_->has_placeholder()) return true;
+      if (tail_ && tail_->has_placeholder()) return true;
       return false;
     }
     bool operator<(const Sequence_Selector& rhs) const;
@@ -2532,6 +2568,7 @@ namespace Sass {
     // remove parent selector references
     // basically unwraps parsed selectors
     virtual bool has_parent_ref();
+    virtual bool has_real_parent_ref();
     void remove_parent_selectors();
     // virtual Placeholder_Selector* find_placeholder();
     CommaSequence_Selector* resolve_parent_refs(Context& ctx, CommaSequence_Selector* parents, bool implicit_parent = true);
@@ -2568,6 +2605,12 @@ namespace Sass {
     virtual bool has_wrapped_selector() {
       for (Sequence_Selector* cs : elements()) {
         if (cs->has_wrapped_selector()) return true;
+      }
+      return false;
+    }
+    virtual bool has_placeholder() {
+      for (Sequence_Selector* cs : elements()) {
+        if (cs->has_placeholder()) return true;
       }
       return false;
     }

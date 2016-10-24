@@ -87,6 +87,8 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " <" << selector->hash() << ">";
     std::cerr << " [@media:" << selector->media_block() << "]";
+    std::cerr << (selector->is_invisible() ? " [INVISIBLE]": " -");
+    std::cerr << (selector->has_placeholder() ? " [PLACEHOLDER]": " -");
     std::cerr << (selector->is_optional() ? " [is_optional]": " -");
     std::cerr << (selector->has_parent_ref() ? " [has-parent]": " -");
     std::cerr << (selector->has_line_break() ? " [line-break]": " -");
@@ -105,6 +107,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
 //    if (selector->not_selector()) cerr << " [in_declaration]";
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " <" << selector->hash() << ">";
+    std::cerr << " [" << (selector->is_real_parent_ref() ? "REAL" : "FAKE") << "]";
     std::cerr << " <" << prettyprint(selector->pstate().token.ws_before()) << ">" << std::endl;
 //    debug_ast(selector->selector(), ind + "->", env);
 
@@ -113,8 +116,11 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << ind << "Sequence_Selector " << selector
       << " (" << pstate_source_position(node) << ")"
       << " <" << selector->hash() << ">"
+      << " [length:" << longToHex(selector->length()) << "]"
       << " [weight:" << longToHex(selector->specificity()) << "]"
       << " [@media:" << selector->media_block() << "]"
+      << (selector->is_invisible() ? " [INVISIBLE]": " -")
+      << (selector->has_placeholder() ? " [PLACEHOLDER]": " -")
       << (selector->is_optional() ? " [is_optional]": " -")
       << (selector->has_parent_ref() ? " [has parent]": " -")
       << (selector->has_line_feed() ? " [line-feed]": " -")
@@ -292,6 +298,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " " << block->tabs() << std::endl;
     debug_ast(block->condition(), ind + " =@ ");
+    debug_ast(block->block(), ind + " <>");
   } else if (dynamic_cast<Supports_Operator*>(node)) {
     Supports_Operator* block = dynamic_cast<Supports_Operator*>(node);
     std::cerr << ind << "Supports_Operator " << block;
@@ -459,6 +466,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     std::cerr << ind << "Ruleset " << ruleset;
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " [indent: " << ruleset->tabs() << "]";
+    std::cerr << (ruleset->is_invisible() ? " [INVISIBLE]" : "");
     std::cerr << (ruleset->at_root() ? " [@ROOT]" : "");
     std::cerr << (ruleset->is_root() ? " [root]" : "");
     std::cerr << std::endl;
@@ -468,6 +476,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     Block* block = dynamic_cast<Block*>(node);
     std::cerr << ind << "Block " << block;
     std::cerr << " (" << pstate_source_position(node) << ")";
+    std::cerr << (block->is_invisible() ? " [INVISIBLE]" : "");
     std::cerr << " [indent: " << block->tabs() << "]" << std::endl;
     for(auto i : block->elements()) { debug_ast(i, ind + " ", env); }
   } else if (dynamic_cast<Textual*>(node)) {
@@ -545,6 +554,7 @@ inline void debug_ast(AST_Node* node, std::string ind, Env* env)
     Unary_Expression* expression = dynamic_cast<Unary_Expression*>(node);
     std::cerr << ind << "Unary_Expression " << expression;
     std::cerr << " [interpolant: " << expression->is_interpolant() << "] ";
+    std::cerr << " [delayed: " << expression->is_delayed() << "] ";
     std::cerr << " (" << pstate_source_position(node) << ")";
     std::cerr << " [" << expression->type() << "]" << std::endl;
     debug_ast(expression->operand(), ind + " operand: ", env);

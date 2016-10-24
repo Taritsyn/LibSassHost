@@ -221,7 +221,7 @@ namespace Sass {
     return quote_mark;
   }
 
-  std::string unquote(const std::string& s, char* qd, bool keep_utf8_sequences)
+  std::string unquote(const std::string& s, char* qd, bool keep_utf8_sequences, bool strict)
   {
 
     // not enough room for quotes
@@ -299,6 +299,9 @@ namespace Sass {
       //   error("Unescaped delimiter in string to unquote found. [" + s + "]", ParserState("[UNQUOTE]"));
       // }
       else {
+        if (strict && !skipped) {
+          if (s[i] == q) return s;
+        }
         skipped = false;
         unq.push_back(s[i]);
       }
@@ -529,13 +532,7 @@ namespace Sass {
       bool hasPrintableChildBlocks = false;
       for (size_t i = 0, L = b->length(); i < L; ++i) {
         Statement* stm = (*b)[i];
-        if (!stm->is_hoistable()) {
-          // If a statement isn't hoistable, the selectors apply to it. If there are no selectors (a selector list of length 0),
-          // then those statements aren't considered printable. That means there was a placeholder that was removed. If the selector
-          // is NULL, then that means there was never a wrapping selector and it is printable (think of a top level media block with
-          // a declaration in it).
-        }
-        else if (typeid(*stm) == typeid(Declaration) || typeid(*stm) == typeid(Directive)) {
+        if (typeid(*stm) == typeid(Declaration) || typeid(*stm) == typeid(Directive)) {
           hasDeclarations = true;
         }
         else if (dynamic_cast<Has_Block*>(stm)) {

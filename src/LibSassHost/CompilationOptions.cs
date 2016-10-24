@@ -117,6 +117,15 @@ namespace LibSassHost
 		}
 
 		/// <summary>
+		/// Gets or sets a flag for whether to create file urls for sources
+		/// </summary>
+		public bool SourceMapFileUrls
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
 		/// Gets or sets a flag for whether to include contents in maps
 		/// </summary>
 		public bool SourceMapIncludeContents
@@ -152,6 +161,7 @@ namespace LibSassHost
 			SourceComments = false;
 			SourceMap = false;
 			SourceMapFilePath = string.Empty;
+			SourceMapFileUrls = false;
 			SourceMapIncludeContents = false;
 			SourceMapRootPath = string.Empty;
 		}

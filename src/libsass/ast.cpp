@@ -122,6 +122,11 @@ namespace Sass {
     pstate_.offset += pstate - pstate_ + pstate.offset;
   }
 
+  void AST_Node::set_pstate_offset(const Offset& offset)
+  {
+    pstate_.offset = offset;
+  }
+
   inline bool is_ns_eq(const std::string& l, const std::string& r)
   {
     if (l.empty() && r.empty()) return true;
@@ -157,10 +162,24 @@ namespace Sass {
     return false;
   }
 
+  bool SimpleSequence_Selector::has_real_parent_ref()
+  {
+    for (Simple_Selector* s : *this) {
+      if (s && s->has_real_parent_ref()) return true;
+    }
+    return false;
+  }
+
   bool Sequence_Selector::has_parent_ref()
   {
     return (head() && head()->has_parent_ref()) ||
            (tail() && tail()->has_parent_ref());
+  }
+
+  bool Sequence_Selector::has_real_parent_ref()
+  {
+    return (head() && head()->has_real_parent_ref()) ||
+           (tail() && tail()->has_real_parent_ref());
   }
 
   bool Sequence_Selector::operator< (const Sequence_Selector& rhs) const
@@ -1040,24 +1059,32 @@ namespace Sass {
         size_t i = 0, L = h->length();
         if (dynamic_cast<Element_Selector*>(h->first())) {
           if (Class_Selector* sq = dynamic_cast<Class_Selector*>(rh->last())) {
-            Class_Selector* sqs = new Class_Selector(*sq);
+            Class_Selector* sqs = SASS_MEMORY_NEW(ctx.mem, Class_Selector, *sq);
             sqs->name(sqs->name() + (*h)[0]->name());
+            sqs->pstate((*h)[0]->pstate());
             (*rh)[rh->length()-1] = sqs;
+            rh->pstate(h->pstate());
             for (i = 1; i < L; ++i) *rh << (*h)[i];
           } else if (Id_Selector* sq = dynamic_cast<Id_Selector*>(rh->last())) {
-            Id_Selector* sqs = new Id_Selector(*sq);
+            Id_Selector* sqs = SASS_MEMORY_NEW(ctx.mem, Id_Selector, *sq);
             sqs->name(sqs->name() + (*h)[0]->name());
+            sqs->pstate((*h)[0]->pstate());
             (*rh)[rh->length()-1] = sqs;
+            rh->pstate(h->pstate());
             for (i = 1; i < L; ++i) *rh << (*h)[i];
           } else if (Element_Selector* ts = dynamic_cast<Element_Selector*>(rh->last())) {
-            Element_Selector* tss = new Element_Selector(*ts);
+            Element_Selector* tss = SASS_MEMORY_NEW(ctx.mem, Element_Selector, *ts);
             tss->name(tss->name() + (*h)[0]->name());
+            tss->pstate((*h)[0]->pstate());
             (*rh)[rh->length()-1] = tss;
+            rh->pstate(h->pstate());
             for (i = 1; i < L; ++i) *rh << (*h)[i];
           } else if (Placeholder_Selector* ps = dynamic_cast<Placeholder_Selector*>(rh->last())) {
-            Placeholder_Selector* pss = new Placeholder_Selector(*ps);
+            Placeholder_Selector* pss = SASS_MEMORY_NEW(ctx.mem, Placeholder_Selector, *ps);
             pss->name(pss->name() + (*h)[0]->name());
+            pss->pstate((*h)[0]->pstate());
             (*rh)[rh->length()-1] = pss;
+            rh->pstate(h->pstate());
             for (i = 1; i < L; ++i) *rh << (*h)[i];
           } else {
             *last()->head_ += h;
@@ -1110,6 +1137,12 @@ namespace Sass {
     Sequence_Selector* tail = this->tail();
     SimpleSequence_Selector* head = this->head();
 
+    if (!this->has_real_parent_ref() && !implicit_parent) {
+      CommaSequence_Selector* retval = SASS_MEMORY_NEW(ctx.mem, CommaSequence_Selector, pstate());
+      *retval << this;
+      return retval;
+    }
+
     // first resolve_parent_refs the tail (which may return an expanded list)
     CommaSequence_Selector* tails = tail ? tail->resolve_parent_refs(ctx, parents, implicit_parent) : 0;
 
@@ -1130,8 +1163,19 @@ namespace Sass {
                 Sequence_Selector* ss = this->clone(ctx);
                 ss->tail(t ? t->clone(ctx) : 0);
                 SimpleSequence_Selector* h = head_->clone(ctx);
+                // remove parent selector from sequence
                 if (h->length()) h->erase(h->begin());
                 ss->head(h->length() ? h : 0);
+                // adjust for parent selector (1 char)
+                if (h->length()) {
+                  ParserState state((*h)[0]->pstate());
+                  state.offset.column += 1;
+                  state.column -= 1;
+                  (*h)[0]->pstate(state);
+                }
+                // keep old parser state
+                s->pstate(pstate());
+                // append new tail
                 s->append(ctx, ss);
                 *retval << s;
               }
@@ -1151,10 +1195,21 @@ namespace Sass {
               }
               ss->tail(tail ? tail->clone(ctx) : 0);
               SimpleSequence_Selector* h = head_->clone(ctx);
+              // remove parent selector from sequence
               if (h->length()) h->erase(h->begin());
               ss->head(h->length() ? h : 0);
               // \/ IMO ruby sass bug \/
               ss->has_line_feed(false);
+              // adjust for parent selector (1 char)
+              if (h->length()) {
+                ParserState state((*h)[0]->pstate());
+                state.offset.column += 1;
+                state.column -= 1;
+                (*h)[0]->pstate(state);
+              }
+              // keep old parser state
+              s->pstate(pstate());
+              // append new tail
               s->append(ctx, ss);
               *retval << s;
             }
@@ -1396,10 +1451,27 @@ namespace Sass {
     return false;
   }
 
+  bool CommaSequence_Selector::has_real_parent_ref()
+  {
+    for (Sequence_Selector* s : *this) {
+      if (s && s->has_real_parent_ref()) return true;
+    }
+    return false;
+  }
+
   bool Selector_Schema::has_parent_ref()
   {
     if (String_Schema* schema = dynamic_cast<String_Schema*>(contents())) {
       return schema->length() > 0 && dynamic_cast<Parent_Selector*>(schema->at(0)) != NULL;
+    }
+    return false;
+  }
+
+  bool Selector_Schema::has_real_parent_ref()
+  {
+    if (String_Schema* schema = dynamic_cast<String_Schema*>(contents())) {
+      Parent_Selector* p = dynamic_cast<Parent_Selector*>(schema->at(0));
+      return schema->length() > 0 && p != NULL && p->is_real_parent_ref();
     }
     return false;
   }
@@ -1520,6 +1592,13 @@ namespace Sass {
     return result;
   }
 
+  SimpleSequence_Selector& SimpleSequence_Selector::operator<<(Simple_Selector* element)
+  {
+    Vectorized<Simple_Selector*>::operator<<(element);
+    pstate_.offset += element->pstate().offset;
+    return *this;
+  }
+
   SimpleSequence_Selector* SimpleSequence_Selector::minus(SimpleSequence_Selector* rhs, Context& ctx)
   {
     SimpleSequence_Selector* result = SASS_MEMORY_NEW(ctx.mem, SimpleSequence_Selector, pstate());
@@ -1615,9 +1694,10 @@ namespace Sass {
   }
 
   bool Ruleset::is_invisible() const {
-    CommaSequence_Selector* sl = static_cast<CommaSequence_Selector*>(selector());
-    for (size_t i = 0, L = sl->length(); i < L; ++i)
-      if (!(*sl)[i]->has_placeholder()) return false;
+    if (CommaSequence_Selector* sl = dynamic_cast<CommaSequence_Selector*>(selector())) {
+      for (size_t i = 0, L = sl->length(); i < L; ++i)
+        if (!(*sl)[i]->has_placeholder()) return false;
+    }
     return true;
   }
 
@@ -2004,6 +2084,21 @@ namespace Sass {
     return false;
   }
 
+  bool Number::eq (const Expression& rhs) const
+  {
+    if (const Number* r = dynamic_cast<const Number*>(&rhs)) {
+      size_t lhs_units = numerator_units_.size() + denominator_units_.size();
+      size_t rhs_units = r->numerator_units_.size() + r->denominator_units_.size();
+      if (!lhs_units && !rhs_units) {
+        return std::fabs(value() - r->value()) < NUMBER_EPSILON;
+      }
+      return (numerator_units_ == r->numerator_units_) &&
+             (denominator_units_ == r->denominator_units_) &&
+             std::fabs(value() - r->value()) < NUMBER_EPSILON;
+    }
+    return false;
+  }
+
   bool Number::operator== (const Expression& rhs) const
   {
     if (const Number* r = dynamic_cast<const Number*>(&rhs)) {
@@ -2209,6 +2304,22 @@ namespace Sass {
     } else {
       return (*this)[i];
     }
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////
+  // Convert map to (key, value) list.
+  //////////////////////////////////////////////////////////////////////////////////////////
+  List* Map::to_list(Context& ctx, ParserState& pstate) {
+    List* ret = SASS_MEMORY_NEW(ctx.mem, List, pstate, length(), SASS_COMMA);
+
+    for (auto key : keys()) {
+      List* l = SASS_MEMORY_NEW(ctx.mem, List, pstate, 2);
+      *l << key;
+      *l << at(key);
+      *ret << l;
+    }
+
+    return ret;
   }
 
 }

@@ -18,6 +18,7 @@ namespace LibSassHost
 				property bool SourceMapContents;
 				property bool SourceMapEmbed;
 				property String^ SourceMapFile;
+				property bool SourceMapFileUrls;
 				property String^ SourceMapRoot;
 		};
 	}

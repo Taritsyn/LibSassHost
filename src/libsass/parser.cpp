@@ -33,6 +33,8 @@ namespace Sass {
 
   Parser Parser::from_c_str(const char* beg, Context& ctx, ParserState pstate, const char* source)
   {
+    pstate.offset.column = 0;
+    pstate.offset.line = 0;
     Parser p(ctx, pstate);
     p.source   = source ? source : beg;
     p.position = beg ? beg : p.source;
@@ -45,6 +47,8 @@ namespace Sass {
 
   Parser Parser::from_c_str(const char* beg, const char* end, Context& ctx, ParserState pstate, const char* source)
   {
+    pstate.offset.column = 0;
+    pstate.offset.line = 0;
     Parser p(ctx, pstate);
     p.source   = source ? source : beg;
     p.position = beg ? beg : p.source;
@@ -54,6 +58,14 @@ namespace Sass {
     root->is_root(true);
     return p;
   }
+
+   void Parser::advanceToNextToken() {
+      lex < css_comments >(false);
+      // advance to position
+      pstate += pstate.offset;
+      pstate.offset.column = 0;
+      pstate.offset.line = 0;
+    }
 
   CommaSequence_Selector* Parser::parse_selector(const char* beg, Context& ctx, ParserState pstate, const char* source)
   {
@@ -266,7 +278,7 @@ namespace Sass {
     else if (lex< re_prefixed_directive >(true)) { (*block) << parse_prefixed_directive(); }
     else if (lex< at_keyword >(true)) { (*block) << parse_directive(); }
 
-    else if (block->is_root()) {
+    else if (is_root /* && block->is_root() */) {
       lex< css_whitespace >();
       if (position >= end) return true;
       css_error("Invalid CSS", " after ", ": expected 1 selector or at-rule, was ");
@@ -464,6 +476,9 @@ namespace Sass {
     std::string name(Util::normalize_underscores(lexed));
     ParserState var_source_position = pstate;
     if (!lex< exactly<':'> >()) error("expected ':' after " + name + " in assignment statement", pstate);
+    if (peek_css< alternatives < exactly<';'>, end_of_file > >()) {
+      css_error("Invalid CSS", " after ", ": expected expression (e.g. 1px, bold), was ");
+    }
     Expression* val;
     Lookahead lookahead = lookahead_for_value(position);
     if (lookahead.has_interpolants && lookahead.found) {
@@ -652,6 +667,9 @@ namespace Sass {
 
     String* reference = 0;
     lex < block_comment >();
+
+    Sequence_Selector* sel = SASS_MEMORY_NEW(ctx.mem, Sequence_Selector, pstate);
+
     // parse the left hand side
     SimpleSequence_Selector* lhs = 0;
     // special case if it starts with combinator ([+~>])
@@ -680,9 +698,8 @@ namespace Sass {
     if (!lhs && combinator == Sequence_Selector::ANCESTOR_OF) return 0;
 
     // lex < block_comment >();
-    // source position of a complex selector points to the combinator
-    // ToDo: make sure we update pstate for ancestor of (lex < zero >());
-    Sequence_Selector* sel = SASS_MEMORY_NEW(ctx.mem, Sequence_Selector, pstate, combinator, lhs);
+    sel->head(lhs);
+    sel->combinator(combinator);
     sel->media_block(last_media_block);
 
     if (combinator == Sequence_Selector::REFERENCE) sel->reference(reference);
@@ -694,20 +711,15 @@ namespace Sass {
     if (!peek_css< class_char < complex_selector_delims > >()) {
       // parse next selector in sequence
       sel->tail(parse_complex_selector(true));
-      if (sel->tail()) {
-        // ToDo: move this logic below into tail setter
-        // if (sel->tail()->has_reference()) sel->has_reference(true);
-        if (sel->tail()->has_placeholder()) sel->has_placeholder(true);
-      }
     }
 
     // add a parent selector if we are not in a root
     // also skip adding parent ref if we only have refs
     if (!sel->has_parent_ref() && !in_at_root && !in_root) {
       // create the objects to wrap parent selector reference
-      Parent_Selector* parent = SASS_MEMORY_NEW(ctx.mem, Parent_Selector, pstate);
-      parent->media_block(last_media_block);
       SimpleSequence_Selector* head = SASS_MEMORY_NEW(ctx.mem, SimpleSequence_Selector, pstate);
+      Parent_Selector* parent = SASS_MEMORY_NEW(ctx.mem, Parent_Selector, pstate, false);
+      parent->media_block(last_media_block);
       head->media_block(last_media_block);
       // add simple selector
       (*head) << parent;
@@ -721,6 +733,8 @@ namespace Sass {
       // peek for linefeed and remember result on head
       // if (peek_newline()) head->has_line_break(true);
     }
+
+    sel->update_pstate(pstate);
 
     // complex selector
     return sel;
@@ -1175,6 +1189,8 @@ namespace Sass {
   // parse logical OR operation
   Expression* Parser::parse_disjunction()
   {
+    advanceToNextToken();
+    ParserState state(pstate);
     // parse the left hand side conjunction
     Expression* conj = parse_conjunction();
     // parse multiple right hand sides
@@ -1184,13 +1200,18 @@ namespace Sass {
     // if it's a singleton, return it directly
     if (operands.size() == 0) return conj;
     // fold all operands into one binary expression
-    return fold_operands(conj, operands, { Sass_OP::OR });
+    Expression* ex = fold_operands(conj, operands, { Sass_OP::OR });
+    state.offset = pstate - state + pstate.offset;
+    ex->pstate(state);
+    return ex;
   }
   // EO parse_disjunction
 
   // parse logical AND operation
   Expression* Parser::parse_conjunction()
   {
+    advanceToNextToken();
+    ParserState state(pstate);
     // parse the left hand side relation
     Expression* rel = parse_relation();
     // parse multiple right hand sides
@@ -1200,13 +1221,18 @@ namespace Sass {
     // if it's a singleton, return it directly
     if (operands.size() == 0) return rel;
     // fold all operands into one binary expression
-    return fold_operands(rel, operands, { Sass_OP::AND });
+    Expression* ex = fold_operands(rel, operands, { Sass_OP::AND });
+    state.offset = pstate - state + pstate.offset;
+    ex->pstate(state);
+    return ex;
   }
   // EO parse_conjunction
 
   // parse comparison operations
   Expression* Parser::parse_relation()
   {
+    advanceToNextToken();
+    ParserState state(pstate);
     // parse the left hand side expression
     Expression* lhs = parse_expression();
     std::vector<Expression*> operands;
@@ -1244,7 +1270,10 @@ namespace Sass {
     // correctly set to zero. After folding we also unwrap
     // single nested items. So we cannot set delay on the
     // returned result here, as we have lost nestings ...
-    return fold_operands(lhs, operands, operators);
+    Expression* ex = fold_operands(lhs, operands, operators);
+    state.offset = pstate - state + pstate.offset;
+    ex->pstate(state);
+    return ex;
   }
   // parse_relation
 
@@ -1255,6 +1284,8 @@ namespace Sass {
   // parse addition and subtraction operations
   Expression* Parser::parse_expression()
   {
+    advanceToNextToken();
+    ParserState state(pstate);
     // parses multiple add and subtract operations
     // NOTE: make sure that identifiers starting with
     // NOTE: dashes do NOT count as subtract operation
@@ -1287,12 +1318,17 @@ namespace Sass {
     }
 
     if (operands.size() == 0) return lhs;
-    return fold_operands(lhs, operands, operators);
+    Expression* ex = fold_operands(lhs, operands, operators);
+    state.offset = pstate - state + pstate.offset;
+    ex->pstate(state);
+    return ex;
   }
 
   // parse addition and subtraction operations
   Expression* Parser::parse_operators()
   {
+    advanceToNextToken();
+    ParserState state(pstate);
     Expression* factor = parse_factor();
     // if it's a singleton, return it (don't wrap it)
     std::vector<Expression*> operands; // factors
@@ -1311,7 +1347,10 @@ namespace Sass {
       left_ws = peek < css_comments >();
     }
     // operands and operators to binary expression
-    return fold_operands(factor, operands, operators);
+    Expression* ex = fold_operands(factor, operands, operators);
+    state.offset = pstate - state + pstate.offset;
+    ex->pstate(state);
+    return ex;
   }
   // EO parse_operators
 
@@ -1362,17 +1401,25 @@ namespace Sass {
       return parse_function_call();
     }
     else if (lex< exactly<'+'> >()) {
-      return SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::PLUS, parse_factor());
+      Unary_Expression* ex = SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::PLUS, parse_factor());
+      if (ex && ex->operand()) ex->is_delayed(ex->operand()->is_delayed());
+      return ex;
     }
     else if (lex< exactly<'-'> >()) {
-      return SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::MINUS, parse_factor());
+      Unary_Expression* ex = SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::MINUS, parse_factor());
+      if (ex && ex->operand()) ex->is_delayed(ex->operand()->is_delayed());
+      return ex;
     }
     else if (lex< sequence< kwd_not > >()) {
-      return SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::NOT, parse_factor());
+      Unary_Expression* ex = SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::NOT, parse_factor());
+      if (ex && ex->operand()) ex->is_delayed(ex->operand()->is_delayed());
+      return ex;
     }
     else if (peek < sequence < one_plus < alternatives < css_whitespace, exactly<'-'>, exactly<'+'> > >, number > >()) {
       if (parse_number_prefix()) return parse_value(); // prefix is positive
-      return SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::MINUS, parse_value());
+      Unary_Expression* ex = SASS_MEMORY_NEW(ctx.mem, Unary_Expression, pstate, Unary_Expression::MINUS, parse_value());;
+      if (ex->operand()) ex->is_delayed(ex->operand()->is_delayed());
+      return ex;
     }
     else {
       return parse_value();
@@ -1521,6 +1568,9 @@ namespace Sass {
   {
     lex< static_value >();
     Token str(lexed);
+    // static values always have trailing white-
+    // space and end delimiter (\s*[;]$) included
+    -- pstate.offset.column;
     --str.end;
     --position;
 
@@ -1861,8 +1911,9 @@ namespace Sass {
   {
     stack.push_back(Scope::Control);
     ParserState if_source_position = pstate;
+    bool root = block_stack.back()->is_root();
     Expression* predicate = parse_list();
-    Block* block = parse_block();
+    Block* block = parse_block(root);
     Block* alternative = 0;
 
     // only throw away comment if we parse a case
@@ -1872,7 +1923,7 @@ namespace Sass {
       (*alternative) << parse_if_directive(true);
     }
     else if (lex_css< kwd_else_directive >()) {
-      alternative = parse_block();
+      alternative = parse_block(root);
     }
     stack.pop_back();
     return SASS_MEMORY_NEW(ctx.mem, If, if_source_position, predicate, block, alternative);
@@ -1882,6 +1933,7 @@ namespace Sass {
   {
     stack.push_back(Scope::Control);
     ParserState for_source_position = pstate;
+    bool root = block_stack.back()->is_root();
     lex_variable();
     std::string var(Util::normalize_underscores(lexed));
     if (!lex< kwd_from >()) error("expected 'from' keyword in @for directive", pstate);
@@ -1891,7 +1943,7 @@ namespace Sass {
     else if (lex< kwd_to >()) inclusive = false;
     else                  error("expected 'through' or 'to' keyword in @for directive", pstate);
     Expression* upper_bound = parse_expression();
-    Block* body = parse_block();
+    Block* body = parse_block(root);
     stack.pop_back();
     return SASS_MEMORY_NEW(ctx.mem, For, for_source_position, var, lower_bound, upper_bound, body, inclusive);
   }
@@ -1926,6 +1978,7 @@ namespace Sass {
   {
     stack.push_back(Scope::Control);
     ParserState each_source_position = pstate;
+    bool root = block_stack.back()->is_root();
     std::vector<std::string> vars;
     lex_variable();
     vars.push_back(Util::normalize_underscores(lexed));
@@ -1935,7 +1988,7 @@ namespace Sass {
     }
     if (!lex< kwd_in >()) error("expected 'in' keyword in @each directive", pstate);
     Expression* list = parse_list();
-    Block* body = parse_block();
+    Block* body = parse_block(root);
     stack.pop_back();
     return SASS_MEMORY_NEW(ctx.mem, Each, each_source_position, vars, list, body);
   }
@@ -1944,13 +1997,14 @@ namespace Sass {
   While* Parser::parse_while_directive()
   {
     stack.push_back(Scope::Control);
+    bool root = block_stack.back()->is_root();
     // create the initial while call object
     While* call = SASS_MEMORY_NEW(ctx.mem, While, pstate, 0, 0);
     // parse mandatory predicate
     Expression* predicate = parse_list();
     call->predicate(predicate);
     // parse mandatory block
-    call->block(parse_block());
+    call->block(parse_block(root));
     // return ast node
     stack.pop_back();
     // return ast node
@@ -1974,22 +2028,22 @@ namespace Sass {
 
   List* Parser::parse_media_queries()
   {
+    advanceToNextToken();
     List* media_queries = SASS_MEMORY_NEW(ctx.mem, List, pstate, 0, SASS_COMMA);
     if (!peek_css < exactly <'{'> >()) (*media_queries) << parse_media_query();
     while (lex_css < exactly <','> >()) (*media_queries) << parse_media_query();
+    media_queries->update_pstate(pstate);
     return media_queries;
   }
 
   // Expression* Parser::parse_media_query()
   Media_Query* Parser::parse_media_query()
   {
+    advanceToNextToken();
     Media_Query* media_query = SASS_MEMORY_NEW(ctx.mem, Media_Query, pstate);
+    if (lex < kwd_not >()) { media_query->is_negated(true); lex < css_comments >(false); }
+    else if (lex < kwd_only >()) { media_query->is_restricted(true); lex < css_comments >(false); }
 
-    lex < css_comments >(false);
-    if (lex < kwd_not >()) media_query->is_negated(true);
-    else if (lex < kwd_only >()) media_query->is_restricted(true);
-
-    lex < css_comments >(false);
     if (lex < identifier_schema >())  media_query->media_type(parse_identifier_schema());
     else if (lex < identifier >())    media_query->media_type(parse_interpolated_chunk(lexed));
     else                             (*media_query) << parse_media_expression();
@@ -2003,6 +2057,9 @@ namespace Sass {
       media_query->media_type(schema);
     }
     while (lex_css < kwd_and >()) (*media_query) << parse_media_expression();
+
+    media_query->update_pstate(pstate);
+
     return media_query;
   }
 
@@ -2244,8 +2301,6 @@ namespace Sass {
     directive->value(val);
     if (peek< exactly<'{'> >()) {
       directive->block(parse_block());
-    } else if (!val) {
-      css_error("most def");
     }
     return directive;
   }
@@ -2610,7 +2665,7 @@ namespace Sass {
   Expression* Parser::fold_operands(Expression* base, std::vector<Expression*>& operands, Operand op)
   {
     for (size_t i = 0, S = operands.size(); i < S; ++i) {
-      base = SASS_MEMORY_NEW(ctx.mem, Binary_Expression, pstate, op, base, operands[i]);
+      base = SASS_MEMORY_NEW(ctx.mem, Binary_Expression, base->pstate(), op, base, operands[i]);
     }
     return base;
   }
@@ -2631,7 +2686,7 @@ namespace Sass {
           || (ops[0].operand == Sass_OP::LTE)
           || (ops[0].operand == Sass_OP::GTE)
         )) {
-          Expression* rhs = fold_operands(operands[0], operands, ops, 1);
+          Expression* rhs = fold_operands(operands[i], operands, ops, i + 1);
           rhs = SASS_MEMORY_NEW(ctx.mem, Binary_Expression, base->pstate(), ops[0], schema, rhs);
           return rhs;
         }

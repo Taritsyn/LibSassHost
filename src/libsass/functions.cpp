@@ -385,6 +385,12 @@ namespace Sass {
       while (h < 0) h += 1;
       while (h > 1) h -= 1;
 
+      // if saturation is exacly zero, we loose
+      // information for hue, since it will evaluate
+      // to zero if converted back from rgb. Setting
+      // saturation to a very tiny number solves this.
+      if (s == 0) s = 1e-10;
+
       // Algorithm from the CSS3 spec: http://www.w3.org/TR/css3-color/#hsl-color.
       double m2;
       if (l <= 0.5) m2 = l*(s+1.0);
@@ -1014,8 +1020,14 @@ namespace Sass {
         std::string str = unquote(s->value());
 
         size_t size = utf8::distance(str.begin(), str.end());
-        if (end_at <= size * -1.0) { end_at += size; }
-        if (end_at < 0) { end_at += size + 1; }
+        if (end_at <= size * -1.0 && size > 1) {
+          end_at += size;
+          if (end_at == 0) end_at = 1;
+        }
+        if (end_at < 0) {
+          end_at += size + 1;
+          if (end_at == 0) end_at = 1;
+        }
         if (end_at > size) { end_at = (double)size; }
         if (start_at < 0) { start_at += size + 1; }
         else if (start_at == 0) { ++ start_at; }
@@ -1279,12 +1291,16 @@ namespace Sass {
     Signature set_nth_sig = "set-nth($list, $n, $value)";
     BUILT_IN(set_nth)
     {
+      Map* m = dynamic_cast<Map*>(env["$list"]);
       List* l = dynamic_cast<List*>(env["$list"]);
       Number* n = ARG("$n", Number);
       Expression* v = ARG("$value", Expression);
       if (!l) {
         l = SASS_MEMORY_NEW(ctx.mem, List, pstate, 1);
         *l << ARG("$list", Expression);
+      }
+      if (m) {
+        l = m->to_list(ctx, pstate);
       }
       if (l->empty()) error("argument `$list` of `" + std::string(sig) + "` must not be empty", pstate);
       double index = std::floor(n->value() < 0 ? l->length() + n->value() : n->value() - 1);
@@ -1299,11 +1315,15 @@ namespace Sass {
     Signature index_sig = "index($list, $value)";
     BUILT_IN(index)
     {
+      Map* m = dynamic_cast<Map*>(env["$list"]);
       List* l = dynamic_cast<List*>(env["$list"]);
       Expression* v = ARG("$value", Expression);
       if (!l) {
         l = SASS_MEMORY_NEW(ctx.mem, List, pstate, 1);
         *l << ARG("$list", Expression);
+      }
+      if (m) {
+        l = m->to_list(ctx, pstate);
       }
       for (size_t i = 0, L = l->length(); i < L; ++i) {
         if (Eval::eq(l->value_at_index(i), v)) return SASS_MEMORY_NEW(ctx.mem, Number, pstate, (double)(i+1));
@@ -1314,6 +1334,8 @@ namespace Sass {
     Signature join_sig = "join($list1, $list2, $separator: auto)";
     BUILT_IN(join)
     {
+      Map* m1 = dynamic_cast<Map*>(env["$list1"]);
+      Map* m2 = dynamic_cast<Map*>(env["$list2"]);
       List* l1 = dynamic_cast<List*>(env["$list1"]);
       List* l2 = dynamic_cast<List*>(env["$list2"]);
       String_Constant* sep = ARG("$separator", String_Constant);
@@ -1326,6 +1348,13 @@ namespace Sass {
       if (!l2) {
         l2 = SASS_MEMORY_NEW(ctx.mem, List, pstate, 1);
         *l2 << ARG("$list2", Expression);
+      }
+      if (m1) {
+        l1 = m1->to_list(ctx, pstate);
+        sep_val = SASS_COMMA;
+      }
+      if (m2) {
+        l2 = m2->to_list(ctx, pstate);
       }
       size_t len = l1->length() + l2->length();
       std::string sep_str = unquote(sep->value());
@@ -1341,6 +1370,7 @@ namespace Sass {
     Signature append_sig = "append($list, $val, $separator: auto)";
     BUILT_IN(append)
     {
+      Map* m = dynamic_cast<Map*>(env["$list"]);
       List* l = dynamic_cast<List*>(env["$list"]);
       Expression* v = ARG("$val", Expression);
       if (CommaSequence_Selector* sl = dynamic_cast<CommaSequence_Selector*>(env["$list"])) {
@@ -1351,6 +1381,9 @@ namespace Sass {
       if (!l) {
         l = SASS_MEMORY_NEW(ctx.mem, List, pstate, 1);
         *l << ARG("$list", Expression);
+      }
+      if (m) {
+        l = m->to_list(ctx, pstate);
       }
       List* result = SASS_MEMORY_NEW(ctx.mem, List, pstate, l->length() + 1, l->separator());
       std::string sep_str(unquote(sep->value()));
@@ -1381,9 +1414,14 @@ namespace Sass {
       size_t shortest = 0;
       for (size_t i = 0, L = arglist->length(); i < L; ++i) {
         List* ith = dynamic_cast<List*>(arglist->value_at_index(i));
+        Map* mith = dynamic_cast<Map*>(arglist->value_at_index(i));
         if (!ith) {
-          ith = SASS_MEMORY_NEW(ctx.mem, List, pstate, 1);
-          *ith << arglist->value_at_index(i);
+          if (mith) {
+            ith = mith->to_list(ctx, pstate);
+          } else {
+            ith = SASS_MEMORY_NEW(ctx.mem, List, pstate, 1);
+            *ith << arglist->value_at_index(i);
+          }
           if (arglist->is_arglist()) {
             ((Argument*)(*arglist)[i])->value(ith);
           } else {
@@ -1637,7 +1675,7 @@ namespace Sass {
         }
       }
       Function_Call* func = SASS_MEMORY_NEW(ctx.mem, Function_Call, pstate, name, args);
-      Expand expand(ctx, &d_env, backtrace);
+      Expand expand(ctx, &d_env, backtrace, &selector_stack);
       return func->perform(&expand.eval);
 
     }
@@ -1655,7 +1693,7 @@ namespace Sass {
     // { return ARG("$condition", Expression)->is_false() ? ARG("$if-false", Expression) : ARG("$if-true", Expression); }
     BUILT_IN(sass_if)
     {
-      Expand expand(ctx, &d_env, backtrace);
+      Expand expand(ctx, &d_env, backtrace, &selector_stack);
       bool is_true = !ARG("$condition", Expression)->perform(&expand.eval)->is_false();
       Expression* res = ARG(is_true ? "$if-true" : "$if-false", Expression);
       res = res->perform(&expand.eval);
