@@ -207,6 +207,12 @@ And now let's consider in detail properties of the <code title="LibSassHost.Comp
 			<td>Path to source map file.</td>
 		</tr>
 		<tr valign="top">
+			<td><code>SourceMapFileUrls</code></td>
+			<td><code title="System.Boolean">Boolean</code></td>
+			<td><code>false</code></td>
+			<td>Flag for whether to create file urls for sources.</td>
+		</tr>
+		<tr valign="top">
 			<td><code>SourceMapIncludeContents</code></td>
 			<td><code title="System.Boolean">Boolean</code></td>
 			<td><code>false</code></td>
