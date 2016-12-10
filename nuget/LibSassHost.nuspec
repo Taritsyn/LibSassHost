@@ -2,16 +2,16 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost</id>
-		<version>0.6.0</version>
+		<version>0.6.1</version>
 		<title>LibSass Host for .Net</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
 		<licenseUrl>http://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
 		<projectUrl>http://github.com/Taritsyn/LibSassHost</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>.NET wrapper around the libSass (http://sass-lang.com/libsass) version 3.4.0 RC 1 with the ability to support a virtual file system. For correct working of the LibSass Host require assemblies `msvcp120.dll` and `msvcr120.dll` from the Visual C++ Redistributable Packages for Visual Studio 2013.</description>
-		<summary>.NET wrapper around the libSass version 3.4.0 RC 1 with the ability to support a virtual file system.</summary>
-		<releaseNotes>Added support of libSass version 3.4.0 RC 1.</releaseNotes>
+		<description>.NET wrapper around the libSass (http://sass-lang.com/libsass) version 3.4.0 with the ability to support a virtual file system. For correct working of the LibSass Host require assemblies `msvcp120.dll` and `msvcr120.dll` from the Visual C++ Redistributable Packages for Visual Studio 2013.</description>
+		<summary>.NET wrapper around the libSass version 3.4.0 with the ability to support a virtual file system.</summary>
+		<releaseNotes>Added support of libSass version 3.4.0.</releaseNotes>
 		<copyright>Copyright (c) 2015-2016 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
 		<language>en-US</language>
 		<tags>libSass Sass SCSS CSS</tags>
