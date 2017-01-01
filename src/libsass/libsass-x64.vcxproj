@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Main" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LIBSASS_VERSION>3.4.1</LIBSASS_VERSION>
+    <LIBSASS_VERSION>3.4.2</LIBSASS_VERSION>
     <LIBSASS_SRC_DIR>.\</LIBSASS_SRC_DIR>
     <LIBSASS_HEADERS_DIR>.\</LIBSASS_HEADERS_DIR>
     <LIBSASS_INCLUDES_DIR>.\include</LIBSASS_INCLUDES_DIR>
