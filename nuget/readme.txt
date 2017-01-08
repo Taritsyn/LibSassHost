@@ -5,13 +5,13 @@
 
    --------------------------------------------------------------------------------
 
-           Copyright (c) 2015-2016 Andrey Taritsyn - http://www.taritsyn.ru
+           Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru
 
 
    ===========
    DESCRIPTION
    ===========
-   .NET wrapper around the libSass (http://sass-lang.com/libsass) version 3.4.2
+   .NET wrapper around the libSass (http://sass-lang.com/libsass) version 3.4.3
    with the ability to support a virtual file system. For correct working of the
    LibSass Host require assemblies `msvcp120.dll` and `msvcr120.dll` from the
    Visual C++ Redistributable Packages for Visual Studio 2013.
@@ -19,7 +19,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of libSass version 3.4.2.
+   Added support of libSass version 3.4.3.
 
    ====================
    POST-INSTALL ACTIONS

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LibSass Host: Tests")]
-[assembly: AssemblyCopyright("Copyright © 2015-2016 Andrey Taritsyn")]
+[assembly: AssemblyCopyright("Copyright © 2015-2017 Andrey Taritsyn")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -55,11 +55,6 @@ namespace Sass {
   { }
   Eval::~Eval() { }
 
-  Context& Eval::context()
-  {
-    return ctx;
-  }
-
   Env* Eval::environment()
   {
     return exp.environment();
@@ -181,8 +176,8 @@ namespace Sass {
     // check if units are valid for sequence
     if (sass_start->unit() != sass_end->unit()) {
       std::stringstream msg; msg << "Incompatible units: '"
-        << sass_start->unit() << "' and '"
-        << sass_end->unit() << "'.";
+        << sass_end->unit() << "' and '"
+        << sass_start->unit() << "'.";
       error(msg.str(), low->pstate(), backtrace());
     }
     double start = sass_start->value();
@@ -947,7 +942,7 @@ namespace Sass {
       } else if (sass_value_get_tag(c_val) == SASS_WARNING) {
         error("warning in C function " + c->name() + ": " + sass_warning_get_message(c_val), c->pstate(), backtrace());
       }
-      result = cval_to_astnode(c_val, ctx, backtrace(), c->pstate());
+      result = cval_to_astnode(c_val, backtrace(), c->pstate());
 
       exp.backtrace_stack.pop_back();
       sass_delete_value(c_args);
@@ -1640,7 +1635,7 @@ namespace Sass {
     return SASS_MEMORY_NEW(String_Constant, pstate ? *pstate : lhs.pstate(), lstr + sep + rstr);
   }
 
-  Expression_Ptr cval_to_astnode(union Sass_Value* v, Context& ctx, Backtrace* backtrace, ParserState pstate)
+  Expression_Ptr cval_to_astnode(union Sass_Value* v, Backtrace* backtrace, ParserState pstate)
   {
     using std::strlen;
     using std::strcpy;
@@ -1665,7 +1660,7 @@ namespace Sass {
       case SASS_LIST: {
         List_Ptr l = SASS_MEMORY_NEW(List, pstate, sass_list_get_length(v), sass_list_get_separator(v));
         for (size_t i = 0, L = sass_list_get_length(v); i < L; ++i) {
-          l->append(cval_to_astnode(sass_list_get_value(v, i), ctx, backtrace, pstate));
+          l->append(cval_to_astnode(sass_list_get_value(v, i), backtrace, pstate));
         }
         e = l;
       } break;
@@ -1673,8 +1668,8 @@ namespace Sass {
         Map_Ptr m = SASS_MEMORY_NEW(Map, pstate);
         for (size_t i = 0, L = sass_map_get_length(v); i < L; ++i) {
           *m << std::make_pair(
-            cval_to_astnode(sass_map_get_key(v, i), ctx, backtrace, pstate),
-            cval_to_astnode(sass_map_get_value(v, i), ctx, backtrace, pstate));
+            cval_to_astnode(sass_map_get_key(v, i), backtrace, pstate),
+            cval_to_astnode(sass_map_get_value(v, i), backtrace, pstate));
         }
         e = m;
       } break;

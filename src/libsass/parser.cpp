@@ -145,7 +145,9 @@ namespace Sass {
     }
 
     // update for end position
-    block->update_pstate(pstate);
+    // this seems to be done somewhere else
+    // but that fixed selector schema issue
+    // block->update_pstate(pstate);
 
     // parse comments after block
     // lex < optional_css_comments >();
@@ -222,11 +224,6 @@ namespace Sass {
     else if (lex < kwd_while_directive >(true)) { block->append(&parse_while_directive()); }
     else if (lex < kwd_return_directive >(true)) { block->append(&parse_return_directive()); }
 
-    // abort if we are in function context and have nothing parsed yet
-    else if (stack.back() == Scope::Function) {
-      error("Functions can only contain variable declarations and control directives.", pstate);
-    }
-
     // parse imports to process later
     else if (lex < kwd_import >(true)) {
       Scope parent = stack.empty() ? Scope::Rules : stack.back();
@@ -245,10 +242,6 @@ namespace Sass {
     }
 
     else if (lex < kwd_extend >(true)) {
-      if (block->is_root()) {
-        error("Extend directives may only be used within rules.", pstate);
-      }
-
       Lookahead lookahead = lookahead_for_include(position);
       if (!lookahead.found) css_error("Invalid CSS", " after ", ": expected selector, was ");
       Selector_Obj target;
@@ -363,15 +356,6 @@ namespace Sass {
 
   Definition_Obj Parser::parse_definition(Definition::Type which_type)
   {
-    Scope parent = stack.empty() ? Scope::Rules : stack.back();
-    if (parent != Scope::Root && parent != Scope::Rules && parent != Scope::Function) {
-      if (which_type == Definition::FUNCTION) {
-        error("Functions may not be defined within control directives or other mixins.", pstate);
-      } else {
-        error("Mixins may not be defined within control directives or other mixins.", pstate);
-      }
-
-    }
     std::string which_str(lexed);
     if (!lex< identifier >()) error("invalid name in " + which_str + " definition", pstate);
     std::string name(Util::normalize_underscores(lexed));
@@ -509,6 +493,7 @@ namespace Sass {
     stack.pop_back();
     // update for end position
     ruleset->update_pstate(pstate);
+    ruleset->block()->update_pstate(pstate);
     // inherit is_root from parent block
     // need this info for sanity checks
     ruleset->is_root(is_root);
@@ -535,7 +520,14 @@ namespace Sass {
       // try to parse mutliple interpolants
       if (const char* p = find_first_in_interval< exactly<hash_lbrace>, block_comment >(i, end_of_selector)) {
         // accumulate the preceding segment if the position has advanced
-        if (i < p) schema->append(SASS_MEMORY_NEW(String_Constant, pstate, std::string(i, p)));
+        if (i < p) {
+          std::string parsed(i, p);
+          String_Constant_Obj str = SASS_MEMORY_NEW(String_Constant, pstate, parsed);
+          pstate += Offset(parsed);
+          str->update_pstate(pstate);
+          schema->append(&str);
+        }
+
         // check if the interpolation only contains white-space (error out)
         if (peek < sequence < optional_spaces, exactly<rbrace> > >(p+2)) { position = p+2;
           css_error("Invalid CSS", " after ", ": expected expression (e.g. 1px, bold), was ");
@@ -543,12 +535,15 @@ namespace Sass {
         // skip over all nested inner interpolations up to our own delimiter
         const char* j = skip_over_scopes< exactly<hash_lbrace>, exactly<rbrace> >(p + 2, end_of_selector);
         // pass inner expression to the parser to resolve nested interpolations
+        pstate.add(p, p+2);
         Expression_Obj interpolant = Parser::from_c_str(p+2, j, ctx, pstate).parse_list();
         // set status on the list expression
         interpolant->is_interpolant(true);
         // schema->has_interpolants(true);
         // add to the string schema
         schema->append(&interpolant);
+        // advance parser state
+        pstate.add(p+2, j);
         // advance position
         i = j;
       }
@@ -556,9 +551,15 @@ namespace Sass {
       // add the last segment if there is one
       else {
         // make sure to add the last bits of the string up to the end (if any)
-        if (i < end_of_selector) schema->append(SASS_MEMORY_NEW(String_Constant, pstate, std::string(i, end_of_selector)));
+        if (i < end_of_selector) {
+          std::string parsed(i, end_of_selector);
+          String_Constant_Obj str = SASS_MEMORY_NEW(String_Constant, pstate, parsed);
+          pstate += Offset(parsed);
+          str->update_pstate(pstate);
+          i = end_of_selector;
+          schema->append(&str);
+        }
         // exit loop
-        i = end_of_selector;
       }
     }
     // EO until eos
@@ -568,6 +569,9 @@ namespace Sass {
 
     // update for end position
     selector_schema->update_pstate(pstate);
+    schema->update_pstate(pstate);
+
+    after_token = before_token = pstate;
 
     // return parsed result
     return selector_schema;
@@ -663,6 +667,7 @@ namespace Sass {
 
     String_Ptr reference = 0;
     lex < block_comment >();
+    advanceToNextToken();
     Complex_Selector_Obj sel = SASS_MEMORY_NEW(Complex_Selector, pstate);
 
     // parse the left hand side
@@ -992,6 +997,7 @@ namespace Sass {
       lex < css_comments >(false);
       Declaration_Obj decl = SASS_MEMORY_NEW(Declaration, prop->pstate(), prop, value/*, lex<kwd_important>()*/);
       decl->is_indented(is_indented);
+      decl->update_pstate(pstate);
       return decl;
     }
   }
@@ -1016,16 +1022,6 @@ namespace Sass {
   {
     Expression_Obj key = parse_list();
     List_Obj map = SASS_MEMORY_NEW(List, pstate, 0, SASS_HASH);
-    if (String_Quoted_Ptr str = SASS_MEMORY_CAST(String_Quoted, key)) {
-      if (!str->quote_mark() && !str->is_delayed()) {
-        if (Color_Ptr_Const col = name_to_color(str->value())) {
-          Color_Ptr c = SASS_MEMORY_NEW(Color, col); // copy
-          c->pstate(str->pstate());
-          c->disp(str->value());
-          key = c;
-        }
-      }
-    }
 
     // it's not a map so return the lexed value as a list value
     if (!lex_css< exactly<':'> >())
@@ -1043,16 +1039,6 @@ namespace Sass {
       { break; }
 
       Expression_Obj key = parse_space_list();
-      if (String_Quoted_Ptr str = SASS_MEMORY_CAST(String_Quoted, key)) {
-        if (!str->quote_mark() && !str->is_delayed()) {
-          if (Color_Ptr_Const col = name_to_color(str->value())) {
-            Color_Ptr c = SASS_MEMORY_NEW(Color, col); // copy
-            c->pstate(str->pstate());
-            c->disp(str->value());
-            key = c;
-          }
-        }
-      }
 
       if (!(lex< exactly<':'> >()))
       { css_error("Invalid CSS", " after ", ": expected \":\", was "); }
@@ -1674,8 +1660,9 @@ namespace Sass {
         }
         ex->is_interpolant(true);
         schema->append(ex);
-        // ToDo: no error check here?
-        lex < exactly < rbrace > >();
+        if (!lex < exactly < rbrace > >()) {
+          css_error("Invalid CSS", " after ", ": expected \"}\", was ");
+        }
       }
       // lex some string constants or other valid token
       // Note: [-+] chars are left over from i.e. `#{3}+3`

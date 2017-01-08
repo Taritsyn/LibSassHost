@@ -342,7 +342,7 @@ namespace Sass {
   {
     if (Selector_List_Ptr_Const sl = dynamic_cast<Selector_List_Ptr_Const>(this)) return *sl == rhs;
     if (Simple_Selector_Ptr_Const sp = dynamic_cast<Simple_Selector_Ptr_Const>(this)) return *sp == rhs;
-    throw "invalid selector base classes to compare";
+    throw std::runtime_error("invalid selector base classes to compare");
     return false;
   }
 
@@ -350,7 +350,7 @@ namespace Sass {
   {
     if (Selector_List_Ptr_Const sl = dynamic_cast<Selector_List_Ptr_Const>(this)) return *sl < rhs;
     if (Simple_Selector_Ptr_Const sp = dynamic_cast<Simple_Selector_Ptr_Const>(this)) return *sp < rhs;
-    throw "invalid selector base classes to compare";
+    throw std::runtime_error("invalid selector base classes to compare");
     return false;
   }
 
@@ -703,7 +703,12 @@ namespace Sass {
   bool Pseudo_Selector::operator< (const Pseudo_Selector& rhs) const
   {
     if (is_ns_eq(ns(), rhs.ns()) && name() == rhs.name())
-    { return *(expression()) < *(rhs.expression()); }
+    {
+      String_Obj lhs_ex = expression();
+      String_Obj rhs_ex = rhs.expression();
+      if (rhs_ex && lhs_ex) return *lhs_ex < *rhs_ex;
+      else return lhs_ex < rhs_ex;
+    }
     if (is_ns_eq(ns(), rhs.ns()))
     { return name() < rhs.name(); }
     return ns() < rhs.ns();
