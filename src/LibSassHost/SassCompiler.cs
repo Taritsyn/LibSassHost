@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 
-using LibSassHost.Native;
+using LibSassHost.Internal;
 using LibSassHost.Resources;
+using LibSassHost.Utilities;
 
 namespace LibSassHost
 {
@@ -18,11 +19,6 @@ namespace LibSassHost
 		private IFileManager _fileManager;
 
 		/// <summary>
-		/// Instance of native Sass-compiler
-		/// </summary>
-		private SassNativeCompiler _sassNativeCompiler;
-
-		/// <summary>
 		/// Flag that object is destroyed
 		/// </summary>
 		private bool _disposed;
@@ -33,13 +29,18 @@ namespace LibSassHost
 		private static readonly object _compilationSynchronizer = new object();
 
 
+#if !NETSTANDARD1_3
 		/// <summary>
 		/// Static constructor
 		/// </summary>
 		static SassCompiler()
 		{
-			AssemblyResolver.Initialize();
+			if (Utils.IsWindows())
+			{
+				AssemblyResolver.Initialize();
+			}
 		}
+#endif
 
 		/// <summary>
 		/// Constructs a instance of Sass-compiler
@@ -55,7 +56,6 @@ namespace LibSassHost
 		public SassCompiler(IFileManager fileManager)
 		{
 			_fileManager = fileManager;
-			_sassNativeCompiler = new SassNativeCompiler();
 		}
 
 		/// <summary>
@@ -76,11 +76,13 @@ namespace LibSassHost
 		/// <param name="outputPath">Path to output file</param>
 		/// <param name="options">Compilation options</param>
 		/// <returns>Compilation result</returns>
-		public CompilationResult Compile(string content, string inputPath = null, string outputPath = null, CompilationOptions options = null)
+		public CompilationResult Compile(string content, string inputPath = null, string outputPath = null,
+			CompilationOptions options = null)
 		{
 			if (string.IsNullOrWhiteSpace(content))
 			{
-				throw new ArgumentException(string.Format(Strings.Common_ArgumentIsEmpty, "content"), "content");
+				throw new ArgumentException(
+					string.Format(Strings.Common_ArgumentIsEmpty, "content"), "content");
 			}
 
 			CompilationResult result;
@@ -93,7 +95,7 @@ namespace LibSassHost
 			{
 				BeginCompile(dataContext, inputPath, outputPath, options);
 
-				_sassNativeCompiler.Compile(dataContext);
+				SassCompilerProxy.Compile(dataContext);
 
 				result = EndCompile(dataContext);
 			}
@@ -112,7 +114,8 @@ namespace LibSassHost
 		{
 			if (string.IsNullOrWhiteSpace(inputPath))
 			{
-				throw new ArgumentException(string.Format(Strings.Common_ArgumentIsEmpty, "inputPath"), "inputPath");
+				throw new ArgumentException(
+					string.Format(Strings.Common_ArgumentIsEmpty, "inputPath"), "inputPath");
 			}
 
 			CompilationResult result;
@@ -127,7 +130,7 @@ namespace LibSassHost
 
 				BeginCompile(fileContext, inputPath, outputPath, options);
 
-				_sassNativeCompiler.CompileFile(fileContext);
+				SassCompilerProxy.CompileFile(fileContext);
 
 				result = EndCompile(fileContext);
 			}
@@ -135,7 +138,7 @@ namespace LibSassHost
 			return result;
 		}
 
-		private void BeginCompile(SassContext context, string inputPath, string outputPath, CompilationOptions options)
+		private void BeginCompile(SassContextBase context, string inputPath, string outputPath, CompilationOptions options)
 		{
 			options = options ?? new CompilationOptions();
 
@@ -159,7 +162,7 @@ namespace LibSassHost
 				Indent = GetIndentString(options.IndentType, options.IndentWidth),
 				IsIndentedSyntaxSource = options.IndentedSyntax,
 				LineFeed = GetLineFeedString(options.LineFeedType),
-				OutputStyle = (int)options.OutputStyle,
+				OutputStyle = options.OutputStyle,
 				Precision = options.Precision,
 				OmitSourceMapUrl = options.OmitSourceMapUrl,
 				SourceMapContents = options.SourceMapIncludeContents,
@@ -171,12 +174,12 @@ namespace LibSassHost
 			};
 			context.OutputPath = outputFilePath;
 
-			FileManagerMarshallingProxy.SetFileManager(_fileManager);
+			FileManagerMarshaler.SetFileManager(_fileManager);
 		}
 
-		private CompilationResult EndCompile(SassContext context)
+		private CompilationResult EndCompile(SassContextBase context)
 		{
-			FileManagerMarshallingProxy.UnsetFileManager();
+			FileManagerMarshaler.UnsetFileManager();
 
 			CompilationResult result;
 
@@ -208,7 +211,7 @@ namespace LibSassHost
 
 		private static string GetIndentString(IndentType type, int width)
 		{
-			char character = (type == IndentType.Tab) ? '\t' : ' ';
+			char character = type == IndentType.Tab ? '\t' : ' ';
 			string indent = new string(character, width);
 
 			return indent;
@@ -239,6 +242,17 @@ namespace LibSassHost
 			return lineFeed;
 		}
 
+		#region IDisposable implementation
+
+		/// <summary>
+		/// Destroys object
+		/// </summary>
+		public void Dispose()
+		{
+			Dispose(true /* disposing */);
+			GC.SuppressFinalize(this);
+		}
+
 		/// <summary>
 		/// Destroys object
 		/// </summary>
@@ -252,21 +266,9 @@ namespace LibSassHost
 
 				lock (_compilationSynchronizer)
 				{
-					_sassNativeCompiler = null;
 					_fileManager = null;
 				}
 			}
-		}
-
-		#region IDisposable implementation
-
-		/// <summary>
-		/// Destroys object
-		/// </summary>
-		public void Dispose()
-		{
-			Dispose(true /* disposing */);
-			GC.SuppressFinalize(this);
 		}
 
 		#endregion

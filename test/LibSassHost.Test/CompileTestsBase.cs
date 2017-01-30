@@ -1,12 +1,20 @@
 ﻿using System;
 using System.IO;
+#if NETCOREAPP1_0 || NET451
+
+using Microsoft.Extensions.PlatformAbstractions;
+#endif
 
 using Xunit;
+
+using LibSassHost.Helpers;
 
 namespace LibSassHost.Test
 {
 	public abstract class CompileTestsBase
 	{
+		private readonly string _baseDirectoryPath;
+
 		private readonly string _resourcesDirectoryPath;
 
 		private readonly string _fileExtension;
@@ -18,6 +26,25 @@ namespace LibSassHost.Test
 
 		protected CompileTestsBase(SyntaxType syntaxType)
 		{
+#if NETCOREAPP1_0
+			TestsInitializer.Initialize();
+
+#endif
+#if NETCOREAPP1_0 || NET451
+			var appEnv = PlatformServices.Default.Application;
+			_baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath,
+#if NETCOREAPP1_0
+				"../../../"
+#else
+				"../../../../"
+#endif
+			);
+#elif NET40
+			_baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../");
+#else
+#error No implementation for this target
+#endif
+
 			if (syntaxType == SyntaxType.Sass)
 			{
 				_fileExtension = ".sass";
@@ -35,14 +62,13 @@ namespace LibSassHost.Test
 				throw new NotSupportedException();
 			}
 
-			_resourcesDirectoryPath = Path.GetFullPath(
-				Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"../../Resources/"));
+			_resourcesDirectoryPath = Path.GetFullPath(Path.Combine(_baseDirectoryPath, @"Resources"));
 		}
 
 
 		private static string GetCanonicalPath(string path)
 		{
-			return Path.GetFullPath(path).Replace("\\", "/");
+			return PathHelpers.ProcessBackSlashes(Path.GetFullPath(path));
 		}
 
 		[Fact]

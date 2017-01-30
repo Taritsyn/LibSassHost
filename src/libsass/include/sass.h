@@ -10,6 +10,7 @@
 #include <sass/functions.h>
 #include <sass/context.h>
 #include <sass2scss.h>
+#include <file_manager.h> //LSH+
 
 #endif
 

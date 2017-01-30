@@ -1,0 +1,43 @@
+﻿{
+	"version": "1.0.0-alpha1",
+
+	"dependencies": {
+		"dotnet-test-xunit": "2.2.0-preview2-build1029",
+		"Microsoft.Extensions.PlatformAbstractions": "1.0.0",
+		"Microsoft.NETCore.Platforms": "1.0.2",
+		"xunit": "2.2.0-beta4-build3444",
+		"LibSassHost": "1.0.0-alpha1",
+		"LibSassHost.Native.win-x64": "1.0.0-alpha1",
+		"LibSassHost.Native.win-x86": "1.0.0-alpha1"
+	},
+
+	"buildOptions": {
+		"warningsAsErrors": true,
+		"emitEntryPoint": false
+	},
+
+	"testRunner": "xunit",
+
+	"frameworks": {
+		"netcoreapp1.0": {
+			"imports": [
+				"dnxcore50",
+				"portable-net451+win8"
+			],
+			"dependencies": {
+				"Microsoft.NETCore.App": {
+					"version": "1.0.3",
+					"type": "platform"
+				},
+				"System.Text.Encoding.CodePages": "4.0.1"
+			}
+		},
+		"net451": {
+			"buildOptions": {
+				"compile": {
+					"exclude": [ "TestsInitializer.cs" ]
+				}
+			}
+		}
+	}
+}

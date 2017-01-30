@@ -19,7 +19,7 @@
 #include <sys/stat.h>
 */
 #include "file.hpp"
-#include "file_manager.h" //LSH+
+#include "file_manager.hpp" //LSH+
 #include "context.hpp"
 #include "prelexer.hpp"
 #include "utf8_string.hpp"

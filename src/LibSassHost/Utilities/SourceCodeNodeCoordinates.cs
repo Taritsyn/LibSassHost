@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Source code node coordinates
 	/// </summary>
-	public struct SourceCodeNodeCoordinates
+	internal struct SourceCodeNodeCoordinates
 	{
 		/// <summary>
 		/// Line number

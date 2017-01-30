@@ -7,7 +7,7 @@
 #include <typeinfo>
 
 #include "file.hpp"
-#include "file_manager.h" //LSH+
+#include "file_manager.hpp" //LSH+
 #include "eval.hpp"
 #include "ast.hpp"
 #include "bind.hpp"

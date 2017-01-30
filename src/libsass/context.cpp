@@ -14,7 +14,7 @@
 #include "constants.hpp"
 #include "parser.hpp"
 #include "file.hpp"
-#include "file_manager.h" //LSH+
+#include "file_manager.hpp" //LSH+
 #include "inspect.hpp"
 #include "output.hpp"
 #include "expand.hpp"

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace LibSassHost.Utilities
@@ -6,7 +7,7 @@ namespace LibSassHost.Utilities
 	/// <summary>
 	/// Extensions for StringBuilder
 	/// </summary>
-	public static class StringBuilderExtensions
+	internal static class StringBuilderExtensions
 	{
 		/// <summary>
 		/// Regular expression for format placeholder
@@ -15,13 +16,18 @@ namespace LibSassHost.Utilities
 			new Regex(@"\{[0-9]\}", RegexOptions.Multiline);
 
 		/// <summary>
-		/// Appends the default line terminator to the end of the current System.Text.StringBuilder object
+		/// Appends the default line terminator to the end of the current <see cref="StringBuilder"/> instance
 		/// </summary>
-		/// <param name="sb">Object StringBuilder</param>
-		/// <returns>Object StringBuilder</returns>
-		public static StringBuilder AppendFormatLine(this StringBuilder sb)
+		/// <param name="source">Instance of <see cref="StringBuilder"/></param>
+		/// <returns>Instance of <see cref="StringBuilder"/></returns>
+		public static StringBuilder AppendFormatLine(this StringBuilder source)
 		{
-			return sb.AppendLine();
+			if (source == null)
+			{
+				throw new ArgumentNullException("source");
+			}
+
+			return source.AppendLine();
 		}
 
 		/// <summary>
@@ -30,18 +36,23 @@ namespace LibSassHost.Utilities
 		/// Each format item is replaced by the string representation of a corresponding
 		/// argument in a parameter array.
 		/// </summary>
-		/// <param name="sb">Object StringBuilder</param>
+		/// <param name="source">Instance of <see cref="StringBuilder"/></param>
 		/// <param name="format">A composite format string</param>
 		/// <param name="args">An array of objects to format</param>
-		/// <returns>Object StringBuilder</returns>
-		public static StringBuilder AppendFormatLine(this StringBuilder sb, string format, params object[] args)
+		/// <returns>Instance of <see cref="StringBuilder"/></returns>
+		public static StringBuilder AppendFormatLine(this StringBuilder source, string format, params object[] args)
 		{
-			if (_formatPlaceholderRegExp.IsMatch(format))
+			if (source == null)
 			{
-				return sb.AppendFormat(format, args).AppendLine();
+				throw new ArgumentNullException("source");
 			}
 
-			return sb.AppendLine(format.Replace("{{", "{").Replace("}}", "}"));
+			if (_formatPlaceholderRegExp.IsMatch(format))
+			{
+				return source.AppendFormat(format, args).AppendLine();
+			}
+
+			return source.AppendLine(format.Replace("{{", "{").Replace("}}", "}"));
 		}
 	}
 }

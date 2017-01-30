@@ -1,9 +1,11 @@
-﻿namespace LibSassHost.Utilities
+﻿using System;
+
+namespace LibSassHost.Utilities
 {
 	/// <summary>
 	/// Extensions for String
 	/// </summary>
-	public static class StringExtensions
+	internal static class StringExtensions
 	{
 		/// <summary>
 		/// Replaces tabs by specified number of spaces
@@ -13,6 +15,11 @@
 		/// <returns>Processed string value</returns>
 		public static string TabsToSpaces(this string source, int tabSize)
 		{
+			if (source == null)
+			{
+				throw new ArgumentNullException("source");
+			}
+
 			string result = source.Replace("\t", "".PadRight(tabSize));
 
 			return result;

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
+using LibSassHost.Helpers;
 using LibSassHost.Resources;
 
 namespace LibSassHost
@@ -66,7 +67,7 @@ namespace LibSassHost
 			string defaultDirectoryName = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
 
 			// Convert back slashes to forward slashes
-			defaultDirectoryName = defaultDirectoryName.Replace('\\', '/');
+			defaultDirectoryName = PathHelpers.ProcessBackSlashes(defaultDirectoryName);
 
 			return defaultDirectoryName;
 		}

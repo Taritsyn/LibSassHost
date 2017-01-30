@@ -65,6 +65,7 @@
     <ClInclude Include="$(LIBSASS_HEADERS_DIR)\utf8_string.hpp" />
     <ClInclude Include="$(LIBSASS_HEADERS_DIR)\util.hpp" />
     <ClInclude Include="$(LIBSASS_HEADERS_DIR)\values.hpp" />
+    <ClInclude Include="$(LIBSASS_HEADERS_DIR)\file_manager.hpp" />
   </ItemGroup>
   <ItemGroup Label="LibSass Sources">
     <ClCompile Include="$(LIBSASS_SRC_DIR)\ast.cpp" />
