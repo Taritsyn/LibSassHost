@@ -1,12 +1,18 @@
 # LibSass Host for .NET
 
-.NET wrapper around the [libSass](http://sass-lang.com/libsass) library with the ability to support a virtual file system. For correct working of the LibSass Host require assemblies `msvcp120.dll` and `msvcr120.dll` from the [Visual C++ Redistributable Packages for Visual Studio 2013](http://www.microsoft.com/en-us/download/details.aspx?id=40784).
+.NET wrapper around the [libSass](http://sass-lang.com/libsass) library with the ability to support a virtual file system.
 
 ## Installation
-This library can be installed through NuGet - [http://nuget.org/packages/LibSassHost](http://nuget.org/packages/LibSassHost).
+This library can be installed through NuGet:
+
+ * [LibSass Host](http://nuget.org/packages/LibSassHost/1.0.0-alpha1)
+   * [Windows (x86)](http://nuget.org/packages/LibSassHost.Native.win-x86/1.0.0-alpha1)<sup>*</sup>
+   * [Windows (x64)](http://nuget.org/packages/LibSassHost.Native.win-x64/1.0.0-alpha1)<sup>*</sup>
+
+<sup>* - Requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](http://www.microsoft.com/en-us/download/details.aspx?id=48145).<sup>
 
 ## Usage
-The main difference between this library from other .NET wrappers around the libSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. When you create an instance of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class, you can pass an file manager through the constructor:
+The main difference between this library from other .NET wrappers around the libSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. When you create an instance of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class, you can pass an file manager through the constructor:
 
 ```csharp
 using (var compiler = new SassCompiler(new CustomFileManager()))
