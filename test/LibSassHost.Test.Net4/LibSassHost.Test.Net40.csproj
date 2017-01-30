@@ -58,36 +58,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompileTestsBase.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScssCompileTests.cs" />
-    <Compile Include="SassCompileTests.cs" />
-    <Compile Include="SyntaxType.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\LibSassHost\LibSassHost.Net40.csproj">
+    <ProjectReference Include="..\..\src\LibSassHost.Net4\LibSassHost.Net40.csproj">
       <Project>{6f97eacf-4401-4aed-9bf9-41d5e1be4f86}</Project>
-      <Name>LibSassHost</Name>
+      <Name>LibSassHost.Net40</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Resources\import\sass\base.sass" />
-    <None Include="Resources\import\sass\_reset.sass" />
-    <None Include="Resources\variables\sass\style.sass" />
-    <None Include="Resources\import\scss\base.scss" />
-    <None Include="Resources\import\scss\_reset.scss" />
-    <None Include="Resources\variables\scss\style.scss" />
-    <None Include="Resources\юникод\sass\символы.sass" />
-    <None Include="Resources\юникод\scss\символы.scss" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\import\base.css" />
-    <Content Include="Resources\variables\style.css" />
-    <Content Include="Resources\юникод\символы.css" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\LibSassHost.Test\CompileTestsBase.cs">
+      <Link>CompileTestsBase.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost.Test\Properties\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost.Test\SassCompileTests.cs">
+      <Link>SassCompileTests.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost.Test\ScssCompileTests.cs">
+      <Link>ScssCompileTests.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost.Test\SyntaxType.cs">
+      <Link>SyntaxType.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost.Test\TestsInitializer.cs">
+      <Link>TestsInitializer.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

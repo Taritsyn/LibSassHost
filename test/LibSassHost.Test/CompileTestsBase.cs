@@ -13,9 +13,7 @@ namespace LibSassHost.Test
 {
 	public abstract class CompileTestsBase
 	{
-		private readonly string _baseDirectoryPath;
-
-		private readonly string _resourcesDirectoryPath;
+		private readonly string _filesDirectoryPath;
 
 		private readonly string _fileExtension;
 
@@ -32,7 +30,7 @@ namespace LibSassHost.Test
 #endif
 #if NETCOREAPP1_0 || NET451
 			var appEnv = PlatformServices.Default.Application;
-			_baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath,
+			string baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath,
 #if NETCOREAPP1_0
 				"../../../"
 #else
@@ -40,7 +38,7 @@ namespace LibSassHost.Test
 #endif
 			);
 #elif NET40
-			_baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../");
+			string baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../");
 #else
 #error No implementation for this target
 #endif
@@ -62,7 +60,7 @@ namespace LibSassHost.Test
 				throw new NotSupportedException();
 			}
 
-			_resourcesDirectoryPath = Path.GetFullPath(Path.Combine(_baseDirectoryPath, @"Resources"));
+			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "../SharedFiles/"));
 		}
 
 
@@ -75,9 +73,9 @@ namespace LibSassHost.Test
 		public virtual void CodeCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("variables/{0}/style{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "variables/style.css");
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "variables/style.css");
 
 			string inputCode = File.ReadAllText(inputFilePath);
 			string targetOutputCode = File.ReadAllText(outputFilePath);
@@ -105,11 +103,11 @@ namespace LibSassHost.Test
 		public virtual void CodeWithImportCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("import/{0}/base{1}", _subfolderName, _fileExtension));
-			string importedFilePath = Path.Combine(_resourcesDirectoryPath,
+			string importedFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("import/{0}/_reset{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "import/base.css");
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "import/base.css");
 
 			string inputCode = File.ReadAllText(inputFilePath);
 			string targetOutputCode = File.ReadAllText(outputFilePath);
@@ -141,9 +139,9 @@ namespace LibSassHost.Test
 		public virtual void CodeWithUnicodeCharactersCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("юникод/{0}/символы{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "юникод/символы.css");
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "юникод/символы.css");
 
 			string inputCode = File.ReadAllText(inputFilePath);
 			string targetOutputCode = File.ReadAllText(outputFilePath);
@@ -171,9 +169,9 @@ namespace LibSassHost.Test
 		public virtual void FileCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("variables/{0}/style{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "variables/style.css");
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "variables/style.css");
 
 			string targetOutputCode = File.ReadAllText(outputFilePath);
 
@@ -198,11 +196,11 @@ namespace LibSassHost.Test
 		public virtual void FileWithImportCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("import/{0}/base{1}", _subfolderName, _fileExtension));
-			string importedFilePath = Path.Combine(_resourcesDirectoryPath,
+			string importedFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("import/{0}/_reset{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "import/base.css");
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "import/base.css");
 
 			string targetOutputCode = File.ReadAllText(outputFilePath);
 
@@ -233,9 +231,9 @@ namespace LibSassHost.Test
 		public virtual void FileWithUnicodeCharactersCompilationIsCorrect()
 		{
 			// Arrange
-			string inputFilePath = Path.Combine(_resourcesDirectoryPath,
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("юникод/{0}/символы{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_resourcesDirectoryPath, "юникод/символы.css");
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "юникод/символы.css");
 
 			string targetOutputCode = File.ReadAllText(outputFilePath);
 

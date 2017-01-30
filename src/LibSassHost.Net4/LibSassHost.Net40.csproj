@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6F97EACF-4401-4AED-9BF9-41D5E1BE4F86}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LibSassHost</RootNamespace>
+    <AssemblyName>LibSassHost</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\tools\Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\lib\win-x64\libsass.dll">
+      <Link>x64\libsass.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\tools\Key.snk">
+      <Link>Key.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\lib\win-x86\libsass.dll">
+      <Link>x86\libsass.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\LibSassHost\AssemblyResolver.cs">
+      <Link>AssemblyResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\CompilationOptions.cs">
+      <Link>CompilationOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\CompilationResult.cs">
+      <Link>CompilationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\FileManager.cs">
+      <Link>FileManager.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Helpers\MarshallingHelpers.cs">
+      <Link>Helpers\MarshallingHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Helpers\PathHelpers.cs">
+      <Link>Helpers\PathHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Helpers\SassErrorHelpers.cs">
+      <Link>Helpers\SassErrorHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\IFileManager.cs">
+      <Link>IFileManager.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\IndentType.cs">
+      <Link>IndentType.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\FileManagerMarshaler.cs">
+      <Link>Internal\FileManagerMarshaler.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_String.cs">
+      <Link>Internal\Native\Func_String.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_String_Boolean.cs">
+      <Link>Internal\Native\Func_String_Boolean.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_String_String.cs">
+      <Link>Internal\Native\Func_String_String.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Sass_Api.cs">
+      <Link>Internal\Native\Sass_Api.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Sass_Context.cs">
+      <Link>Internal\Native\Sass_Context.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Sass_Data_Context.cs">
+      <Link>Internal\Native\Sass_Data_Context.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Sass_File_Context.cs">
+      <Link>Internal\Native\Sass_File_Context.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Sass_Options.cs">
+      <Link>Internal\Native\Sass_Options.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Sass_Output_Style.cs">
+      <Link>Internal\Native\Sass_Output_Style.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\size_t.cs">
+      <Link>Internal\Native\size_t.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Utf8_String.cs">
+      <Link>Internal\Native\Utf8_String.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Utf8_String_Array.cs">
+      <Link>Internal\Native\Utf8_String_Array.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\SassCompilerProxy.cs">
+      <Link>Internal\SassCompilerProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\SassContextBase.cs">
+      <Link>Internal\SassContextBase.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\SassDataContext.cs">
+      <Link>Internal\SassDataContext.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\SassErrorInfo.cs">
+      <Link>Internal\SassErrorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\SassFileContext.cs">
+      <Link>Internal\SassFileContext.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\SassOptions.cs">
+      <Link>Internal\SassOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\LineFeedType.cs">
+      <Link>LineFeedType.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\OutputStyle.cs">
+      <Link>OutputStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Properties\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Resources\Strings.Designer.cs">
+      <Link>Resources\Strings.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\SassCompiler.cs">
+      <Link>SassCompiler.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\SassСompilationException.cs">
+      <Link>SassСompilationException.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Utilities\SourceCodeNavigator.cs">
+      <Link>Utilities\SourceCodeNavigator.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Utilities\SourceCodeNodeCoordinates.cs">
+      <Link>Utilities\SourceCodeNodeCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Utilities\StringBuilderExtensions.cs">
+      <Link>Utilities\StringBuilderExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Utilities\StringExtensions.cs">
+      <Link>Utilities\StringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Utilities\Utils.cs">
+      <Link>Utilities\Utils.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\LibSassHost\Resources\Strings.resx">
+      <Link>Resources\Strings.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>SET VS_PROJECT_DIR=$(ProjectDir)..\LibSassHost
+
+cd "$(ProjectDir)..\..\"
+build resx</PreBuildEvent>
+  </PropertyGroup>
+</Project>
