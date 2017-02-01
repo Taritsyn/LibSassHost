@@ -158,11 +158,17 @@
     <Compile Include="..\LibSassHost\SassСompilationException.cs">
       <Link>SassСompilationException.cs</Link>
     </Compile>
+    <Compile Include="..\LibSassHost\Utilities\InterlockedStatedFlag.cs">
+      <Link>Utilities\InterlockedStatedFlag.cs</Link>
+    </Compile>
     <Compile Include="..\LibSassHost\Utilities\SourceCodeNavigator.cs">
       <Link>Utilities\SourceCodeNavigator.cs</Link>
     </Compile>
     <Compile Include="..\LibSassHost\Utilities\SourceCodeNodeCoordinates.cs">
       <Link>Utilities\SourceCodeNodeCoordinates.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Utilities\StatedFlag.cs">
+      <Link>Utilities\StatedFlag.cs</Link>
     </Compile>
     <Compile Include="..\LibSassHost\Utilities\StringBuilderExtensions.cs">
       <Link>Utilities\StringBuilderExtensions.cs</Link>

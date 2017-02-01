@@ -14,6 +14,11 @@ namespace LibSassHost
 	public sealed class SassCompiler : IDisposable
 	{
 		/// <summary>
+		/// Synchronizer of compilation
+		/// </summary>
+		private static readonly object _compilationSynchronizer = new object();
+
+		/// <summary>
 		/// Instance of file manager
 		/// </summary>
 		private IFileManager _fileManager;
@@ -21,12 +26,7 @@ namespace LibSassHost
 		/// <summary>
 		/// Flag that object is destroyed
 		/// </summary>
-		private bool _disposed;
-
-		/// <summary>
-		/// Synchronizer of compilation
-		/// </summary>
-		private static readonly object _compilationSynchronizer = new object();
+		private InterlockedStatedFlag _disposedFlag = new InterlockedStatedFlag();
 
 
 #if !NETSTANDARD1_3
@@ -40,33 +40,38 @@ namespace LibSassHost
 				AssemblyResolver.Initialize();
 			}
 		}
-#endif
 
+#endif
 		/// <summary>
-		/// Constructs a instance of Sass-compiler
+		/// Constructs an instance of Sass-compiler
 		/// </summary>
 		public SassCompiler()
 			: this(FileManager.Current)
 		{ }
 
 		/// <summary>
-		/// Constructs a instance of Sass-compiler
+		/// Constructs an instance of Sass-compiler
 		/// </summary>
 		/// <param name="fileManager">File manager</param>
 		public SassCompiler(IFileManager fileManager)
 		{
+			if (fileManager == null)
+			{
+				throw new ArgumentNullException(
+					"fileManager", string.Format(Strings.Common_ArgumentIsNull, "fileManager"));
+			}
+
 			_fileManager = fileManager;
 		}
 
-		/// <summary>
-		/// Destructs a instance of Sass-compiler
-		/// </summary>
-		~SassCompiler()
+
+		private void VerifyNotDisposed()
 		{
-			Dispose(false);
+			if (_disposedFlag.IsSet())
+			{
+				throw new ObjectDisposedException(ToString());
+			}
 		}
-
-
 
 		/// <summary>
 		/// "Compiles" a Sass-code to CSS-code
@@ -79,26 +84,35 @@ namespace LibSassHost
 		public CompilationResult Compile(string content, string inputPath = null, string outputPath = null,
 			CompilationOptions options = null)
 		{
+			VerifyNotDisposed();
+
+			if (content == null)
+			{
+				throw new ArgumentNullException(
+					"content", string.Format(Strings.Common_ArgumentIsNull, "content"));
+			}
+
 			if (string.IsNullOrWhiteSpace(content))
 			{
 				throw new ArgumentException(
 					string.Format(Strings.Common_ArgumentIsEmpty, "content"), "content");
 			}
 
-			CompilationResult result;
 			var dataContext = new SassDataContext
 			{
 				SourceString = content
 			};
 
+			BeginCompile(dataContext, inputPath, outputPath, options);
+
 			lock (_compilationSynchronizer)
 			{
-				BeginCompile(dataContext, inputPath, outputPath, options);
-
+				FileManagerMarshaler.SetFileManager(_fileManager);
 				SassCompilerProxy.Compile(dataContext);
-
-				result = EndCompile(dataContext);
+				FileManagerMarshaler.UnsetFileManager();
 			}
+
+			CompilationResult result = EndCompile(dataContext);
 
 			return result;
 		}
@@ -110,30 +124,41 @@ namespace LibSassHost
 		/// <param name="outputPath">Path to output file</param>
 		/// <param name="options">Compilation options</param>
 		/// <returns>Compilation result</returns>
-		public CompilationResult CompileFile(string inputPath, string outputPath = null, CompilationOptions options = null)
+		public CompilationResult CompileFile(string inputPath, string outputPath = null,
+			CompilationOptions options = null)
 		{
+			VerifyNotDisposed();
+
+			if (inputPath == null)
+			{
+				throw new ArgumentNullException(
+					"inputPath", string.Format(Strings.Common_ArgumentIsNull, "inputPath"));
+			}
+
 			if (string.IsNullOrWhiteSpace(inputPath))
 			{
 				throw new ArgumentException(
 					string.Format(Strings.Common_ArgumentIsEmpty, "inputPath"), "inputPath");
 			}
 
-			CompilationResult result;
+			if (!_fileManager.FileExists(inputPath))
+			{
+				throw new FileNotFoundException(
+					string.Format(Strings.Common_FileNotExist, inputPath), inputPath);
+			}
+
 			var fileContext = new SassFileContext();
+
+			BeginCompile(fileContext, inputPath, outputPath, options);
 
 			lock (_compilationSynchronizer)
 			{
-				if (!_fileManager.FileExists(inputPath))
-				{
-					throw new FileNotFoundException(string.Format(Strings.Common_FileNotExist, inputPath), inputPath);
-				}
-
-				BeginCompile(fileContext, inputPath, outputPath, options);
-
+				FileManagerMarshaler.SetFileManager(_fileManager);
 				SassCompilerProxy.CompileFile(fileContext);
-
-				result = EndCompile(fileContext);
+				FileManagerMarshaler.UnsetFileManager();
 			}
+
+			CompilationResult result = EndCompile(fileContext);
 
 			return result;
 		}
@@ -173,14 +198,10 @@ namespace LibSassHost
 				SourceComments = options.SourceComments
 			};
 			context.OutputPath = outputFilePath;
-
-			FileManagerMarshaler.SetFileManager(_fileManager);
 		}
 
 		private CompilationResult EndCompile(SassContextBase context)
 		{
-			FileManagerMarshaler.UnsetFileManager();
-
 			CompilationResult result;
 
 			SassErrorInfo error = context.Error;
@@ -249,25 +270,9 @@ namespace LibSassHost
 		/// </summary>
 		public void Dispose()
 		{
-			Dispose(true /* disposing */);
-			GC.SuppressFinalize(this);
-		}
-
-		/// <summary>
-		/// Destroys object
-		/// </summary>
-		/// <param name="disposing">Flag, allowing destruction of
-		/// managed objects contained in fields of class</param>
-		private void Dispose(bool disposing)
-		{
-			if (!_disposed)
+			if (_disposedFlag.Set())
 			{
-				_disposed = true;
-
-				lock (_compilationSynchronizer)
-				{
-					_fileManager = null;
-				}
+				_fileManager = null;
 			}
 		}
 

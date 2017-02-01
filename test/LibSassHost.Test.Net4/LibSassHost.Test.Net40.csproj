@@ -88,9 +88,6 @@
     <Compile Include="..\LibSassHost.Test\SyntaxType.cs">
       <Link>SyntaxType.cs</Link>
     </Compile>
-    <Compile Include="..\LibSassHost.Test\TestsInitializer.cs">
-      <Link>TestsInitializer.cs</Link>
-    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
