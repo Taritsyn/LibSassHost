@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-                 README file for LibSass Host for .Net v1.0.0 Alpha 1
+                 README file for LibSass Host for .Net v1.0.0 Alpha 2
 
    --------------------------------------------------------------------------------
 
@@ -20,15 +20,15 @@
 
     * LibSassHost.Native.win-x86
     * LibSassHost.Native.win-x64
+    * LibSassHost.Native.debian-x64
+    * LibSassHost.Native.osx-x64
 
    =============
    RELEASE NOTES
    =============
-   1. Added support of .NET Core 1.0.3 and .NET Framework 4.5;
-   2. Native assemblies have been moved to separate packages:
-      LibSassHost.Native.win-x86 and LibSassHost.Native.win-x64;
-   3. Now the libSass for Windows requires `msvcp140.dll` assembly from the Visual
-      C++ Redistributable for Visual Studio 2015.
+   1. `SassСompilationException` class was made serializable;
+   2. Added a packages, that contains a native assemblies for Debian-based Linux
+      (x64) and OS X (x64).
 
    ============
    PROJECT SITE
