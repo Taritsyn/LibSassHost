@@ -3,6 +3,6 @@
 namespace LibSassHost.Internal.Native
 {
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	[return: MarshalAs(UnmanagedType.LPWStr)]
-	public delegate string Func_String_String([MarshalAs(UnmanagedType.LPWStr)]string p);
+	[return: MarshalAs(UnmanagedType.Bool)]
+	internal delegate bool Func_StringUni_Boolean([MarshalAs(UnmanagedType.LPWStr)]string p);
 }

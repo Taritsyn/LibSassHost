@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using LibSassHost.Utilities;
+
 namespace LibSassHost.Helpers
 {
 	/// <summary>
@@ -17,18 +19,25 @@ namespace LibSassHost.Helpers
 				return IntPtr.Zero;
 			}
 
-			string encodedValue;
+			string processedValue;
 			if (value.Length > 0)
 			{
-				byte[] bytes = Encoding.UTF8.GetBytes(value);
-				encodedValue = Encoding.GetEncoding(0).GetString(bytes);
+				if (Utils.IsWindows())
+				{
+					byte[] bytes = Encoding.UTF8.GetBytes(value);
+					processedValue = Encoding.GetEncoding(0).GetString(bytes);
+				}
+				else
+				{
+					processedValue = value;
+				}
 			}
 			else
 			{
-				encodedValue = string.Empty;
+				processedValue = string.Empty;
 			}
 
-			IntPtr ptr = Marshal.StringToHGlobalAnsi(encodedValue);
+			IntPtr ptr = Marshal.StringToHGlobalAnsi(processedValue);
 
 			return ptr;
 		}
@@ -40,17 +49,28 @@ namespace LibSassHost.Helpers
 				return null;
 			}
 
-			var bytes = new List<byte>();
-			int byteIndex = 0;
-			byte byteValue;
+			string result;
 
-			while ((byteValue = Marshal.ReadByte(ptr, byteIndex)) != 0)
+			if (Utils.IsWindows())
 			{
-				bytes.Add(byteValue);
-				byteIndex++;
+				var bytes = new List<byte>();
+				int byteIndex = 0;
+				byte byteValue;
+
+				while ((byteValue = Marshal.ReadByte(ptr, byteIndex)) != 0)
+				{
+					bytes.Add(byteValue);
+					byteIndex++;
+				}
+
+				result = Encoding.UTF8.GetString(bytes.ToArray());
+			}
+			else
+			{
+				result = Marshal.PtrToStringAnsi(ptr);
 			}
 
-			return Encoding.UTF8.GetString(bytes.ToArray());
+			return result;
 		}
 
 		public static string[] PtrToStringArray(IntPtr ptr)

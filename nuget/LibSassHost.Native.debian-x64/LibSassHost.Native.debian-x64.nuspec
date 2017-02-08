@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
-		<id>LibSassHost.Native.win-x86</id>
+		<id>LibSassHost.Native.debian-x64</id>
 		<version>1.0.0-alpha2</version>
-		<title>LibSass Host Native for Windows x86</title>
+		<title>LibSass Host Native for Debian (x64)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
 		<licenseUrl>http://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
 		<projectUrl>http://github.com/Taritsyn/LibSassHost</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>This package complements the LibSassHost package and contains the native implementation of libSass version 3.4.3 for Windows (x86).
+		<description>This package complements the LibSassHost package and contains the native implementation of libSass version 3.4.3 for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint).
 
-For correct working of the libSass require `msvcp140.dll` assembly from the Visual C++ Redistributable for Visual Studio 2015.</description>
-		<summary>This package complements the LibSassHost package and contains the native implementation of libSass version 3.4.3 for Windows (x86).</summary>
+This package is only compatible with .NET Core.</description>
+		<summary>This package complements the LibSassHost package and contains the native implementation of libSass version 3.4.3 for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint).</summary>
 		<copyright>Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
 		<language>en-US</language>
-		<tags>libSass Sass SCSS CSS Windows x86</tags>
+		<tags>libSass Sass SCSS CSS Debian Ubuntu LinuxMint x64</tags>
 	</metadata>
 	<files>
 		<file src="**\*.*" exclude="build-package.cmd" />

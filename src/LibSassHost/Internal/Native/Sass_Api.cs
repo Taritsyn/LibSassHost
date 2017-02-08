@@ -151,20 +151,36 @@ namespace LibSassHost.Internal.Native
 
 		#region Setters for File_Manager delegates
 
-		[DllImport(DllName, CharSet = CharSet.Unicode)]
-		internal static extern void sass_file_manager_set_get_current_directory_delegate(Func_String del);
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_get_current_directory_delegate", CharSet = CharSet.Ansi)]
+		internal static extern void sass_file_manager_set_get_current_directory_delegate_utf8(Func_StringAnsi del);
 
-		[DllImport(DllName, CharSet = CharSet.Unicode)]
-		internal static extern void sass_file_manager_set_file_exists_delegate(Func_String_Boolean del);
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_file_exists_delegate", CharSet = CharSet.Ansi)]
+		internal static extern void sass_file_manager_set_file_exists_delegate_utf8(Func_StringAnsi_Boolean del);
 
-		[DllImport(DllName, CharSet = CharSet.Unicode)]
-		internal static extern void sass_file_manager_set_is_absolute_path_delegate(Func_String_Boolean del);
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_is_absolute_path_delegate", CharSet = CharSet.Ansi)]
+		internal static extern void sass_file_manager_set_is_absolute_path_delegate_utf8(Func_StringAnsi_Boolean del);
 
-		[DllImport(DllName, CharSet = CharSet.Unicode)]
-		internal static extern void sass_file_manager_set_to_absolute_path_delegate(Func_String_String del);
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_to_absolute_path_delegate", CharSet = CharSet.Ansi)]
+		internal static extern void sass_file_manager_set_to_absolute_path_delegate_utf8(Func_StringAnsi_StringAnsi del);
 
-		[DllImport(DllName, CharSet = CharSet.Unicode)]
-		internal static extern void sass_file_manager_set_read_file_delegate(Func_String_String del);
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_read_file_delegate", CharSet = CharSet.Ansi)]
+		internal static extern void sass_file_manager_set_read_file_delegate_utf8(Func_StringAnsi_StringAnsi del);
+
+
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_get_current_directory_delegate", CharSet = CharSet.Unicode)]
+		internal static extern void sass_file_manager_set_get_current_directory_delegate_utf16(Func_StringUni del);
+
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_file_exists_delegate", CharSet = CharSet.Unicode)]
+		internal static extern void sass_file_manager_set_file_exists_delegate_utf16(Func_StringUni_Boolean del);
+
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_is_absolute_path_delegate", CharSet = CharSet.Unicode)]
+		internal static extern void sass_file_manager_set_is_absolute_path_delegate_utf16(Func_StringUni_Boolean del);
+
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_to_absolute_path_delegate", CharSet = CharSet.Unicode)]
+		internal static extern void sass_file_manager_set_to_absolute_path_delegate_utf16(Func_StringUni_StringUni del);
+
+		[DllImport(DllName, EntryPoint = "sass_file_manager_set_read_file_delegate", CharSet = CharSet.Unicode)]
+		internal static extern void sass_file_manager_set_read_file_delegate_utf16(Func_StringUni_StringUni del);
 
 		#endregion
 

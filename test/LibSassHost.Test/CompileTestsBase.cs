@@ -30,18 +30,13 @@ namespace LibSassHost.Test
 #endif
 #if NETCOREAPP1_0 || NET451
 			var appEnv = PlatformServices.Default.Application;
-			string baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath,
-#if NETCOREAPP1_0
-				"../../../"
-#else
-				"../../../../"
-#endif
-			);
+			string baseDirectoryPath = appEnv.ApplicationBasePath;
 #elif NET40
-			string baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../");
+			string baseDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
 #else
 #error No implementation for this target
 #endif
+			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "Files"));
 
 			if (syntaxType == SyntaxType.Sass)
 			{
@@ -59,8 +54,6 @@ namespace LibSassHost.Test
 			{
 				throw new NotSupportedException();
 			}
-
-			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "../SharedFiles/"));
 		}
 
 

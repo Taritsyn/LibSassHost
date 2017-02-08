@@ -21,7 +21,9 @@ namespace Sass
     return _instance;
   }
 
+#ifndef __GNUC__
 #pragma region get_current_directory
+#endif
 
   void File_Manager::set_get_current_directory_delegate(Func_String del)
   {
@@ -40,15 +42,23 @@ namespace Sass
       throw std::runtime_error("The delegate for 'get_current_directory' method is null.");
     }
 
+#ifdef _WIN32
     const wchar_t* wcurrent_directory_name = _get_current_directory_delegate();
     std::string current_directory_name = UTF_8::convert_from_utf16(wcurrent_directory_name);
+#else
+    std::string current_directory_name = _get_current_directory_delegate();
+#endif
 
     return current_directory_name;
   }
 
+#ifndef __GNUC__
 #pragma endregion
+#endif
 
+#ifndef __GNUC__
 #pragma region file_exists
+#endif
 
   void File_Manager::set_file_exists_delegate(Func_String_Boolean del)
   {
@@ -67,16 +77,23 @@ namespace Sass
       throw std::runtime_error("The delegate for 'file_exists' method is null.");
     }
 
+#ifdef _WIN32
     std::wstring wpath = UTF_8::convert_to_utf16(path);
-
     bool result = _file_exists_delegate(wpath.c_str());
+#else
+    bool result = _file_exists_delegate(path.c_str());
+#endif
 
     return result;
   }
 
+#ifndef __GNUC__
 #pragma endregion
+#endif
 
+#ifndef __GNUC__
 #pragma region is_absolute_path
+#endif
 
   void File_Manager::set_is_absolute_path_delegate(Func_String_Boolean del)
   {
@@ -95,16 +112,23 @@ namespace Sass
       throw std::runtime_error("The delegate for 'is_absolute_path' method is null.");
     }
 
+#ifdef _WIN32
     std::wstring wpath = UTF_8::convert_to_utf16(path);
-
     bool result = _is_absolute_path_delegate(wpath.c_str());
+#else
+    bool result = _is_absolute_path_delegate(path.c_str());
+#endif
 
     return result;
   }
 
+#ifndef __GNUC__
 #pragma endregion
+#endif
 
+#ifndef __GNUC__
 #pragma region to_absolute_path
+#endif
 
   void File_Manager::set_to_absolute_path_delegate(Func_String_String del)
   {
@@ -123,16 +147,23 @@ namespace Sass
       throw std::runtime_error("The delegate for 'to_absolute_path' method is null.");
     }
 
+#ifdef _WIN32
     std::wstring wpath = UTF_8::convert_to_utf16(path);
-
     std::string absolute_path = UTF_8::convert_from_utf16(_to_absolute_path_delegate(wpath.c_str()));
+#else
+    std::string absolute_path = _to_absolute_path_delegate(path.c_str());
+#endif
 
     return absolute_path;
   }
 
+#ifndef __GNUC__
 #pragma endregion
+#endif
 
+#ifndef __GNUC__
 #pragma region read_file
+#endif
 
   void File_Manager::set_read_file_delegate(Func_String_String del)
   {
@@ -151,15 +182,20 @@ namespace Sass
       throw std::runtime_error("The delegate for 'read_file' method is null.");
     }
 
+#ifdef _WIN32
     std::wstring wpath = UTF_8::convert_to_utf16(path);
-
     const wchar_t* wcontent = _read_file_delegate(wpath.c_str());
     std::string content = UTF_8::convert_from_utf16(std::wstring(wcontent));
+#else
+    std::string content = _read_file_delegate(path.c_str());
+#endif
 
     return sass_copy_c_string(content.c_str());
   }
 
+#ifndef __GNUC__
 #pragma endregion
+#endif
 
 }
 

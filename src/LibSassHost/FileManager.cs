@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 using LibSassHost.Helpers;
 using LibSassHost.Resources;
+using LibSassHost.Utilities;
 
 namespace LibSassHost
 {
@@ -101,7 +102,8 @@ namespace LibSassHost
 					string.Format(Strings.Common_ArgumentIsNull, "path"));
 			}
 
-			bool result = _pathWithDriveLetterRegex.IsMatch(path);
+			bool result = Utils.IsWindows() ?
+				_pathWithDriveLetterRegex.IsMatch(path) : path.StartsWith("/");
 
 			return result;
 		}

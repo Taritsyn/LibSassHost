@@ -14,58 +14,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C691F6BD-4C8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A66D8CC5-101B-425F-883A-2DFD76068F9D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedFiles", "SharedFiles", "{4E386388-A513-4310-BC63-358586D8A98E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "import", "import", "{97326DEF-1967-4CAF-9A8E-C0375B7F206F}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\import\base.css = test\SharedFiles\import\base.css
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{0714BF81-1987-42EB-84AF-66968780FFC0}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\import\sass\_reset.sass = test\SharedFiles\import\sass\_reset.sass
-		test\SharedFiles\import\sass\base.sass = test\SharedFiles\import\sass\base.sass
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{04F82E14-765D-4E2F-848E-5995452767C2}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\import\scss\_reset.scss = test\SharedFiles\import\scss\_reset.scss
-		test\SharedFiles\import\scss\base.scss = test\SharedFiles\import\scss\base.scss
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "variables", "variables", "{E54B4D27-0A5E-4BBE-9232-FA65DE38D609}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\variables\style.css = test\SharedFiles\variables\style.css
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{E5BD01ED-39F0-403F-8094-9C42B8BFCC2E}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\variables\sass\style.sass = test\SharedFiles\variables\sass\style.sass
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{F4387CF6-ECE1-4FE3-B6E8-408A8D5598C4}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\variables\scss\style.scss = test\SharedFiles\variables\scss\style.scss
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "юникод", "юникод", "{BA3DFF78-0DD4-4876-8649-491DE0E9BA9A}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\юникод\символы.css = test\SharedFiles\юникод\символы.css
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{FF7101FD-2318-4C43-956C-69E7B7BF1B74}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\юникод\sass\символы.sass = test\SharedFiles\юникод\sass\символы.sass
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{0A71239B-005F-4B0B-B6C7-377A53B0D409}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\юникод\scss\символы.scss = test\SharedFiles\юникод\scss\символы.scss
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{08C00CA4-7560-497A-BD97-52545CD9474A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Net40", "src\LibSassHost.Net4\LibSassHost.Net40.csproj", "{6F97EACF-4401-4AED-9BF9-41D5E1BE4F86}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Test.Net40", "test\LibSassHost.Test.Net4\LibSassHost.Test.Net40.csproj", "{45F2E697-055B-45F5-A6DF-9F80B5781D75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Sample.ConsoleApp.Net4", "samples\LibSassHost.Sample.ConsoleApp.Net4\LibSassHost.Sample.ConsoleApp.Net4.csproj", "{106CB6B3-52BB-4FA2-AAC5-460824FCA356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +58,18 @@ Global
 		{45F2E697-055B-45F5-A6DF-9F80B5781D75}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{45F2E697-055B-45F5-A6DF-9F80B5781D75}.Release|Win32.ActiveCfg = Release|Any CPU
 		{45F2E697-055B-45F5-A6DF-9F80B5781D75}.Release|x64.ActiveCfg = Release|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Release|Win32.ActiveCfg = Release|Any CPU
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,15 +77,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6F97EACF-4401-4AED-9BF9-41D5E1BE4F86} = {C691F6BD-4C82-41F4-9342-681F2B0B712B}
 		{45F2E697-055B-45F5-A6DF-9F80B5781D75} = {A66D8CC5-101B-425F-883A-2DFD76068F9D}
-		{4E386388-A513-4310-BC63-358586D8A98E} = {A66D8CC5-101B-425F-883A-2DFD76068F9D}
-		{97326DEF-1967-4CAF-9A8E-C0375B7F206F} = {4E386388-A513-4310-BC63-358586D8A98E}
-		{0714BF81-1987-42EB-84AF-66968780FFC0} = {97326DEF-1967-4CAF-9A8E-C0375B7F206F}
-		{04F82E14-765D-4E2F-848E-5995452767C2} = {97326DEF-1967-4CAF-9A8E-C0375B7F206F}
-		{E54B4D27-0A5E-4BBE-9232-FA65DE38D609} = {4E386388-A513-4310-BC63-358586D8A98E}
-		{E5BD01ED-39F0-403F-8094-9C42B8BFCC2E} = {E54B4D27-0A5E-4BBE-9232-FA65DE38D609}
-		{F4387CF6-ECE1-4FE3-B6E8-408A8D5598C4} = {E54B4D27-0A5E-4BBE-9232-FA65DE38D609}
-		{BA3DFF78-0DD4-4876-8649-491DE0E9BA9A} = {4E386388-A513-4310-BC63-358586D8A98E}
-		{FF7101FD-2318-4C43-956C-69E7B7BF1B74} = {BA3DFF78-0DD4-4876-8649-491DE0E9BA9A}
-		{0A71239B-005F-4B0B-B6C7-377A53B0D409} = {BA3DFF78-0DD4-4876-8649-491DE0E9BA9A}
+		{106CB6B3-52BB-4FA2-AAC5-460824FCA356} = {08C00CA4-7560-497A-BD97-52545CD9474A}
 	EndGlobalSection
 EndGlobal

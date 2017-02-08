@@ -1,0 +1,37 @@
+﻿{
+	"version": "1.0.0-alpha2",
+
+	"buildOptions": {
+		"emitEntryPoint": true,
+		"copyToOutput": {
+			"include": "Files/**/*"
+		}
+	},
+
+	"publishOptions": {
+		"include": "Files/**/*"
+	},
+
+	"dependencies": {
+		"Microsoft.Extensions.PlatformAbstractions": "1.0.0",
+		"LibSassHost": "1.0.0-alpha2",
+		"LibSassHost.Native.win-x64": "1.0.0-alpha2",
+		"LibSassHost.Native.win-x86": "1.0.0-alpha2",
+		"LibSassHost.Native.debian-x64": "1.0.0-alpha2",
+		"LibSassHost.Native.osx-x64": "1.0.0-alpha2"
+	},
+
+	"frameworks": {
+		"netcoreapp1.0": {
+			"imports": "dnxcore50",
+			"dependencies": {
+				"Microsoft.NETCore.App": {
+					"type": "platform",
+					"version": "1.0.3"
+				},
+				"System.Text.Encoding.CodePages": "4.0.1"
+			}
+		},
+		"net451": {}
+	}
+}

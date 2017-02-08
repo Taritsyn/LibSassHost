@@ -64,6 +64,50 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\LibSassHost.Test\Files\import\sass\base.sass">
+      <Link>Files\import\sass\base.sass</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\import\sass\_reset.sass">
+      <Link>Files\import\sass\_reset.sass</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\import\scss\base.scss">
+      <Link>Files\import\scss\base.scss</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\import\scss\_reset.scss">
+      <Link>Files\import\scss\_reset.scss</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\import\base.css">
+      <Link>Files\import\base.css</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\variables\sass\style.sass">
+      <Link>Files\variables\sass\style.sass</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\variables\scss\style.scss">
+      <Link>Files\variables\scss\style.scss</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\variables\style.css">
+      <Link>Files\variables\style.css</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\юникод\sass\символы.sass">
+      <Link>Files\юникод\sass\символы.sass</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\юникод\scss\символы.scss">
+      <Link>Files\юникод\scss\символы.scss</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\LibSassHost.Test\Files\юникод\символы.css">
+      <Link>Files\юникод\символы.css</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

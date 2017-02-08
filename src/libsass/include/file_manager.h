@@ -3,9 +3,17 @@
 
 #include <sass/base.h>
 
+#ifdef _WIN32
 typedef bool(__stdcall *Func_String_Boolean)(const wchar_t* p);
 typedef const wchar_t*(__stdcall *Func_String)();
 typedef const wchar_t*(__stdcall *Func_String_String)(const wchar_t* p);
+#else
+#define __stdcall
+
+typedef bool(__stdcall *Func_String_Boolean)(const char* p);
+typedef const char*(__stdcall *Func_String)();
+typedef const char*(__stdcall *Func_String_String)(const char* p);
+#endif
 
 #ifdef __cplusplus
 extern "C" {

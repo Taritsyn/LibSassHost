@@ -3,6 +3,6 @@
 namespace LibSassHost.Internal.Native
 {
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	[return: MarshalAs(UnmanagedType.LPWStr)]
-	public delegate string Func_String();
+	[return: MarshalAs(UnmanagedType.LPStr)]
+	public delegate string Func_StringAnsi_StringAnsi([MarshalAs(UnmanagedType.LPStr)]string p);
 }

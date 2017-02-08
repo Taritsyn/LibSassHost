@@ -86,14 +86,23 @@
     <Compile Include="..\LibSassHost\Internal\FileManagerMarshaler.cs">
       <Link>Internal\FileManagerMarshaler.cs</Link>
     </Compile>
-    <Compile Include="..\LibSassHost\Internal\Native\Func_String.cs">
-      <Link>Internal\Native\Func_String.cs</Link>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_StringAnsi.cs">
+      <Link>Internal\Native\Func_StringAnsi.cs</Link>
     </Compile>
-    <Compile Include="..\LibSassHost\Internal\Native\Func_String_Boolean.cs">
-      <Link>Internal\Native\Func_String_Boolean.cs</Link>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_StringAnsi_Boolean.cs">
+      <Link>Internal\Native\Func_StringAnsi_Boolean.cs</Link>
     </Compile>
-    <Compile Include="..\LibSassHost\Internal\Native\Func_String_String.cs">
-      <Link>Internal\Native\Func_String_String.cs</Link>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_StringAnsi_StringAnsi.cs">
+      <Link>Internal\Native\Func_StringAnsi_StringAnsi.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_StringUni.cs">
+      <Link>Internal\Native\Func_StringUni.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_StringUni_Boolean.cs">
+      <Link>Internal\Native\Func_StringUni_Boolean.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\Internal\Native\Func_StringUni_StringUni.cs">
+      <Link>Internal\Native\Func_StringUni_StringUni.cs</Link>
     </Compile>
     <Compile Include="..\LibSassHost\Internal\Native\Sass_Api.cs">
       <Link>Internal\Native\Sass_Api.cs</Link>
