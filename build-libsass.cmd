@@ -5,65 +5,106 @@ setlocal
 :: Process arguments
 ::--------------------------------------------------------------------------------
 
-:ProcessArgs
+:process-args
 
-set configuration=Release
+set _CONFIGURATION=Release
+set _IS_64_BIT_OS=true
+set _LOG_FILE_NAME=build-libsass.log
+set _VERBOSE=false
 
-:ProcessArg
-if "%1"=="" goto ProcessArgsDone
-if /i "%1"=="--debug" goto SetDebugConfiguration
+:process-arg
+if "%1"=="" goto process-args-done
+if "%1"=="/?" goto print-usage
+if "%1"=="-h" goto print-usage
+if "%1"=="--help" goto print-usage
+if /i "%1"=="-d" goto set-debug-configuration
+if /i "%1"=="--debug" goto set-debug-configuration
+if /i "%1"=="-v" goto set-verbose-output
+if /i "%1"=="--verbose" goto set-verbose-output
 
-:SetDebugConfiguration
-set configuration=Debug
-goto NextArg
+:print-usage
+echo [LibSass Build Script Help]
+echo.
+echo build-libsass.cmd [options]
+echo.
+echo options:
+echo   -d, --debug          Debug build (by default Release build)
+echo   -h, --help           Show help
+echo   -v, --verbose        Display verbose output
+echo.
+echo example:
+echo   build-libsass.cmd
+echo debug build:
+echo   build-libsass.cmd --debug
+echo.
+goto exit
 
-:NextArg
+:set-debug-configuration
+set _CONFIGURATION=Debug
+goto next-arg
+
+:set-verbose-output
+set _VERBOSE=true
+goto next-arg
+
+:next-arg
 shift
-goto ProcessArg
+goto process-arg
 
-:ProcessArgsDone
+:process-args-done
 
 ::--------------------------------------------------------------------------------
 :: Check environment
 ::--------------------------------------------------------------------------------
 
-:CheckMSVS
-if "%VisualStudioVersion%"=="12.0" goto CheckMSVSDone
-if "%VisualStudioVersion%"=="14.0" goto CheckMSVSDone
-echo Error: This script requires a Visual Studio 2013 or 2015 Developer Command
-echo Prompt. Browse to http://www.visualstudio.com for more information.
-goto Exit
-:CheckMSVSDone
+:check-os
+if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" goto check-os-done
+if defined PROCESSOR_ARCHITEW6432 goto check-os-done
+set _IS_64_BIT_OS=false
+echo *** Warning: Your operating system does not support 64-bit build. 
+:check-os-done
+
+:check-vs
+if "%VisualStudioVersion%"=="12.0" goto check-vs-done
+if "%VisualStudioVersion%"=="14.0" goto check-vs-done
+echo *** Error: This script requires a Developer Command Prompt for VS2013 or VS2015.
+goto exit
+:check-vs-done
 
 ::--------------------------------------------------------------------------------
 :: Build
 ::--------------------------------------------------------------------------------
 
-:Build
+:build
 
-:Build32Bit
+set _MSBUILD_ARGS=libsass.sln /p:Configuration=%_CONFIGURATION%
+
+:build-32-bit
 echo Building 32-bit LibSass ...
-msbuild libsass.sln /p:Platform=Win32 /p:Configuration=%configuration% >build.log
-if errorlevel 1 goto Error
-:Build32BitDone
+set _MSBUILD_ARGS=%_MSBUILD_ARGS% /p:Platform=Win32
+if "%_VERBOSE%"=="true" (msbuild %_MSBUILD_ARGS%) else (msbuild %_MSBUILD_ARGS% >%_LOG_FILE_NAME%)
+if errorlevel 1 goto error
+:build-32-bit-done
 
-:Build64Bit
+:build-64-bit
+if "%_IS_64_BIT_OS%"=="false" goto exit
 echo Building 64-bit LibSass ...
-msbuild libsass.sln /p:Platform=x64 /p:Configuration=%configuration% >build.log
-if errorlevel 1 goto Error
-:Build64BitDone
+set _MSBUILD_ARGS=%_MSBUILD_ARGS% /p:Platform=x64
+if "%_VERBOSE%"=="true" (msbuild %_MSBUILD_ARGS%) else (msbuild %_MSBUILD_ARGS% >%_LOG_FILE_NAME%)
+if errorlevel 1 goto error
+:build-64-bit-done
 
-:BuildDone
+:build-done
 
 ::--------------------------------------------------------------------------------
 :: Exit
 ::--------------------------------------------------------------------------------
 
 echo Succeeded!
-goto Exit
+goto exit
 
-:Error
-echo *** THE PREVIOUS STEP FAILED ***
+:error
+echo *** Error: The previous step failed!
 
-:Exit
+:exit
 endlocal
