@@ -14,6 +14,16 @@ namespace LibSassHost
 	public sealed class SassCompiler : IDisposable
 	{
 		/// <summary>
+		/// Version of the libSass library
+		/// </summary>
+		private static readonly Lazy<string> _version = new Lazy<string>(SassCompilerProxy.GetVersion);
+
+		/// <summary>
+		/// Version of Sass language
+		/// </summary>
+		private static readonly Lazy<string> _languageVersion = new Lazy<string>(SassCompilerProxy.GetLanguageVersion);
+
+		/// <summary>
 		/// Synchronizer of compilation
 		/// </summary>
 		private static readonly object _compilationSynchronizer = new object();
@@ -27,6 +37,22 @@ namespace LibSassHost
 		/// Flag that object is destroyed
 		/// </summary>
 		private InterlockedStatedFlag _disposedFlag = new InterlockedStatedFlag();
+
+		/// <summary>
+		/// Gets a version of the libSass library
+		/// </summary>
+		public static string Version
+		{
+			get { return _version.Value; }
+		}
+
+		/// <summary>
+		/// Gets a version of Sass language
+		/// </summary>
+		public static string LanguageVersion
+		{
+			get { return _languageVersion.Value; }
+		}
 
 
 #if !NETSTANDARD1_3

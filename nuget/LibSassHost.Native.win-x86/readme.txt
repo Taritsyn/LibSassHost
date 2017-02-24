@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-          README file for LibSass Host Native for Windows x86 v1.0.0 Alpha 2
+           README file for LibSass Host Native for Windows x86 v1.0.0 Beta 1
 
    --------------------------------------------------------------------------------
 

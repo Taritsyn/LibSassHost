@@ -110,6 +110,8 @@ body {
 
 		private static void WriteOutput(CompilationResult result)
 		{
+			Console.WriteLine("Version: {0}", SassCompiler.Version);
+			Console.WriteLine("Language version: {0}", SassCompiler.LanguageVersion);
 			Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent, Environment.NewLine);
 			Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
 			Console.WriteLine("Included file paths: {0}", string.Join(", ", result.IncludedFilePaths));

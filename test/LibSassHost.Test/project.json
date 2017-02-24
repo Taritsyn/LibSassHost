@@ -7,10 +7,10 @@
 		"Microsoft.NETCore.Platforms": "1.0.2",
 		"xunit": "2.2.0-beta4-build3444",
 		"LibSassHost": "1.0.0-alpha2",
-		"LibSassHost.Native.win-x64": "1.0.0-alpha2",
-		"LibSassHost.Native.win-x86": "1.0.0-alpha2",
-		"LibSassHost.Native.debian-x64": "1.0.0-alpha2",
-		"LibSassHost.Native.osx-x64": "1.0.0-alpha2"
+		"LibSassHost.Native.win-x64": "1.0.0-beta1",
+		"LibSassHost.Native.win-x86": "1.0.0-beta1",
+		"LibSassHost.Native.debian-x64": "1.0.0-beta1",
+		"LibSassHost.Native.osx-x64": "1.0.0-beta1"
 	},
 
 	"buildOptions": {

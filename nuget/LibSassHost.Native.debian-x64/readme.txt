@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-           README file for LibSass Host Native for Debian x64 v1.0.0 Alpha 2
+           README file for LibSass Host Native for Debian x64 v1.0.0 Beta 1
 
    --------------------------------------------------------------------------------
 

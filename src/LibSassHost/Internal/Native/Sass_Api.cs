@@ -9,6 +9,16 @@ namespace LibSassHost.Internal.Native
 	{
 		const string DllName = "libsass";
 
+		#region Version information
+
+		[DllImport(DllName)]
+		internal static extern Utf8_String libsass_version();
+
+		[DllImport(DllName)]
+		internal static extern Utf8_String libsass_language_version();
+
+		#endregion
+
 		#region Create and initialize a specific context
 
 		[DllImport(DllName)]

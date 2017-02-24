@@ -132,6 +132,9 @@
     <Compile Include="..\LibSassHost.Test\SyntaxType.cs">
       <Link>SyntaxType.cs</Link>
     </Compile>
+    <Compile Include="..\LibSassHost.Test\VersionInfoTests.cs">
+      <Link>VersionInfoTests.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

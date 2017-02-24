@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Main" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LIBSASS_VERSION>3.4.3</LIBSASS_VERSION>
     <LIBSASS_SRC_DIR>.\</LIBSASS_SRC_DIR>
     <LIBSASS_HEADERS_DIR>.\</LIBSASS_HEADERS_DIR>
     <LIBSASS_INCLUDES_DIR>.\include</LIBSASS_INCLUDES_DIR>
@@ -9,12 +8,11 @@
   <Target Name="VersionMacros">
     <ItemGroup>
       <ClCompile>
-        <PreprocessorDefinitions>%(PreprocessorDefinitions);LIBSASS_VERSION="$(LIBSASS_VERSION)";</PreprocessorDefinitions>
+        <PreprocessorDefinitions>%(PreprocessorDefinitions);</PreprocessorDefinitions>
       </ClCompile>
     </ItemGroup>
   </Target>
   <Target Name="Main">
-    <Message Text="libsass: $(LIBSASS_VERSION)" />
     <CallTarget Targets="VersionMacros" />
     <CallTarget Targets="Build" />
   </Target>

@@ -4,6 +4,16 @@ namespace LibSassHost.Internal
 {
 	internal static class SassCompilerProxy
 	{
+		public static string GetVersion()
+		{
+			return Sass_Api.libsass_version();
+		}
+
+		public static string GetLanguageVersion()
+		{
+			return Sass_Api.libsass_language_version();
+		}
+
 		public static void Compile(SassDataContext dataContext)
 		{
 			Sass_Data_Context data_ctx = Sass_Api.sass_make_data_context(dataContext.SourceString);
