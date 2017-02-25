@@ -11,18 +11,19 @@ namespace LibSassHost.Utilities
 {
 	internal static class Utils
 	{
-#if !NETSTANDARD1_3
 		/// <summary>
-		/// List of Windows platform identifiers
+		/// Flag indicating whether the current operating system is Windows
 		/// </summary>
-		private static readonly PlatformID[] _windowsPlatformIDs =
+		private static readonly bool _isWindows;
+
+
+		/// <summary>
+		/// Static constructor
+		/// </summary>
+		static Utils()
 		{
-			PlatformID.Win32NT,
-			PlatformID.Win32S,
-			PlatformID.Win32Windows,
-			PlatformID.WinCE
-		};
-#endif
+			_isWindows = InnerIsWindows();
+		}
 
 
 		/// <summary>
@@ -31,10 +32,22 @@ namespace LibSassHost.Utilities
 		/// <returns>true if the operating system is Windows; otherwise, false</returns>
 		public static bool IsWindows()
 		{
+			return _isWindows;
+		}
+
+		private static bool InnerIsWindows()
+		{
 #if NETSTANDARD1_3
 			bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 #else
-			bool isWindows = _windowsPlatformIDs.Contains(Environment.OSVersion.Platform);
+			PlatformID[] windowsPlatformIDs =
+			{
+				PlatformID.Win32NT,
+				PlatformID.Win32S,
+				PlatformID.Win32Windows,
+				PlatformID.WinCE
+			};
+			bool isWindows = windowsPlatformIDs.Contains(Environment.OSVersion.Platform);
 #endif
 
 			return isWindows;
