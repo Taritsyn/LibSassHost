@@ -144,4 +144,14 @@
   <data name="Runtime_AddingDirectoryToDllSearchPathFailed" xml:space="preserve">
     <value>Failed to add the '{0}' directory to the search path used to locate DLLs for the application.</value>
   </data>
+  <data name="Runtime_SassCompilerNotLoaded" xml:space="preserve">
+    <value>During loading of Sass-compiler error has occurred.
+
+Most likely it happened, because failed to load the native implementation of the libSass library. Therefore, you need to choose and install the most appropriate NuGet package(s) for your platform. The following packages are available:
+
+* LibSassHost.Native.win-x86
+* LibSassHost.Native.win-x64
+* LibSassHost.Native.debian-x64
+* LibSassHost.Native.osx-x64</value>
+  </data>
 </root>

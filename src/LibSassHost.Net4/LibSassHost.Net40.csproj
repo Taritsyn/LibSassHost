@@ -164,6 +164,12 @@
     <Compile Include="..\LibSassHost\SassCompiler.cs">
       <Link>SassCompiler.cs</Link>
     </Compile>
+    <Compile Include="..\LibSassHost\SassCompilerLoadException.cs">
+      <Link>SassCompilerLoadException.cs</Link>
+    </Compile>
+    <Compile Include="..\LibSassHost\SassException.cs">
+      <Link>SassException.cs</Link>
+    </Compile>
     <Compile Include="..\LibSassHost\SassСompilationException.cs">
       <Link>SassСompilationException.cs</Link>
     </Compile>

@@ -16,12 +16,12 @@ namespace LibSassHost
 		/// <summary>
 		/// Version of the libSass library
 		/// </summary>
-		private static readonly Lazy<string> _version = new Lazy<string>(SassCompilerProxy.GetVersion);
+		private static readonly string _version;
 
 		/// <summary>
 		/// Version of Sass language
 		/// </summary>
-		private static readonly Lazy<string> _languageVersion = new Lazy<string>(SassCompilerProxy.GetLanguageVersion);
+		private static readonly string _languageVersion;
 
 		/// <summary>
 		/// Synchronizer of compilation
@@ -43,7 +43,7 @@ namespace LibSassHost
 		/// </summary>
 		public static string Version
 		{
-			get { return _version.Value; }
+			get { return _version; }
 		}
 
 		/// <summary>
@@ -51,23 +51,35 @@ namespace LibSassHost
 		/// </summary>
 		public static string LanguageVersion
 		{
-			get { return _languageVersion.Value; }
+			get { return _languageVersion; }
 		}
 
 
-#if !NETSTANDARD1_3
 		/// <summary>
 		/// Static constructor
 		/// </summary>
+		/// <exception cref="SassCompilerLoadException">Failed to load a Sass-compiler.</exception>
 		static SassCompiler()
 		{
+#if !NETSTANDARD1_3
 			if (Utils.IsWindows())
 			{
 				AssemblyResolver.Initialize();
 			}
-		}
 
 #endif
+			try
+			{
+				_version = SassCompilerProxy.GetVersion();
+				_languageVersion = SassCompilerProxy.GetLanguageVersion();
+			}
+			catch (DllNotFoundException e)
+			{
+				throw new SassCompilerLoadException(
+					Strings.Runtime_SassCompilerNotLoaded, e);
+			}
+		}
+
 		/// <summary>
 		/// Constructs an instance of Sass-compiler
 		/// </summary>
@@ -79,6 +91,7 @@ namespace LibSassHost
 		/// Constructs an instance of Sass-compiler
 		/// </summary>
 		/// <param name="fileManager">File manager</param>
+		/// <exception cref="ArgumentNullException" />
 		public SassCompiler(IFileManager fileManager)
 		{
 			if (fileManager == null)
@@ -107,6 +120,10 @@ namespace LibSassHost
 		/// <param name="outputPath">Path to output file</param>
 		/// <param name="options">Compilation options</param>
 		/// <returns>Compilation result</returns>
+		/// <exception cref="ArgumentException"/>
+		/// <exception cref="ArgumentNullException" />
+		/// <exception cref="ObjectDisposedException">Operation is performed on a disposed Sass-compiler.</exception>
+		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
 		public CompilationResult Compile(string content, string inputPath = null, string outputPath = null,
 			CompilationOptions options = null)
 		{
@@ -150,6 +167,11 @@ namespace LibSassHost
 		/// <param name="outputPath">Path to output file</param>
 		/// <param name="options">Compilation options</param>
 		/// <returns>Compilation result</returns>
+		/// <exception cref="ArgumentException"/>
+		/// <exception cref="ArgumentNullException" />
+		/// <exception cref="FileNotFoundException">Input file not exist.</exception>
+		/// <exception cref="ObjectDisposedException">Operation is performed on a disposed Sass-compiler.</exception>
+		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
 		public CompilationResult CompileFile(string inputPath, string outputPath = null,
 			CompilationOptions options = null)
 		{

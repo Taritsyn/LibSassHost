@@ -131,6 +131,14 @@ namespace LibSassHost.Resources
 			get { return GetString("Runtime_AddingDirectoryToDllSearchPathFailed"); }
 		}
 
+		/// <summary>
+		/// Looks up a localized string similar to "During loading of Sass-compiler error has occurred. Most likely it happened, because failed to load..."
+		/// </summary>
+		public static string Runtime_SassCompilerNotLoaded
+		{
+			get { return GetString("Runtime_SassCompilerNotLoaded"); }
+		}
+
 			private static string GetString(string name)
 			{
 				string value = ResourceManager.GetString(name, _resourceCulture);

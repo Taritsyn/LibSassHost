@@ -12,7 +12,7 @@ namespace LibSassHost
 #if !NETSTANDARD1_3
 	[Serializable]
 #endif
-	public sealed class SassСompilationException : Exception
+	public sealed class SassСompilationException : SassException
 	{
 		/// <summary>
 		/// Error status
