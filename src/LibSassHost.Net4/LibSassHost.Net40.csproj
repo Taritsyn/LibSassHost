@@ -173,6 +173,9 @@
     <Compile Include="..\LibSassHost\SassСompilationException.cs">
       <Link>SassСompilationException.cs</Link>
     </Compile>
+    <Compile Include="..\LibSassHost\Utilities\CharExtensions.cs">
+      <Link>Utilities\CharExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\LibSassHost\Utilities\InterlockedStatedFlag.cs">
       <Link>Utilities\InterlockedStatedFlag.cs</Link>
     </Compile>

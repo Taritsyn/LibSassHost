@@ -14,11 +14,6 @@ namespace LibSassHost
 	public sealed class FileManager : IFileManager
 	{
 		/// <summary>
-		/// Regular expression for working with the path with a drive letter
-		/// </summary>
-		private static readonly Regex _pathWithDriveLetterRegex = new Regex(@"^[a-zA-Z]:");
-
-		/// <summary>
 		/// Default instance of file manager
 		/// </summary>
 		private static readonly Lazy<FileManager> _default
@@ -73,6 +68,24 @@ namespace LibSassHost
 			return defaultDirectoryName;
 		}
 
+		/// <summary>
+		/// Determines whether the beginning of specified path matches the drive letter
+		/// </summary>
+		/// <param name="path">The path</param>
+		/// <returns>true if path starts with the drive letter; otherwise, false</returns>
+		private static bool PathStartsWithDriveLetter(string path)
+		{
+			if (path == null)
+			{
+				throw new ArgumentNullException("path",
+					string.Format(Strings.Common_ArgumentIsNull, "path"));
+			}
+
+			bool result = path.Length >= 2 && path[0].IsAlpha() && path[1] == ':';
+
+			return result;
+		}
+
 
 		#region IFileManager implementation
 
@@ -102,8 +115,30 @@ namespace LibSassHost
 					string.Format(Strings.Common_ArgumentIsNull, "path"));
 			}
 
-			bool result = Utils.IsWindows() ?
-				_pathWithDriveLetterRegex.IsMatch(path) : path.StartsWith("/");
+			if (Utils.IsWindows() && PathStartsWithDriveLetter(path))
+			{
+				return true;
+			}
+
+			int charPosition = 0;
+			char charValue;
+
+			// check if we have a protocol
+			if (path.TryGetChar(charPosition, out charValue) && charValue.IsAlpha())
+			{
+				charPosition++;
+
+				// skip over all alphanumeric characters
+				while (path.TryGetChar(charPosition, out charValue) && charValue.IsAlphaNumeric())
+				{
+					charPosition++;
+				}
+
+				charPosition = charValue == ':' ? charPosition + 1 : 0;
+			}
+
+			path.TryGetChar(charPosition, out charValue);
+			bool result = charValue == '/';
 
 			return result;
 		}
