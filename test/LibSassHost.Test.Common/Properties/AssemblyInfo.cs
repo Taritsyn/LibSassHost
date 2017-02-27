@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("LibSassHost.Test")]
+[assembly: AssemblyTitle("LibSassHost.Test.Common")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("LibSass Host: Tests")]
+[assembly: AssemblyProduct("LibSass Host: Common Tests")]
 [assembly: AssemblyCopyright("Copyright © 2015-2017 Andrey Taritsyn")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

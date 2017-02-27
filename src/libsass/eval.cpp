@@ -809,23 +809,27 @@ namespace Sass {
     Arguments_Obj args = c->arguments();
 
     if (name == "url" && args->length() > 0) { //LSH+
-      Argument_Obj path_arg = args->at(0); //LSH+
-      std::string path = path_arg->perform(this)->to_string(); //LSH+
-      std::string processed_path = path; //LSH+
+      File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (!path.empty()) { //LSH+
-        char quote_mark = 0; //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        Argument_Obj path_arg = args->at(0); //LSH+
+        std::string path = path_arg->perform(this)->to_string(); //LSH+
+        std::string processed_path = path; //LSH+
 
-        processed_path = unquote(path, &quote_mark, true); //LSH+
-        processed_path = File_Manager::get_instance().to_absolute_path(processed_path); //LSH+
-        if (quote_mark && quote_mark != '*') { //LSH+
-          processed_path = quote(processed_path, quote_mark); //LSH+
+        if (!path.empty()) { //LSH+
+          char quote_mark = 0; //LSH+
+
+          processed_path = unquote(path, &quote_mark, true); //LSH+
+          processed_path = file_manager.to_absolute_path(processed_path); //LSH+
+          if (quote_mark && quote_mark != '*') { //LSH+
+            processed_path = quote(processed_path, quote_mark); //LSH+
+          } //LSH+
         } //LSH+
-      } //LSH+
 
-      if (processed_path != path) { //LSH+
-        String_Constant* new_path_value = SASS_MEMORY_NEW(String_Constant, c->pstate(), processed_path); //LSH+
-        path_arg->value(new_path_value); //LSH+
+        if (processed_path != path) { //LSH+
+          String_Constant* new_path_value = SASS_MEMORY_NEW(String_Constant, c->pstate(), processed_path); //LSH+
+          path_arg->value(new_path_value); //LSH+
+        } //LSH+
       } //LSH+
     } //LSH+
 
@@ -1210,11 +1214,15 @@ namespace Sass {
 
     }
     if (is_url_function(res)) { //LSH+
-      std::string path = get_uri_from_url_function(res); //LSH+
-      std::string processed_path = File_Manager::get_instance().to_absolute_path(path); //LSH+
+      File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (processed_path != path) { //LSH+
-        res = wrap_uri_in_url_function(processed_path); //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        std::string path = get_uri_from_url_function(res); //LSH+
+        std::string processed_path = file_manager.to_absolute_path(path); //LSH+
+
+        if (processed_path != path) { //LSH+
+          res = wrap_uri_in_url_function(processed_path); //LSH+
+        } //LSH+
       } //LSH+
     } //LSH+
     if (!s->is_interpolant()) {
@@ -1242,11 +1250,15 @@ namespace Sass {
       return c;
     }
     if (!s->is_delayed() && is_url_function(s->value())) { //LSH+
-      std::string path = get_uri_from_url_function(s->value()); //LSH+
-      std::string processed_path = File_Manager::get_instance().to_absolute_path(path); //LSH+
+      File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (processed_path != path) { //LSH+
-        s->value(wrap_uri_in_url_function(processed_path)); //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        std::string path = get_uri_from_url_function(s->value()); //LSH+
+        std::string processed_path = file_manager.to_absolute_path(path); //LSH+
+
+        if (processed_path != path) { //LSH+
+          s->value(wrap_uri_in_url_function(processed_path)); //LSH+
+        } //LSH+
       } //LSH+
     } //LSH+
     return s;

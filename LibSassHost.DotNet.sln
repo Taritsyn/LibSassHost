@@ -12,11 +12,64 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F040905A-670
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{55EC2284-4F3D-4222-BD02-CD85FB109CB4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedFiles", "SharedFiles", "{2C4390B1-5078-4BFE-9265-8D5154F394E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{22562C87-E41F-477D-BB88-F744008A4552}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\import\sass\_reset.sass = test\SharedFiles\import\sass\_reset.sass
+		test\SharedFiles\import\sass\base.sass = test\SharedFiles\import\sass\base.sass
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{43748E61-8E70-413D-8EA6-71650C0DE32E}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\import\scss\_reset.scss = test\SharedFiles\import\scss\_reset.scss
+		test\SharedFiles\import\scss\base.scss = test\SharedFiles\import\scss\base.scss
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "import", "import", "{23BAADD9-EFC6-4D5B-BE74-8134F84FD465}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\import\base.css = test\SharedFiles\import\base.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{E1B92A02-52FF-461E-B66E-B26446C931FB}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\variables\sass\style.sass = test\SharedFiles\variables\sass\style.sass
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{FE516CBB-FFB2-42F4-BB3B-541D7A1B4300}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\variables\scss\style.scss = test\SharedFiles\variables\scss\style.scss
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "variables", "variables", "{378B6413-E283-44F5-ACEF-D441BE1E32CA}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\variables\style.css = test\SharedFiles\variables\style.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{F28BF497-C629-405E-BC1D-98274EB5A1F3}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\юникод\sass\символы.sass = test\SharedFiles\юникод\sass\символы.sass
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{66E68A80-4593-4D86-B8B2-569128A329B1}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\юникод\scss\символы.scss = test\SharedFiles\юникод\scss\символы.scss
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "юникод", "юникод", "{41289F2A-CE3F-4548-BB1D-54528F93B4A3}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\юникод\символы.css = test\SharedFiles\юникод\символы.css
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{474BA2D5-A05E-450E-BBEE-4D52F1FF34EF}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LibSassHost", "src\LibSassHost\LibSassHost.xproj", "{FFF1A803-D3EB-4843-93BE-E84C695F4967}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LibSassHost.Test", "test\LibSassHost.Test\LibSassHost.Test.xproj", "{0E8DBCA5-1D35-4C29-8D37-AD30B87CC131}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LibSassHost.Test.Common", "test\LibSassHost.Test.Common\LibSassHost.Test.Common.xproj", "{0E8DBCA5-1D35-4C29-8D37-AD30B87CC131}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LibSassHost.Test.CompilerWithFileManager", "test\LibSassHost.Test.CompilerWithFileManager\LibSassHost.Test.CompilerWithFileManager.xproj", "{00005BA4-B443-4778-9BC3-7E88018262FD}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LibSassHost.Test.CompilerWithoutFileManager", "test\LibSassHost.Test.CompilerWithoutFileManager\LibSassHost.Test.CompilerWithoutFileManager.xproj", "{B6BBBF01-4E06-4A3A-93F6-65213DA7CA8A}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LibSassHost.Sample.ConsoleApp", "samples\LibSassHost.Sample.ConsoleApp\LibSassHost.Sample.ConsoleApp.xproj", "{6D2B94AD-1351-4C5A-A43D-097B67B199C0}"
 EndProject
@@ -38,6 +91,14 @@ Global
 		{6D2B94AD-1351-4C5A-A43D-097B67B199C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D2B94AD-1351-4C5A-A43D-097B67B199C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D2B94AD-1351-4C5A-A43D-097B67B199C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6BBBF01-4E06-4A3A-93F6-65213DA7CA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6BBBF01-4E06-4A3A-93F6-65213DA7CA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6BBBF01-4E06-4A3A-93F6-65213DA7CA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6BBBF01-4E06-4A3A-93F6-65213DA7CA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00005BA4-B443-4778-9BC3-7E88018262FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00005BA4-B443-4778-9BC3-7E88018262FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00005BA4-B443-4778-9BC3-7E88018262FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00005BA4-B443-4778-9BC3-7E88018262FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,5 +107,17 @@ Global
 		{FFF1A803-D3EB-4843-93BE-E84C695F4967} = {F040905A-670E-4E77-82DB-721CD7B3FAC2}
 		{0E8DBCA5-1D35-4C29-8D37-AD30B87CC131} = {55EC2284-4F3D-4222-BD02-CD85FB109CB4}
 		{6D2B94AD-1351-4C5A-A43D-097B67B199C0} = {474BA2D5-A05E-450E-BBEE-4D52F1FF34EF}
+		{B6BBBF01-4E06-4A3A-93F6-65213DA7CA8A} = {55EC2284-4F3D-4222-BD02-CD85FB109CB4}
+		{2C4390B1-5078-4BFE-9265-8D5154F394E8} = {55EC2284-4F3D-4222-BD02-CD85FB109CB4}
+		{23BAADD9-EFC6-4D5B-BE74-8134F84FD465} = {2C4390B1-5078-4BFE-9265-8D5154F394E8}
+		{378B6413-E283-44F5-ACEF-D441BE1E32CA} = {2C4390B1-5078-4BFE-9265-8D5154F394E8}
+		{41289F2A-CE3F-4548-BB1D-54528F93B4A3} = {2C4390B1-5078-4BFE-9265-8D5154F394E8}
+		{22562C87-E41F-477D-BB88-F744008A4552} = {23BAADD9-EFC6-4D5B-BE74-8134F84FD465}
+		{E1B92A02-52FF-461E-B66E-B26446C931FB} = {378B6413-E283-44F5-ACEF-D441BE1E32CA}
+		{F28BF497-C629-405E-BC1D-98274EB5A1F3} = {41289F2A-CE3F-4548-BB1D-54528F93B4A3}
+		{43748E61-8E70-413D-8EA6-71650C0DE32E} = {23BAADD9-EFC6-4D5B-BE74-8134F84FD465}
+		{FE516CBB-FFB2-42F4-BB3B-541D7A1B4300} = {378B6413-E283-44F5-ACEF-D441BE1E32CA}
+		{66E68A80-4593-4D86-B8B2-569128A329B1} = {41289F2A-CE3F-4548-BB1D-54528F93B4A3}
+		{00005BA4-B443-4778-9BC3-7E88018262FD} = {55EC2284-4F3D-4222-BD02-CD85FB109CB4}
 	EndGlobalSection
 EndGlobal

@@ -19,14 +19,18 @@ typedef const char*(__stdcall *Func_String_String)(const char* p);
 extern "C" {
 #endif
 
-// Setters for File_Manager delegates
+// Getters for File_Manager properties
+ADDAPI bool ADDCALL sass_file_manager_get_is_initialized();
+
+// Setters for File_Manager properties
+ADDAPI void ADDCALL sass_file_manager_set_is_initialized(bool is_initialized);
 ADDAPI void ADDCALL sass_file_manager_set_get_current_directory_delegate (Func_String del);
 ADDAPI void ADDCALL sass_file_manager_set_file_exists_delegate (Func_String_Boolean del);
 ADDAPI void ADDCALL sass_file_manager_set_is_absolute_path_delegate (Func_String_Boolean del);
 ADDAPI void ADDCALL sass_file_manager_set_to_absolute_path_delegate (Func_String_String del);
 ADDAPI void ADDCALL sass_file_manager_set_read_file_delegate (Func_String_String del);
 
-// Unsetters for File_Manager delegates
+// Unsetters for File_Manager properties
 ADDAPI void ADDCALL sass_file_manager_unset_get_current_directory_delegate ();
 ADDAPI void ADDCALL sass_file_manager_unset_file_exists_delegate ();
 ADDAPI void ADDCALL sass_file_manager_unset_is_absolute_path_delegate ();

@@ -1,7 +1,7 @@
 ﻿#if NETCOREAPP1_0
 using System.Text;
 
-namespace LibSassHost.Test
+namespace LibSassHost.Test.Common
 {
 	internal static class TestsInitializer
 	{

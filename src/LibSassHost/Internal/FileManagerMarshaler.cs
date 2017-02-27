@@ -50,6 +50,8 @@ namespace LibSassHost.Internal
 					Sass_Api.sass_file_manager_set_to_absolute_path_delegate_utf8(_toAbsolutePathDelegateUtf8);
 					Sass_Api.sass_file_manager_set_read_file_delegate_utf8(_readFileDelegateUtf8);
 				}
+
+				Sass_Api.sass_file_manager_set_is_initialized(true);
 			}
 			else
 			{
@@ -59,6 +61,7 @@ namespace LibSassHost.Internal
 
 		public static void UnsetFileManager()
 		{
+			Sass_Api.sass_file_manager_set_is_initialized(false);
 			Sass_Api.sass_file_manager_unset_get_current_directory_delegate();
 			Sass_Api.sass_file_manager_unset_file_exists_delegate();
 			Sass_Api.sass_file_manager_unset_is_absolute_path_delegate();

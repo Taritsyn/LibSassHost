@@ -1,4 +1,4 @@
-﻿namespace LibSassHost.Test
+﻿namespace LibSassHost.Test.Common
 {
 	/// <summary>
 	/// Stylesheet syntax types

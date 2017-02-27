@@ -10,14 +10,12 @@
 # include <unistd.h>
 #endif
 #include "sass.hpp"
-/*LSH-
 #include <iostream>
 #include <fstream>
 #include <cctype>
 #include <vector>
 #include <algorithm>
 #include <sys/stat.h>
-*/
 #include "file.hpp"
 #include "file_manager.hpp" //LSH+
 #include "context.hpp"
@@ -25,7 +23,6 @@
 #include "utf8_string.hpp"
 #include "sass2scss.h"
 
-/*LSH-
 #ifdef _WIN32
 # include <windows.h>
 
@@ -46,7 +43,6 @@ inline static std::string wstring_to_string(const std::wstring &wstr)
 }
 # endif
 #endif
-*/
 
 namespace Sass {
   namespace File {
@@ -55,62 +51,71 @@ namespace Sass {
     // always with forward slashes
     std::string get_cwd()
     {
-      /*LSH-
-      const size_t wd_len = 1024;
-      #ifndef _WIN32
-        char wd[wd_len];
-        std::string cwd = getcwd(wd, wd_len);
-      #else
-        wchar_t wd[wd_len];
-        std::string cwd = wstring_to_string(_wgetcwd(wd, wd_len));
-        //convert backslashes to forward slashes
-        replace(cwd.begin(), cwd.end(), '\\', '/');
-      #endif
-      if (cwd[cwd.length() - 1] != '/') cwd += '/';
-      return cwd;
-      */
+      File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      return File_Manager::get_instance().get_current_directory(); //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        return file_manager.get_current_directory(); //LSH+
+      } //LSH+
+      else { //LSH+
+        const size_t wd_len = 1024;
+        #ifndef _WIN32
+          char wd[wd_len];
+          std::string cwd = getcwd(wd, wd_len);
+        #else
+          wchar_t wd[wd_len];
+          std::string cwd = wstring_to_string(_wgetcwd(wd, wd_len));
+          //convert backslashes to forward slashes
+          replace(cwd.begin(), cwd.end(), '\\', '/');
+        #endif
+        if (cwd[cwd.length() - 1] != '/') cwd += '/';
+        return cwd;
+      } //LSH+
     }
 
     // test if path exists and is a file
     bool file_exists(const std::string& path)
     {
-      /*LSH-
-      #ifdef _WIN32
-        std::wstring wpath = UTF_8::convert_to_utf16(path);
-        DWORD dwAttrib = GetFileAttributesW(wpath.c_str());
-        return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
-               (!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)));
-      #else
-        struct stat st_buf;
-        return (stat (path.c_str(), &st_buf) == 0) &&
-               (!S_ISDIR (st_buf.st_mode));
-      #endif
-      */
+      File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      return File_Manager::get_instance().file_exists(path); //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        return file_manager.file_exists(path); //LSH+
+      } //LSH+
+      else { //LSH+
+        #ifdef _WIN32
+          std::wstring wpath = UTF_8::convert_to_utf16(path);
+          DWORD dwAttrib = GetFileAttributesW(wpath.c_str());
+          return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+                 (!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY)));
+        #else
+          struct stat st_buf;
+          return (stat (path.c_str(), &st_buf) == 0) &&
+                 (!S_ISDIR (st_buf.st_mode));
+        #endif
+      } //LSH+
     }
 
     // return if given path is absolute
     // works with *nix and windows paths
     bool is_absolute_path(const std::string& path)
     {
-      /*LSH-
-      #ifdef _WIN32
-        if (path.length() >= 2 && isalpha(path[0]) && path[1] == ':') return true;
-      #endif
-      size_t i = 0;
-      // check if we have a protocol
-      if (path[i] && Prelexer::is_alpha(path[i])) {
-        // skip over all alphanumeric characters
-        while (path[i] && Prelexer::is_alnum(path[i])) ++i;
-        i = i && path[i] == ':' ? i + 1 : 0;
-      }
-      return path[i] == '/';
-      */
+      File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      return File_Manager::get_instance().is_absolute_path(path); //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        return file_manager.is_absolute_path(path); //LSH+
+      } //LSH+
+      else { //LSH+
+        #ifdef _WIN32
+          if (path.length() >= 2 && isalpha(path[0]) && path[1] == ':') return true;
+        #endif
+        size_t i = 0;
+        // check if we have a protocol
+        if (path[i] && Prelexer::is_alpha(path[i])) {
+          // skip over all alphanumeric characters
+          while (path[i] && Prelexer::is_alnum(path[i])) ++i;
+          i = i && path[i] == ':' ? i + 1 : 0;
+        }
+        return path[i] == '/';
+      } //LSH+
     }
 
     // helper function to find the last directory seperator
@@ -204,12 +209,14 @@ namespace Sass {
 
       File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (!l.empty()) { //LSH+
-        l = file_manager.to_absolute_path(l); //LSH+
-      } //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        if (!l.empty()) { //LSH+
+          l = file_manager.to_absolute_path(l); //LSH+
+        } //LSH+
 
-      if (!r.empty()) { //LSH+
-        r = file_manager.to_absolute_path(r); //LSH+
+        if (!r.empty()) { //LSH+
+          r = file_manager.to_absolute_path(r); //LSH+
+        } //LSH+
       } //LSH+
 
       if (l.empty()) return r;
@@ -395,41 +402,45 @@ namespace Sass {
     // will auto convert .sass files
     char* read_file(const std::string& path)
     {
-      /*LSH-
-      #ifdef _WIN32
-        BYTE* pBuffer;
-        DWORD dwBytes;
-        // windows unicode filepaths are encoded in utf16
-        std::wstring wpath = UTF_8::convert_to_utf16(path);
-        HANDLE hFile = CreateFileW(wpath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-        if (hFile == INVALID_HANDLE_VALUE) return 0;
-        DWORD dwFileLength = GetFileSize(hFile, NULL);
-        if (dwFileLength == INVALID_FILE_SIZE) return 0;
-        // allocate an extra byte for the null char
-        pBuffer = (BYTE*)malloc((dwFileLength+1)*sizeof(BYTE));
-        ReadFile(hFile, pBuffer, dwFileLength, &dwBytes, NULL);
-        pBuffer[dwFileLength] = '\0';
-        CloseHandle(hFile);
-        // just convert from unsigned char*
-        char* contents = (char*) pBuffer;
-      #else
-        struct stat st;
-        if (stat(path.c_str(), &st) == -1 || S_ISDIR(st.st_mode)) return 0;
-        std::ifstream file(path.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
-        char* contents = 0;
-        if (file.is_open()) {
-          size_t size = file.tellg();
-          // allocate an extra byte for the null char
-          contents = (char*) malloc((size+1)*sizeof(char));
-          file.seekg(0, std::ios::beg);
-          file.read(contents, size);
-          contents[size] = '\0';
-          file.close();
-        }
-      #endif
-      */
+      char* contents; //LSH+
+      File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      char* contents = File_Manager::get_instance().read_file(path.c_str()); //LSH+
+      if (file_manager.is_initialized) { //LSH+
+        contents = file_manager.read_file(path.c_str()); //LSH+
+      } //LSH+
+      else { //LSH+
+        #ifdef _WIN32
+          BYTE* pBuffer;
+          DWORD dwBytes;
+          // windows unicode filepaths are encoded in utf16
+          std::wstring wpath = UTF_8::convert_to_utf16(path);
+          HANDLE hFile = CreateFileW(wpath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+          if (hFile == INVALID_HANDLE_VALUE) return 0;
+          DWORD dwFileLength = GetFileSize(hFile, NULL);
+          if (dwFileLength == INVALID_FILE_SIZE) return 0;
+          // allocate an extra byte for the null char
+          pBuffer = (BYTE*)malloc((dwFileLength+1)*sizeof(BYTE));
+          ReadFile(hFile, pBuffer, dwFileLength, &dwBytes, NULL);
+          pBuffer[dwFileLength] = '\0';
+          CloseHandle(hFile);
+          // just convert from unsigned char*
+          /*LSH- char* */contents = (char*) pBuffer;
+        #else
+          struct stat st;
+          if (stat(path.c_str(), &st) == -1 || S_ISDIR(st.st_mode)) return 0;
+          std::ifstream file(path.c_str(), std::ios::in | std::ios::binary | std::ios::ate);
+          /*LSH- char* */contents = 0;
+          if (file.is_open()) {
+            size_t size = file.tellg();
+            // allocate an extra byte for the null char
+            contents = (char*) malloc((size+1)*sizeof(char));
+            file.seekg(0, std::ios::beg);
+            file.read(contents, size);
+            contents[size] = '\0';
+            file.close();
+          }
+        #endif
+      } //LSH+
 
       std::string extension;
       if (path.length() > 5) {

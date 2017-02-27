@@ -9,7 +9,7 @@ using Xunit;
 
 using LibSassHost.Helpers;
 
-namespace LibSassHost.Test
+namespace LibSassHost.Test.Common
 {
 	public abstract class CompileTestsBase
 	{
@@ -30,13 +30,19 @@ namespace LibSassHost.Test
 #endif
 #if NETCOREAPP1_0 || NET451
 			var appEnv = PlatformServices.Default.Application;
-			string baseDirectoryPath = appEnv.ApplicationBasePath;
+			string baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath,
+#if NETCOREAPP1_0
+				"../../../"
+#else
+				"../../../../"
+#endif
+			);
 #elif NET40
-			string baseDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
+			string baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../");
 #else
 #error No implementation for this target
 #endif
-			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "Files"));
+			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "../SharedFiles"));
 
 			if (syntaxType == SyntaxType.Sass)
 			{
@@ -62,6 +68,8 @@ namespace LibSassHost.Test
 			return PathHelpers.ProcessBackSlashes(Path.GetFullPath(path));
 		}
 
+		protected abstract SassCompiler CreateCompiler();
+
 		[Fact]
 		public virtual void CodeCompilationIsCorrect()
 		{
@@ -81,7 +89,7 @@ namespace LibSassHost.Test
 			// Act
 			CompilationResult result;
 
-			using (var compiler = new SassCompiler())
+			using (var compiler = CreateCompiler())
 			{
 				result = compiler.Compile(inputCode, options: options);
 			}
@@ -114,7 +122,7 @@ namespace LibSassHost.Test
 			// Act
 			CompilationResult result;
 
-			using (var compiler = new SassCompiler())
+			using (var compiler = CreateCompiler())
 			{
 				result = compiler.Compile(inputCode, inputFilePath, options: options);
 			}
@@ -147,7 +155,7 @@ namespace LibSassHost.Test
 			// Act
 			CompilationResult result;
 
-			using (var compiler = new SassCompiler())
+			using (var compiler = CreateCompiler())
 			{
 				result = compiler.Compile(inputCode, options: options);
 			}
@@ -171,7 +179,7 @@ namespace LibSassHost.Test
 			// Act
 			CompilationResult result;
 
-			using (var compiler = new SassCompiler())
+			using (var compiler = CreateCompiler())
 			{
 				result = compiler.CompileFile(inputFilePath);
 			}
@@ -205,7 +213,7 @@ namespace LibSassHost.Test
 			// Act
 			CompilationResult result;
 
-			using (var compiler = new SassCompiler())
+			using (var compiler = CreateCompiler())
 			{
 				result = compiler.CompileFile(inputFilePath, options: options);
 			}
@@ -233,7 +241,7 @@ namespace LibSassHost.Test
 			// Act
 			CompilationResult result;
 
-			using (var compiler = new SassCompiler())
+			using (var compiler = CreateCompiler())
 			{
 				result = compiler.CompileFile(inputFilePath);
 			}

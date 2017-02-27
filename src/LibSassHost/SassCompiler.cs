@@ -84,7 +84,7 @@ namespace LibSassHost
 		/// Constructs an instance of Sass-compiler
 		/// </summary>
 		public SassCompiler()
-			: this(FileManager.Current)
+			: this(null)
 		{ }
 
 		/// <summary>
@@ -94,12 +94,6 @@ namespace LibSassHost
 		/// <exception cref="ArgumentNullException" />
 		public SassCompiler(IFileManager fileManager)
 		{
-			if (fileManager == null)
-			{
-				throw new ArgumentNullException(
-					"fileManager", string.Format(Strings.Common_ArgumentIsNull, "fileManager"));
-			}
-
 			_fileManager = fileManager;
 		}
 
@@ -169,7 +163,6 @@ namespace LibSassHost
 		/// <returns>Compilation result</returns>
 		/// <exception cref="ArgumentException"/>
 		/// <exception cref="ArgumentNullException" />
-		/// <exception cref="FileNotFoundException">Input file not exist.</exception>
 		/// <exception cref="ObjectDisposedException">Operation is performed on a disposed Sass-compiler.</exception>
 		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
 		public CompilationResult CompileFile(string inputPath, string outputPath = null,
@@ -187,12 +180,6 @@ namespace LibSassHost
 			{
 				throw new ArgumentException(
 					string.Format(Strings.Common_ArgumentIsEmpty, "inputPath"), "inputPath");
-			}
-
-			if (!_fileManager.FileExists(inputPath))
-			{
-				throw new FileNotFoundException(
-					string.Format(Strings.Common_FileNotExist, inputPath), inputPath);
 			}
 
 			var fileContext = new SassFileContext();

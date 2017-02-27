@@ -2,7 +2,7 @@
 
 using Xunit;
 
-namespace LibSassHost.Test
+namespace LibSassHost.Test.Common
 {
 	/// <summary>
 	/// Version information tests

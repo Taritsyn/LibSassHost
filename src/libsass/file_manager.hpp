@@ -9,79 +9,25 @@ namespace Sass
   class File_Manager
   {
     private:
-      Func_String _get_current_directory_delegate;
-      Func_String_Boolean _file_exists_delegate;
-      Func_String_Boolean _is_absolute_path_delegate;
-      Func_String_String _to_absolute_path_delegate;
-      Func_String_String _read_file_delegate;
-
       File_Manager();
       File_Manager(File_Manager const&);
       void operator=(File_Manager const&);
 
     public:
+      bool is_initialized;
+      Func_String get_current_directory_delegate;
+      Func_String_Boolean file_exists_delegate;
+      Func_String_Boolean is_absolute_path_delegate;
+      Func_String_String to_absolute_path_delegate;
+      Func_String_String read_file_delegate;
+
       static File_Manager& get_instance();
 
-#ifndef __GNUC__
-#pragma region get_current_directory
-#endif
-
-      void set_get_current_directory_delegate(Func_String del);
-      void unset_get_current_directory_delegate();
       std::string get_current_directory();
-
-#ifndef __GNUC__
-#pragma endregion
-#endif
-
-#ifndef __GNUC__
-#pragma region file_exists
-#endif
-
-      void set_file_exists_delegate(Func_String_Boolean del);
-      void unset_file_exists_delegate();
       bool file_exists(const std::string& path);
-
-#ifndef __GNUC__
-#pragma endregion
-#endif
-
-#ifndef __GNUC__
-#pragma region is_absolute_path
-#endif
-
-      void set_is_absolute_path_delegate(Func_String_Boolean del);
-      void unset_is_absolute_path_delegate();
       bool is_absolute_path(const std::string& path);
-
-#ifndef __GNUC__
-#pragma endregion
-#endif
-
-#ifndef __GNUC__
-#pragma region to_absolute_path
-#endif
-
-      void set_to_absolute_path_delegate(Func_String_String del);
-      void unset_to_absolute_path_delegate();
       std::string to_absolute_path(const std::string& path);
-
-#ifndef __GNUC__
-#pragma endregion
-#endif
-
-#ifndef __GNUC__
-#pragma region read_file
-#endif
-
-      void set_read_file_delegate(Func_String_String del);
-      void unset_read_file_delegate();
       char* read_file(const std::string& path);
-
-#ifndef __GNUC__
-#pragma endregion
-#endif
-
   };
 }
 

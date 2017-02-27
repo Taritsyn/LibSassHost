@@ -15,14 +15,7 @@
 
 	"buildOptions": {
 		"warningsAsErrors": true,
-		"emitEntryPoint": false,
-		"copyToOutput": {
-			"include": "Files/**/*"
-		}
-	},
-
-	"publishOptions": {
-		"include": "Files/**/*"
+		"emitEntryPoint": false
 	},
 
 	"testRunner": "xunit",

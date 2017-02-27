@@ -387,13 +387,18 @@ namespace Sass {
     // ToDo: if ctx_path is already a file resource, we should not add it here?
     if (imp->import_queries() || protocol != "file" || imp_path.substr(0, 2) == "//") {
       std::string processed_load_path = load_path; //LSH+
-      if (!load_path.empty()) { //LSH+
-        char quote_mark = 0; //LSH+
 
-        processed_load_path = unquote(load_path, &quote_mark, true); //LSH+
-        processed_load_path = File_Manager::get_instance().to_absolute_path(processed_load_path); //LSH+
-        if (quote_mark && quote_mark != '*') { //LSH+
-          processed_load_path = quote(processed_load_path, quote_mark); //LSH+
+      if (!load_path.empty()) { //LSH+
+        File_Manager& file_manager = File_Manager::get_instance(); //LSH+
+
+        if (file_manager.is_initialized) {
+          char quote_mark = 0; //LSH+
+
+          processed_load_path = unquote(load_path, &quote_mark, true); //LSH+
+          processed_load_path = file_manager.to_absolute_path(processed_load_path); //LSH+
+          if (quote_mark && quote_mark != '*') { //LSH+
+            processed_load_path = quote(processed_load_path, quote_mark); //LSH+
+          } //LSH+
         } //LSH+
       } //LSH+
 

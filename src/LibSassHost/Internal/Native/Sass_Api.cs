@@ -159,7 +159,18 @@ namespace LibSassHost.Internal.Native
 
 		#endregion
 
-		#region Setters for File_Manager delegates
+		#region Getters for File_Manager properties
+
+		[DllImport(DllName)]
+		internal static extern bool sass_file_manager_get_is_initialized();
+
+		#endregion
+
+		#region Setters for File_Manager properties
+
+		[DllImport(DllName)]
+		internal static extern void sass_file_manager_set_is_initialized(bool is_initialized);
+
 
 		[DllImport(DllName, EntryPoint = "sass_file_manager_set_get_current_directory_delegate", CharSet = CharSet.Ansi)]
 		internal static extern void sass_file_manager_set_get_current_directory_delegate_utf8(Func_StringAnsi del);
@@ -194,7 +205,7 @@ namespace LibSassHost.Internal.Native
 
 		#endregion
 
-		#region Unsetters for File_Manager delegates
+		#region Unsetters for File_Manager properties
 
 		[DllImport(DllName)]
 		internal static extern void sass_file_manager_unset_get_current_directory_delegate();
