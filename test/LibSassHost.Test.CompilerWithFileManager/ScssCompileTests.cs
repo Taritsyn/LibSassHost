@@ -2,11 +2,10 @@
 
 namespace LibSassHost.Test.CompilerWithFileManager
 {
-	public sealed class ScssCompileTests : ScssCompileTestsBase
+	public sealed class ScssCompileTests : CompileWithFileManagerTestsBase
 	{
-		protected override SassCompiler CreateCompiler()
-		{
-			return new SassCompiler(FileManager.Instance);
-		}
+		public ScssCompileTests()
+			: base(SyntaxType.Scss)
+		{ }
 	}
 }

@@ -61,18 +61,15 @@ body {
   content: ""▼"";
 }";
 
-			using (var compiler = new SassCompiler())
+			try
 			{
-				try
-				{
-					var options = new CompilationOptions { SourceMap = true };
-					CompilationResult result = compiler.Compile(inputContent, "input.scss", "output.css", options);
-					WriteOutput(result);
-				}
-				catch (SassСompilationException e)
-				{
-					WriteError("During compilation of SCSS code an error occurred.", e);
-				}
+				var options = new CompilationOptions { SourceMap = true };
+				CompilationResult result = SassCompiler.Compile(inputContent, "input.scss", "output.css", options);
+				WriteOutput(result);
+			}
+			catch (SassСompilationException e)
+			{
+				WriteError("During compilation of SCSS code an error occurred.", e);
 			}
 		}
 
@@ -83,18 +80,15 @@ body {
 			string inputFilePath = Path.Combine(_filesDirectoryPath, "style.scss");
 			string outputFilePath = Path.Combine(_filesDirectoryPath, "style.css");
 
-			using (var compiler = new SassCompiler())
+			try
 			{
-				try
-				{
-					var options = new CompilationOptions { SourceMap = true, SourceMapFileUrls = true };
-					CompilationResult result = compiler.CompileFile(inputFilePath, outputFilePath, options);
-					WriteOutput(result);
-				}
-				catch (SassСompilationException e)
-				{
-					WriteError("During compilation of SCSS file an error occurred.", e);
-				}
+				var options = new CompilationOptions { SourceMap = true, SourceMapFileUrls = true };
+				CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath, options);
+				WriteOutput(result);
+			}
+			catch (SassСompilationException e)
+			{
+				WriteError("During compilation of SCSS file an error occurred.", e);
 			}
 		}
 

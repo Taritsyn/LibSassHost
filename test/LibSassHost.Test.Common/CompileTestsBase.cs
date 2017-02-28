@@ -13,13 +13,13 @@ namespace LibSassHost.Test.Common
 {
 	public abstract class CompileTestsBase
 	{
-		private readonly string _filesDirectoryPath;
+		protected readonly string _filesDirectoryPath;
 
-		private readonly string _fileExtension;
+		protected readonly string _fileExtension;
 
-		private readonly string _subfolderName;
+		protected readonly string _subfolderName;
 
-		private readonly bool _indentedSyntax;
+		protected readonly bool _indentedSyntax;
 
 
 		protected CompileTestsBase(SyntaxType syntaxType)
@@ -63,12 +63,10 @@ namespace LibSassHost.Test.Common
 		}
 
 
-		private static string GetCanonicalPath(string path)
+		protected static string GetCanonicalPath(string path)
 		{
 			return PathHelpers.ProcessBackSlashes(Path.GetFullPath(path));
 		}
-
-		protected abstract SassCompiler CreateCompiler();
 
 		[Fact]
 		public virtual void CodeCompilationIsCorrect()
@@ -87,12 +85,7 @@ namespace LibSassHost.Test.Common
 			};
 
 			// Act
-			CompilationResult result;
-
-			using (var compiler = CreateCompiler())
-			{
-				result = compiler.Compile(inputCode, options: options);
-			}
+			CompilationResult result = SassCompiler.Compile(inputCode, options: options);
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
@@ -120,12 +113,7 @@ namespace LibSassHost.Test.Common
 			};
 
 			// Act
-			CompilationResult result;
-
-			using (var compiler = CreateCompiler())
-			{
-				result = compiler.Compile(inputCode, inputFilePath, options: options);
-			}
+			CompilationResult result = SassCompiler.Compile(inputCode, inputFilePath, options: options);
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
@@ -137,12 +125,12 @@ namespace LibSassHost.Test.Common
 		}
 
 		[Fact]
-		public virtual void CodeWithUnicodeCharactersCompilationIsCorrect()
+		public virtual void CodeWithUtf8CharactersCompilationIsCorrect()
 		{
 			// Arrange
 			string inputFilePath = Path.Combine(_filesDirectoryPath,
-				string.Format("юникод/{0}/символы{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_filesDirectoryPath, "юникод/символы.css");
+				string.Format("ютф-8/{0}/символы{1}", _subfolderName, _fileExtension));
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "ютф-8/символы.css");
 
 			string inputCode = File.ReadAllText(inputFilePath);
 			string targetOutputCode = File.ReadAllText(outputFilePath);
@@ -153,12 +141,7 @@ namespace LibSassHost.Test.Common
 			};
 
 			// Act
-			CompilationResult result;
-
-			using (var compiler = CreateCompiler())
-			{
-				result = compiler.Compile(inputCode, options: options);
-			}
+			CompilationResult result = SassCompiler.Compile(inputCode, options: options);
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
@@ -177,12 +160,7 @@ namespace LibSassHost.Test.Common
 			string targetOutputCode = File.ReadAllText(outputFilePath);
 
 			// Act
-			CompilationResult result;
-
-			using (var compiler = CreateCompiler())
-			{
-				result = compiler.CompileFile(inputFilePath);
-			}
+			CompilationResult result = SassCompiler.CompileFile(inputFilePath);
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
@@ -211,12 +189,7 @@ namespace LibSassHost.Test.Common
 			};
 
 			// Act
-			CompilationResult result;
-
-			using (var compiler = CreateCompiler())
-			{
-				result = compiler.CompileFile(inputFilePath, options: options);
-			}
+			CompilationResult result = SassCompiler.CompileFile(inputFilePath, options: options);
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);
@@ -229,22 +202,17 @@ namespace LibSassHost.Test.Common
 		}
 
 		[Fact]
-		public virtual void FileWithUnicodeCharactersCompilationIsCorrect()
+		public virtual void FileWithUtf8CharactersCompilationIsCorrect()
 		{
 			// Arrange
 			string inputFilePath = Path.Combine(_filesDirectoryPath,
-				string.Format("юникод/{0}/символы{1}", _subfolderName, _fileExtension));
-			string outputFilePath = Path.Combine(_filesDirectoryPath, "юникод/символы.css");
+				string.Format("ютф-8/{0}/символы{1}", _subfolderName, _fileExtension));
+			string outputFilePath = Path.Combine(_filesDirectoryPath, "ютф-8/символы.css");
 
 			string targetOutputCode = File.ReadAllText(outputFilePath);
 
 			// Act
-			CompilationResult result;
-
-			using (var compiler = CreateCompiler())
-			{
-				result = compiler.CompileFile(inputFilePath);
-			}
+			CompilationResult result = SassCompiler.CompileFile(inputFilePath);
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);

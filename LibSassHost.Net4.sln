@@ -16,6 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A66D8CC5-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedFiles", "SharedFiles", "{81B63FCC-0902-4ED6-B197-3AA3CEF2784E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "import", "import", "{700A853A-5751-4C7D-8CD0-D05FEE24129E}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\import\base.css = test\SharedFiles\import\base.css
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{6690182B-3F5B-43EE-A46C-C1358107818B}"
 	ProjectSection(SolutionItems) = preProject
 		test\SharedFiles\import\sass\_reset.sass = test\SharedFiles\import\sass\_reset.sass
@@ -28,9 +33,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{4507EA3C-9
 		test\SharedFiles\import\scss\base.scss = test\SharedFiles\import\scss\base.scss
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "import", "import", "{700A853A-5751-4C7D-8CD0-D05FEE24129E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "variables", "variables", "{FF604A66-1AFB-48A8-A987-66720876B284}"
 	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\import\base.css = test\SharedFiles\import\base.css
+		test\SharedFiles\variables\style.css = test\SharedFiles\variables\style.css
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{6D56B33F-201A-4D67-A64C-23FAE9C82C99}"
@@ -43,24 +48,34 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{CAE872DE-9
 		test\SharedFiles\variables\scss\style.scss = test\SharedFiles\variables\scss\style.scss
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "variables", "variables", "{FF604A66-1AFB-48A8-A987-66720876B284}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ютф-16", "ютф-16", "{0604F9D2-ED6B-4864-A36F-613B74D9605F}"
 	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\variables\style.css = test\SharedFiles\variables\style.css
+		test\SharedFiles\ютф-16\символы.css = test\SharedFiles\ютф-16\символы.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{5333B5B5-13A0-4121-8670-634202EE9CC5}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\ютф-16\sass\символы.sass = test\SharedFiles\ютф-16\sass\символы.sass
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{68508EF7-FEB7-4F86-A64C-3793BD55AFA8}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\ютф-16\scss\символы.scss = test\SharedFiles\ютф-16\scss\символы.scss
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ютф-8", "ютф-8", "{9440215A-EF8B-4950-9157-B3D399FE4E29}"
+	ProjectSection(SolutionItems) = preProject
+		test\SharedFiles\ютф-8\символы.css = test\SharedFiles\ютф-8\символы.css
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{2AB06281-ABC1-4BD6-9608-2D59564595DF}"
 	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\юникод\sass\символы.sass = test\SharedFiles\юникод\sass\символы.sass
+		test\SharedFiles\ютф-8\sass\символы.sass = test\SharedFiles\ютф-8\sass\символы.sass
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scss", "scss", "{B8E566A4-F0A8-4833-9234-11894FFB7B21}"
 	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\юникод\scss\символы.scss = test\SharedFiles\юникод\scss\символы.scss
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "юникод", "юникод", "{9440215A-EF8B-4950-9157-B3D399FE4E29}"
-	ProjectSection(SolutionItems) = preProject
-		test\SharedFiles\юникод\символы.css = test\SharedFiles\юникод\символы.css
+		test\SharedFiles\ютф-8\scss\символы.scss = test\SharedFiles\ютф-8\scss\символы.scss
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{08C00CA4-7560-497A-BD97-52545CD9474A}"
@@ -152,20 +167,23 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{81B63FCC-0902-4ED6-B197-3AA3CEF2784E} = {A66D8CC5-101B-425F-883A-2DFD76068F9D}
+		{6690182B-3F5B-43EE-A46C-C1358107818B} = {700A853A-5751-4C7D-8CD0-D05FEE24129E}
+		{4507EA3C-98FD-46D1-A631-F2251E4AA19C} = {700A853A-5751-4C7D-8CD0-D05FEE24129E}
+		{700A853A-5751-4C7D-8CD0-D05FEE24129E} = {81B63FCC-0902-4ED6-B197-3AA3CEF2784E}
+		{6D56B33F-201A-4D67-A64C-23FAE9C82C99} = {FF604A66-1AFB-48A8-A987-66720876B284}
+		{CAE872DE-9B99-4070-A447-81768EDAF529} = {FF604A66-1AFB-48A8-A987-66720876B284}
+		{FF604A66-1AFB-48A8-A987-66720876B284} = {81B63FCC-0902-4ED6-B197-3AA3CEF2784E}
+		{2AB06281-ABC1-4BD6-9608-2D59564595DF} = {9440215A-EF8B-4950-9157-B3D399FE4E29}
+		{B8E566A4-F0A8-4833-9234-11894FFB7B21} = {9440215A-EF8B-4950-9157-B3D399FE4E29}
+		{9440215A-EF8B-4950-9157-B3D399FE4E29} = {81B63FCC-0902-4ED6-B197-3AA3CEF2784E}
 		{6F97EACF-4401-4AED-9BF9-41D5E1BE4F86} = {C691F6BD-4C82-41F4-9342-681F2B0B712B}
 		{45F2E697-055B-45F5-A6DF-9F80B5781D75} = {A66D8CC5-101B-425F-883A-2DFD76068F9D}
 		{49EC7EC3-C10F-49C4-B71C-E35ECD904ABE} = {A66D8CC5-101B-425F-883A-2DFD76068F9D}
 		{B8588BB6-C977-4342-9B09-869D66F2FD76} = {A66D8CC5-101B-425F-883A-2DFD76068F9D}
 		{106CB6B3-52BB-4FA2-AAC5-460824FCA356} = {08C00CA4-7560-497A-BD97-52545CD9474A}
-		{81B63FCC-0902-4ED6-B197-3AA3CEF2784E} = {A66D8CC5-101B-425F-883A-2DFD76068F9D}
-		{700A853A-5751-4C7D-8CD0-D05FEE24129E} = {81B63FCC-0902-4ED6-B197-3AA3CEF2784E}
-		{FF604A66-1AFB-48A8-A987-66720876B284} = {81B63FCC-0902-4ED6-B197-3AA3CEF2784E}
-		{9440215A-EF8B-4950-9157-B3D399FE4E29} = {81B63FCC-0902-4ED6-B197-3AA3CEF2784E}
-		{6690182B-3F5B-43EE-A46C-C1358107818B} = {700A853A-5751-4C7D-8CD0-D05FEE24129E}
-		{6D56B33F-201A-4D67-A64C-23FAE9C82C99} = {FF604A66-1AFB-48A8-A987-66720876B284}
-		{2AB06281-ABC1-4BD6-9608-2D59564595DF} = {9440215A-EF8B-4950-9157-B3D399FE4E29}
-		{4507EA3C-98FD-46D1-A631-F2251E4AA19C} = {700A853A-5751-4C7D-8CD0-D05FEE24129E}
-		{CAE872DE-9B99-4070-A447-81768EDAF529} = {FF604A66-1AFB-48A8-A987-66720876B284}
-		{B8E566A4-F0A8-4833-9234-11894FFB7B21} = {9440215A-EF8B-4950-9157-B3D399FE4E29}
+		{0604F9D2-ED6B-4864-A36F-613B74D9605F} = {81B63FCC-0902-4ED6-B197-3AA3CEF2784E}
+		{5333B5B5-13A0-4121-8670-634202EE9CC5} = {0604F9D2-ED6B-4864-A36F-613B74D9605F}
+		{68508EF7-FEB7-4F86-A64C-3793BD55AFA8} = {0604F9D2-ED6B-4864-A36F-613B74D9605F}
 	EndGlobalSection
 EndGlobal

@@ -34,6 +34,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\LibSassHost.Test.CompilerWithoutFileManager\CompileWithoutFileManagerTestsBase.cs">
+      <Link>CompileWithoutFileManagerTestsBase.cs</Link>
+    </Compile>
     <Compile Include="..\LibSassHost.Test.CompilerWithoutFileManager\Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>

@@ -11,7 +11,7 @@ namespace LibSassHost
 	/// <summary>
 	/// Sass-compiler
 	/// </summary>
-	public sealed class SassCompiler : IDisposable
+	public static class SassCompiler
 	{
 		/// <summary>
 		/// Version of the libSass library
@@ -24,19 +24,14 @@ namespace LibSassHost
 		private static readonly string _languageVersion;
 
 		/// <summary>
-		/// Synchronizer of compilation
-		/// </summary>
-		private static readonly object _compilationSynchronizer = new object();
-
-		/// <summary>
 		/// Instance of file manager
 		/// </summary>
-		private IFileManager _fileManager;
+		private static IFileManager _fileManager;
 
 		/// <summary>
-		/// Flag that object is destroyed
+		/// Synchronizer of file manager
 		/// </summary>
-		private InterlockedStatedFlag _disposedFlag = new InterlockedStatedFlag();
+		private static readonly object _fileManagerSynchronizer = new object();
 
 		/// <summary>
 		/// Gets a version of the libSass library
@@ -52,6 +47,28 @@ namespace LibSassHost
 		public static string LanguageVersion
 		{
 			get { return _languageVersion; }
+		}
+
+		/// <summary>
+		/// Gets or sets a file manager
+		/// </summary>
+		public static IFileManager FileManager
+		{
+			get
+			{
+				lock (_fileManagerSynchronizer)
+				{
+					return _fileManager;
+				}
+			}
+			set
+			{
+				lock (_fileManagerSynchronizer)
+				{
+					_fileManager = value;
+					FileManagerMarshaler.SetFileManager(_fileManager);
+				}
+			}
 		}
 
 
@@ -80,31 +97,6 @@ namespace LibSassHost
 			}
 		}
 
-		/// <summary>
-		/// Constructs an instance of Sass-compiler
-		/// </summary>
-		public SassCompiler()
-			: this(null)
-		{ }
-
-		/// <summary>
-		/// Constructs an instance of Sass-compiler
-		/// </summary>
-		/// <param name="fileManager">File manager</param>
-		/// <exception cref="ArgumentNullException" />
-		public SassCompiler(IFileManager fileManager)
-		{
-			_fileManager = fileManager;
-		}
-
-
-		private void VerifyNotDisposed()
-		{
-			if (_disposedFlag.IsSet())
-			{
-				throw new ObjectDisposedException(ToString());
-			}
-		}
 
 		/// <summary>
 		/// "Compiles" a Sass-code to CSS-code
@@ -118,11 +110,9 @@ namespace LibSassHost
 		/// <exception cref="ArgumentNullException" />
 		/// <exception cref="ObjectDisposedException">Operation is performed on a disposed Sass-compiler.</exception>
 		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
-		public CompilationResult Compile(string content, string inputPath = null, string outputPath = null,
+		public static CompilationResult Compile(string content, string inputPath = null, string outputPath = null,
 			CompilationOptions options = null)
 		{
-			VerifyNotDisposed();
-
 			if (content == null)
 			{
 				throw new ArgumentNullException(
@@ -141,14 +131,7 @@ namespace LibSassHost
 			};
 
 			BeginCompile(dataContext, inputPath, outputPath, options);
-
-			lock (_compilationSynchronizer)
-			{
-				FileManagerMarshaler.SetFileManager(_fileManager);
-				SassCompilerProxy.Compile(dataContext);
-				FileManagerMarshaler.UnsetFileManager();
-			}
-
+			SassCompilerProxy.Compile(dataContext);
 			CompilationResult result = EndCompile(dataContext);
 
 			return result;
@@ -165,11 +148,9 @@ namespace LibSassHost
 		/// <exception cref="ArgumentNullException" />
 		/// <exception cref="ObjectDisposedException">Operation is performed on a disposed Sass-compiler.</exception>
 		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
-		public CompilationResult CompileFile(string inputPath, string outputPath = null,
+		public static CompilationResult CompileFile(string inputPath, string outputPath = null,
 			CompilationOptions options = null)
 		{
-			VerifyNotDisposed();
-
 			if (inputPath == null)
 			{
 				throw new ArgumentNullException(
@@ -185,20 +166,13 @@ namespace LibSassHost
 			var fileContext = new SassFileContext();
 
 			BeginCompile(fileContext, inputPath, outputPath, options);
-
-			lock (_compilationSynchronizer)
-			{
-				FileManagerMarshaler.SetFileManager(_fileManager);
-				SassCompilerProxy.CompileFile(fileContext);
-				FileManagerMarshaler.UnsetFileManager();
-			}
-
+			SassCompilerProxy.CompileFile(fileContext);
 			CompilationResult result = EndCompile(fileContext);
 
 			return result;
 		}
 
-		private void BeginCompile(SassContextBase context, string inputPath, string outputPath, CompilationOptions options)
+		private static void BeginCompile(SassContextBase context, string inputPath, string outputPath, CompilationOptions options)
 		{
 			options = options ?? new CompilationOptions();
 
@@ -235,7 +209,7 @@ namespace LibSassHost
 			context.OutputPath = outputFilePath;
 		}
 
-		private CompilationResult EndCompile(SassContextBase context)
+		private static CompilationResult EndCompile(SassContextBase context)
 		{
 			CompilationResult result;
 
@@ -297,20 +271,5 @@ namespace LibSassHost
 
 			return lineFeed;
 		}
-
-		#region IDisposable implementation
-
-		/// <summary>
-		/// Destroys object
-		/// </summary>
-		public void Dispose()
-		{
-			if (_disposedFlag.Set())
-			{
-				_fileManager = null;
-			}
-		}
-
-		#endregion
 	}
 }

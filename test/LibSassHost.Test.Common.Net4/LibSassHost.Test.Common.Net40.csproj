@@ -79,12 +79,6 @@
     <Compile Include="..\LibSassHost.Test.Common\Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\LibSassHost.Test.Common\SassCompileTestsBase.cs">
-      <Link>SassCompileTestsBase.cs</Link>
-    </Compile>
-    <Compile Include="..\LibSassHost.Test.Common\ScssCompileTestsBase.cs">
-      <Link>ScssCompileTestsBase.cs</Link>
-    </Compile>
     <Compile Include="..\LibSassHost.Test.Common\SyntaxType.cs">
       <Link>SyntaxType.cs</Link>
     </Compile>
