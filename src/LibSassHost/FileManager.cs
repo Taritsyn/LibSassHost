@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text.RegularExpressions;
 
 using LibSassHost.Helpers;
 using LibSassHost.Resources;
@@ -14,41 +13,28 @@ namespace LibSassHost
 	public sealed class FileManager : IFileManager
 	{
 		/// <summary>
-		/// Default instance of file manager
+		/// Instance of file manager
 		/// </summary>
-		private static readonly Lazy<FileManager> _default
-			= new Lazy<FileManager>(() => new FileManager());
-
-		/// <summary>
-		/// Current instance of file manager
-		/// </summary>
-		private static IFileManager _current;
-
-		/// <summary>
-		/// Gets or sets a instance of file manager
-		/// </summary>
-		public static IFileManager Current
-		{
-			get
-			{
-				return _current ?? _default.Value;
-			}
-			set
-			{
-				_current = value;
-			}
-		}
+		private static readonly Lazy<FileManager> _instance = new Lazy<FileManager>(() => new FileManager());
 
 		/// <summary>
 		/// Current working directory of the application
 		/// </summary>
 		private readonly string _currentDirectoryName;
 
+		/// <summary>
+		/// Gets a instance of file manager
+		/// </summary>
+		public static IFileManager Instance
+		{
+			get { return _instance.Value; }
+		}
+
 
 		/// <summary>
-		/// Constructs a instance of file manager
+		/// Private constructor for implementation Singleton pattern
 		/// </summary>
-		public FileManager()
+		private FileManager()
 		{
 			_currentDirectoryName = GetDefaultDirectory();
 		}

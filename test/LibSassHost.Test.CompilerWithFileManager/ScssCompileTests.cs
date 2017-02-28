@@ -6,7 +6,7 @@ namespace LibSassHost.Test.CompilerWithFileManager
 	{
 		protected override SassCompiler CreateCompiler()
 		{
-			return new SassCompiler(FileManager.Current);
+			return new SassCompiler(FileManager.Instance);
 		}
 	}
 }
