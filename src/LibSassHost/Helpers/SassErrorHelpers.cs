@@ -15,16 +15,6 @@ namespace LibSassHost.Helpers
 		/// <summary>
 		/// Generates a detailed error message
 		/// </summary>
-		/// <param name="sassCompilerLoadException">Sass-compiler load exception</param>
-		/// <returns>Detailed error message</returns>
-		public static string Format(SassCompilerLoadException sassCompilerLoadException)
-		{
-			return sassCompilerLoadException.Message;
-		}
-
-		/// <summary>
-		/// Generates a detailed error message
-		/// </summary>
 		/// <param name="sassСompilationException">Sass compilation exception</param>
 		/// <returns>Detailed error message</returns>
 		public static string Format(SassСompilationException sassСompilationException)

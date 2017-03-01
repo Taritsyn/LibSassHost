@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Test.CompilerWi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Test.CompilerWithoutFileManager.Net40", "test\LibSassHost.Test.CompilerWithoutFileManager.Net4\LibSassHost.Test.CompilerWithoutFileManager.Net40.csproj", "{B8588BB6-C977-4342-9B09-869D66F2FD76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Sample.ConsoleApp.Net4", "samples\LibSassHost.Sample.ConsoleApp.Net4\LibSassHost.Sample.ConsoleApp.Net4.csproj", "{106CB6B3-52BB-4FA2-AAC5-460824FCA356}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Sample.ConsoleApp.Net40", "samples\LibSassHost.Sample.ConsoleApp.Net4\LibSassHost.Sample.ConsoleApp.Net40.csproj", "{106CB6B3-52BB-4FA2-AAC5-460824FCA356}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
