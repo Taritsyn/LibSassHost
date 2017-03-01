@@ -209,7 +209,7 @@ namespace Sass {
 
       File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (file_manager.is_initialized) { //LSH+
+      if (file_manager.is_initialized && file_manager.supports_conversion_to_absolute_path) { //LSH+
         if (!l.empty()) { //LSH+
           l = file_manager.to_absolute_path(l); //LSH+
         } //LSH+

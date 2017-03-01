@@ -117,10 +117,21 @@ extern "C" {
     return File_Manager::get_instance().is_initialized;
   }
 
+  bool ADDCALL sass_file_manager_get_supports_conversion_to_absolute_path ()
+  {
+    return File_Manager::get_instance().supports_conversion_to_absolute_path;
+  }
+
 
   void ADDCALL sass_file_manager_set_is_initialized (bool is_initialized)
   {
     File_Manager::get_instance().is_initialized = is_initialized;
+  }
+
+  void ADDCALL sass_file_manager_set_supports_conversion_to_absolute_path (
+    bool supports_conversion_to_absolute_path)
+  {
+    File_Manager::get_instance().supports_conversion_to_absolute_path = supports_conversion_to_absolute_path;
   }
 
   void ADDCALL sass_file_manager_set_get_current_directory_delegate (Func_String del)

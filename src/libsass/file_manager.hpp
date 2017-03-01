@@ -15,6 +15,7 @@ namespace Sass
 
     public:
       bool is_initialized;
+      bool supports_conversion_to_absolute_path;
       Func_String get_current_directory_delegate;
       Func_String_Boolean file_exists_delegate;
       Func_String_Boolean is_absolute_path_delegate;

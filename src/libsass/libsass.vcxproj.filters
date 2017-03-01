@@ -40,9 +40,6 @@
     <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\sass\version.h">
       <Filter>Include Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\sass\version.h.in">
-      <Filter>Include Headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\file_manager.h">
       <Filter>Include Headers</Filter>
     </ClInclude>

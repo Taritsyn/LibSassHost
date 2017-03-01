@@ -6,6 +6,16 @@
 	public interface IFileManager
 	{
 		/// <summary>
+		/// Gets a value that indicates if the file manager supports conversion of
+		/// relative paths to an application absolute paths
+		/// </summary>
+		bool SupportsConversionToAbsolutePath
+		{
+			get;
+		}
+
+
+		/// <summary>
 		/// Gets a current working directory of the application
 		/// </summary>
 		/// <returns>The string containing the path of the current working directory</returns>

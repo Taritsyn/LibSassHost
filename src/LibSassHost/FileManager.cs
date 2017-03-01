@@ -75,6 +75,12 @@ namespace LibSassHost
 
 		#region IFileManager implementation
 
+		public bool SupportsConversionToAbsolutePath
+		{
+			get { return false; }
+		}
+
+
 		public string GetCurrentDirectory()
 		{
 			return _currentDirectoryName;
@@ -101,37 +107,50 @@ namespace LibSassHost
 					string.Format(Strings.Common_ArgumentIsNull, "path"));
 			}
 
-			if (Utils.IsWindows() && PathStartsWithDriveLetter(path))
+			bool result = false;
+
+			if (path.Length > 0)
 			{
-				return true;
-			}
-
-			int charPosition = 0;
-			char charValue;
-
-			// check if we have a protocol
-			if (path.TryGetChar(charPosition, out charValue) && charValue.IsAlpha())
-			{
-				charPosition++;
-
-				// skip over all alphanumeric characters
-				while (path.TryGetChar(charPosition, out charValue) && charValue.IsAlphaNumeric())
+				if (path[0] == '/')
 				{
-					charPosition++;
+					return true;
 				}
 
-				charPosition = charValue == ':' ? charPosition + 1 : 0;
-			}
+				if (Utils.IsWindows() && PathStartsWithDriveLetter(path))
+				{
+					return true;
+				}
 
-			path.TryGetChar(charPosition, out charValue);
-			bool result = charValue == '/';
+				if (path.Length >= 3)
+				{
+					int charPosition = 0;
+					char charValue;
+
+					// check if we have a protocol
+					if (path.TryGetChar(charPosition, out charValue) && charValue.IsAlpha())
+					{
+						charPosition++;
+
+						// skip over all alphanumeric characters
+						while (path.TryGetChar(charPosition, out charValue) && charValue.IsAlphaNumeric())
+						{
+							charPosition++;
+						}
+
+						charPosition = charValue == ':' ? charPosition + 1 : 0;
+					}
+
+					path.TryGetChar(charPosition, out charValue);
+					result = charValue == '/';
+				}
+			}
 
 			return result;
 		}
 
 		public string ToAbsolutePath(string path)
 		{
-			return path;
+			throw new NotImplementedException();
 		}
 
 		public string ReadFile(string path)

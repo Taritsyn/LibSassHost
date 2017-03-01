@@ -811,7 +811,7 @@ namespace Sass {
     if (name == "url" && args->length() > 0) { //LSH+
       File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (file_manager.is_initialized) { //LSH+
+      if (file_manager.is_initialized && file_manager.supports_conversion_to_absolute_path) { //LSH+
         Argument_Obj path_arg = args->at(0); //LSH+
         std::string path = path_arg->perform(this)->to_string(); //LSH+
         std::string processed_path = path; //LSH+
@@ -1216,7 +1216,7 @@ namespace Sass {
     if (is_url_function(res)) { //LSH+
       File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (file_manager.is_initialized) { //LSH+
+      if (file_manager.is_initialized && file_manager.supports_conversion_to_absolute_path) { //LSH+
         std::string path = get_uri_from_url_function(res); //LSH+
         std::string processed_path = file_manager.to_absolute_path(path); //LSH+
 
@@ -1252,7 +1252,7 @@ namespace Sass {
     if (!s->is_delayed() && is_url_function(s->value())) { //LSH+
       File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-      if (file_manager.is_initialized) { //LSH+
+      if (file_manager.is_initialized && file_manager.supports_conversion_to_absolute_path) { //LSH+
         std::string path = get_uri_from_url_function(s->value()); //LSH+
         std::string processed_path = file_manager.to_absolute_path(path); //LSH+
 

@@ -7,7 +7,6 @@
     <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\sass\functions.h" />
     <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\sass\values.h" />
     <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\sass\version.h" />
-    <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\sass\version.h.in" />
     <ClInclude Include="$(LIBSASS_INCLUDES_DIR)\file_manager.h" />
   </ItemGroup>
   <ItemGroup Label="LibSass Headers">

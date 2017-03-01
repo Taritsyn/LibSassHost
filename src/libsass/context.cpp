@@ -391,7 +391,7 @@ namespace Sass {
       if (!load_path.empty()) { //LSH+
         File_Manager& file_manager = File_Manager::get_instance(); //LSH+
 
-        if (file_manager.is_initialized) {
+        if (file_manager.is_initialized && file_manager.supports_conversion_to_absolute_path) {
           char quote_mark = 0; //LSH+
 
           processed_load_path = unquote(load_path, &quote_mark, true); //LSH+

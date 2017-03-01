@@ -164,12 +164,19 @@ namespace LibSassHost.Internal.Native
 		[DllImport(DllName)]
 		internal static extern bool sass_file_manager_get_is_initialized();
 
+		[DllImport(DllName)]
+		internal static extern bool sass_file_manager_get_supports_conversion_to_absolute_path();
+
 		#endregion
 
 		#region Setters for File_Manager properties
 
 		[DllImport(DllName)]
 		internal static extern void sass_file_manager_set_is_initialized(bool is_initialized);
+
+		[DllImport(DllName)]
+		internal static extern void sass_file_manager_set_supports_conversion_to_absolute_path(
+			bool supports_conversion_to_absolute_path);
 
 
 		[DllImport(DllName, EntryPoint = "sass_file_manager_set_get_current_directory_delegate", CharSet = CharSet.Ansi)]
