@@ -100,16 +100,26 @@ Build script can also take a options, information about which can be obtained by
 ```
 
 ## Usage
-The main difference between this library from other .NET wrappers around the libSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. When you create an instance of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class, you can pass an file manager through the constructor:
+The main difference between this library from other .NET wrappers around the libSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. You can set the file manager by using `FileManager` property of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class:
 
 ```csharp
-using (var compiler = new SassCompiler(new CustomFileManager()))
-{
-	…
-}
+SassCompiler.FileManager = CustomFileManager();
 ```
 
-Any class, that implements an <code title="LibSassHost.IFileManager">IFileManager</code> interface, can be used as a file manager. By default, as file manager uses an instance of the <code title="LibSassHost.FileManager">FileManager</code> class, that is responsible for access to the Windows file system. A good example of implementing a custom file manager, which provides access to the virtual file system, is the <a href="https://bundletransformer.codeplex.com/SourceControl/latest#BundleTransformer.SassAndScss/Internal/VirtualFileManager.cs" target="_blank"><code title="BundleTransformer.SassAndScss.Internal.VirtualFileManager">VirtualFileManager</code></a> class from the <a href="http://nuget.org/packages/BundleTransformer.SassAndScss" target="_blank">BundleTransformer.SassAndScss</a> package.
+Any class, that implements an <code title="LibSassHost.IFileManager">IFileManager</code> interface, can be used as a file manager.
+By default, file manager is not specified, and for access to the file system are used built-in tools of the libSass library.
+The main advantage of using built-in tools is the low memory consumption.
+But there is a disadvantage: there is no ability to process files in UTF-16 encoding.
+
+To resolve this disadvantage you need to use the <code title="LibSassHost.FileManager">FileManager</code> class:
+
+```csharp
+SassCompiler.FileManager = FileManager.Instance;
+```
+
+But in this case, will increase memory consumption (approximately 3 times).
+
+A good example of implementing a custom file manager, which provides access to the virtual file system, is the <a href="https://bundletransformer.codeplex.com/SourceControl/latest#BundleTransformer.SassAndScss/Internal/VirtualFileManager.cs" target="_blank"><code title="BundleTransformer.SassAndScss.Internal.VirtualFileManager">VirtualFileManager</code></a> class from the <a href="http://nuget.org/packages/BundleTransformer.SassAndScss" target="_blank">BundleTransformer.SassAndScss</a> package.
 
 It should also be noted, that this library does not write the result of compilation to disk. `Compile` and `CompileFile` methods of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class return the result of compilation in the form of an instance of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class. Consider in detail properties of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class:
 
@@ -162,38 +172,36 @@ body {
   color: $primary-color;
 }";
 
-			using (var compiler = new SassCompiler())
+			try
 			{
-				try
-				{
-					var options = new CompilationOptions { SourceMap = true };
-					CompilationResult result = compiler.Compile(inputContent, "input.scss", "output.css",
-						options);
+				var options = new CompilationOptions { SourceMap = true };
+				CompilationResult result = SassCompiler.Compile(inputContent, "input.scss", "output.css",
+					"output.css.map", options);
 
-					Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
-						Environment.NewLine);
-					Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
-					Console.WriteLine("Included file paths: {0}", 
-						string.Join(", ", result.IncludedFilePaths));
-				}
-				catch (SassСompilationException e)
-				{
-					Console.WriteLine("During compilation of SCSS code an error occurred. See details:");
-					Console.WriteLine();
-					Console.WriteLine(SassErrorHelpers.Format(e));
-				}
+				Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
+					Environment.NewLine);
+				Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
+				Console.WriteLine("Included file paths: {0}",
+					string.Join(", ", result.IncludedFilePaths));
+			}
+			catch (SassСompilationException e)
+			{
+				Console.WriteLine("During compilation of SCSS code an error occurred. See details:");
+				Console.WriteLine();
+				Console.WriteLine(SassErrorHelpers.Format(e));
 			}
 		}
 	}
 }
 ```
 
-First we create an instance of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class, and then call its the `Compile` method with the following parameters:
+First we call the `Compile` method of <code title="LibSassHost.SassCompiler">SassCompiler</code> class with the following parameters:
 
  1. `content` - text content written on Sass/SCSS.
- 2. `inputPath` (optional) - path to input Sass/SCSS file. Needed for generation of source map.
+ 2. `inputPath` - path to input Sass/SCSS file. Needed for generation of source map.
  3. `outputPath` (optional) - path to output CSS file. Needed for generation of source map. If path to output file is not specified, but specified a path to input file, then value of this parameter is obtained by replacing extension in the input file path by `.css` extension.
- 4. `options` (optional) - compilation options (instance of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class)
+ 4. `sourceMapPath` (optional) - path to source map file. If path to source map file is not specified, but specified a path to output file, then value of this parameter is obtained by replacing extension in the output file path by `.css.map` extension.
+ 5. `options` (optional) - compilation options (instance of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class)
 
 Then output result of compilation to the console. In addition, we provide handling of the <code title="LibSassHost.SassСompilationException">SassСompilationException</code> exception.
 
@@ -214,12 +222,6 @@ And now let's consider in detail properties of the <code title="LibSassHost.Comp
 			<td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
 			<td>Empty list</td>
 			<td>List of include paths.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>IndentedSyntax</code></td>
-			<td><code title="System.Boolean">Boolean</code></td>
-			<td><code>false</code></td>
-			<td>Flag for whether to enable Sass Indented Syntax for parsing the data string or file.</td>
 		</tr>
 		<tr valign="top">
 			<td><code>IndentType</code></td>
@@ -295,12 +297,6 @@ And now let's consider in detail properties of the <code title="LibSassHost.Comp
 			<td>Flag for whether to enable source map generation.</td>
 		</tr>
 		<tr valign="top">
-			<td><code>SourceMapFilePath</code></td>
-			<td><code title="System.String">String</code></td>
-			<td>Empty string</td>
-			<td>Path to source map file.</td>
-		</tr>
-		<tr valign="top">
 			<td><code>SourceMapFileUrls</code></td>
 			<td><code title="System.Boolean">Boolean</code></td>
 			<td><code>false</code></td>
@@ -336,36 +332,35 @@ namespace LibSassHost.Example.ConsoleApplication
 	{
 		static void Main(string[] args)
 		{
-			const string basePath = @"C:\Projects\TestSass";
+			const string basePath = "/Projects/TestSass";
 			string inputFilePath = Path.Combine(basePath, "style.scss");
 			string outputFilePath = Path.Combine(basePath, "style.css");
+			string sourceMapFilePath = Path.Combine(basePath, "style.css.map");
 
-			using (var compiler = new SassCompiler())
+			try
 			{
-				try
-				{
-					var options = new CompilationOptions { SourceMap = true };
-					CompilationResult result = compiler.CompileFile(inputFilePath, outputFilePath, options);
+				var options = new CompilationOptions { SourceMap = true };
+				CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath,
+					sourceMapFilePath, options);
 
-					Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
-						Environment.NewLine);
-					Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
-					Console.WriteLine("Included file paths: {0}",
-						string.Join(", ", result.IncludedFilePaths));
-				}
-				catch (SassСompilationException e)
-				{
-					Console.WriteLine("During compilation of SCSS file an error occurred. See details:");
-					Console.WriteLine();
-					Console.WriteLine(SassErrorHelpers.Format(e));
-				}
+				Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
+					Environment.NewLine);
+				Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
+				Console.WriteLine("Included file paths: {0}",
+					string.Join(", ", result.IncludedFilePaths));
+			}
+			catch (SassСompilationException e)
+			{
+				Console.WriteLine("During compilation of SCSS file an error occurred. See details:");
+				Console.WriteLine();
+				Console.WriteLine(SassErrorHelpers.Format(e));
 			}
 		}
 	}
 }
 ```
 
-In this case, the `inputPath` parameter became mandatory and is used instead of the `content` parameter. Moreover, value of the `inputPath` parameter now should contain the path to real file.
+In this case, the `inputPath` parameter is used instead of the `content` parameter. Moreover, value of the `inputPath` parameter now should contain the path to real file.
 
 
 ## Who's Using LibSass Host for .NET

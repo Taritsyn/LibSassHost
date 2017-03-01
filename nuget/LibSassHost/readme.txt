@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-                 README file for LibSass Host for .Net v1.0.0 Alpha 2
+                 README file for LibSass Host for .Net v1.0.0 Beta 1
 
    --------------------------------------------------------------------------------
 
@@ -26,9 +26,17 @@
    =============
    RELEASE NOTES
    =============
-   1. `SassСompilationException` class was made serializable;
-   2. Added a packages, that contains a native assemblies for Debian-based Linux
-      (x64) and OS X (x64).
+   1. `SassCompiler` class was converted to a static class;
+   2. In `SassCompiler` class was added two static properties: `Version` and
+      `LanguageVersion`;
+   3. `IndentedSyntax` and `SourceMapFilePath` compilation options was converted
+      into parameters of compilation methods;
+   4. Added a two new exception classes: `SassException` and
+      `SassCompilerLoadException`;
+   5. Now it is possible to use the Sass compiler without the file manager;
+   6. In `IFileManager` interface was added `SupportsConversionToAbsolutePath`
+      property;
+   7. In `FileManager` class the `Current` property was renamed to `Instance`.
 
    ============
    PROJECT SITE
