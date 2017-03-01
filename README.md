@@ -4,14 +4,14 @@
 
 ## Installation
 This library can be installed through NuGet.
-[LibSassHost](http://nuget.org/packages/LibSassHost/1.0.0-alpha2) package does not contain the native implementations of the libSass.
+[LibSassHost](http://nuget.org/packages/LibSassHost/1.0.0-beta1) package does not contain the native implementations of the libSass.
 Therefore, you need to choose and install the most appropriate package(s) for your platform.
 The following packages are available:
 
- * [LibSassHost.Native.win-x86](http://nuget.org/packages/LibSassHost.Native.win-x86/1.0.0-alpha2)<sup>*</sup> contains the native assemblies for Windows (x86).
- * [LibSassHost.Native.win-x64](http://nuget.org/packages/LibSassHost.Native.win-x64/1.0.0-alpha2)<sup>*</sup> contains the native assemblies for Windows (x64).
- * [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/1.0.0-alpha2) contains the native assemblies for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint). Only compatible with .NET Core.
- * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/1.0.0-alpha2) contains the native assemblies for OS X (x64). Only compatible with .NET Core.
+ * [LibSassHost.Native.win-x86](http://nuget.org/packages/LibSassHost.Native.win-x86/1.0.0-beta1)<sup>*</sup> contains the native assemblies for Windows (x86).
+ * [LibSassHost.Native.win-x64](http://nuget.org/packages/LibSassHost.Native.win-x64/1.0.0-beta1)<sup>*</sup> contains the native assemblies for Windows (x64).
+ * [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/1.0.0-beta1) contains the native assemblies for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint). Only compatible with .NET Core.
+ * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/1.0.0-beta1) contains the native assemblies for OS X (x64). Only compatible with .NET Core.
 
 <sup>* - Requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](http://www.microsoft.com/en-us/download/details.aspx?id=48145).<sup>
 
