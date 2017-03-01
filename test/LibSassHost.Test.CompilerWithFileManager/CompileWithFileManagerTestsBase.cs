@@ -29,13 +29,8 @@ namespace LibSassHost.Test.CompilerWithFileManager
 			string inputCode = File.ReadAllText(inputFilePath);
 			string targetOutputCode = File.ReadAllText(outputFilePath);
 
-			var options = new CompilationOptions
-			{
-				IndentedSyntax = _indentedSyntax
-			};
-
 			// Act
-			CompilationResult result = SassCompiler.Compile(inputCode, options: options);
+			CompilationResult result = SassCompiler.Compile(inputCode, _indentedSyntax);
 
 			// Assert
 			Assert.Equal(targetOutputCode, result.CompiledContent);

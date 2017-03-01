@@ -64,7 +64,8 @@ body {
 			try
 			{
 				var options = new CompilationOptions { SourceMap = true };
-				CompilationResult result = SassCompiler.Compile(inputContent, "input.scss", "output.css", options);
+				CompilationResult result = SassCompiler.Compile(inputContent, "input.scss", "output.css",
+					options: options);
 				WriteOutput(result);
 			}
 			catch (SassСompilationException e)
@@ -83,7 +84,7 @@ body {
 			try
 			{
 				var options = new CompilationOptions { SourceMap = true, SourceMapFileUrls = true };
-				CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath, options);
+				CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath, options: options);
 				WriteOutput(result);
 			}
 			catch (SassСompilationException e)

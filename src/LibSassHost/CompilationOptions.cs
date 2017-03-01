@@ -17,15 +17,6 @@ namespace LibSassHost
 		}
 
 		/// <summary>
-		/// Gets or sets a flag for whether to enable Sass Indented Syntax for parsing the data string or file
-		/// </summary>
-		public bool IndentedSyntax
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
 		/// Gets or sets a indent type
 		/// </summary>
 		public IndentType IndentType
@@ -108,15 +99,6 @@ namespace LibSassHost
 		}
 
 		/// <summary>
-		/// Gets or sets a path to source map file
-		/// </summary>
-		public string SourceMapFilePath
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
 		/// Gets or sets a flag for whether to create file urls for sources
 		/// </summary>
 		public bool SourceMapFileUrls
@@ -150,7 +132,6 @@ namespace LibSassHost
 		public CompilationOptions()
 		{
 			IncludePaths = new List<string>();
-			IndentedSyntax = false;
 			IndentType = IndentType.Space;
 			IndentWidth = 2;
 			InlineSourceMap = false;
@@ -160,7 +141,6 @@ namespace LibSassHost
 			Precision = 5;
 			SourceComments = false;
 			SourceMap = false;
-			SourceMapFilePath = string.Empty;
 			SourceMapFileUrls = false;
 			SourceMapIncludeContents = false;
 			SourceMapRootPath = string.Empty;

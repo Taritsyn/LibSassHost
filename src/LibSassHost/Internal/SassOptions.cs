@@ -14,12 +14,6 @@
 			set;
 		}
 
-		public bool IsIndentedSyntaxSource
-		{
-			get;
-			set;
-		}
-
 		public string LineFeed
 		{
 			get;
@@ -57,12 +51,6 @@
 		}
 
 		public bool SourceMapEmbed
-		{
-			get;
-			set;
-		}
-
-		public string SourceMapFile
 		{
 			get;
 			set;

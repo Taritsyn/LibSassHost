@@ -81,7 +81,7 @@ namespace LibSassHost.Internal
 			Sass_Api.sass_option_set_include_path(ctx_options, options.IncludePath);
 			Sass_Api.sass_option_set_indent(ctx_options, options.Indent);
 			Sass_Api.sass_option_set_input_path(ctx_options, context.InputPath);
-			Sass_Api.sass_option_set_is_indented_syntax_src(ctx_options, options.IsIndentedSyntaxSource);
+			Sass_Api.sass_option_set_is_indented_syntax_src(ctx_options, context.IsIndentedSyntaxSource);
 			Sass_Api.sass_option_set_linefeed(ctx_options, options.LineFeed);
 			Sass_Api.sass_option_set_omit_source_map_url(ctx_options, options.OmitSourceMapUrl);
 			Sass_Api.sass_option_set_output_path(ctx_options, context.OutputPath);
@@ -90,7 +90,7 @@ namespace LibSassHost.Internal
 			Sass_Api.sass_option_set_source_comments(ctx_options, options.SourceComments);
 			Sass_Api.sass_option_set_source_map_contents(ctx_options, options.SourceMapContents);
 			Sass_Api.sass_option_set_source_map_embed(ctx_options, options.SourceMapEmbed);
-			Sass_Api.sass_option_set_source_map_file(ctx_options, options.SourceMapFile);
+			Sass_Api.sass_option_set_source_map_file(ctx_options, context.SourceMapFile);
 			Sass_Api.sass_option_set_source_map_file_urls(ctx_options, options.SourceMapFileUrls);
 			Sass_Api.sass_option_set_source_map_root(ctx_options, options.SourceMapRoot);
 		}

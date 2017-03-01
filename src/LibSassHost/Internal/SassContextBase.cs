@@ -20,6 +20,12 @@
 			set;
 		}
 
+		public bool IsIndentedSyntaxSource
+		{
+			get;
+			set;
+		}
+
 		public SassOptions Options
 		{
 			get;
@@ -33,6 +39,12 @@
 		}
 
 		public string OutputString
+		{
+			get;
+			set;
+		}
+
+		public string SourceMapFile
 		{
 			get;
 			set;
