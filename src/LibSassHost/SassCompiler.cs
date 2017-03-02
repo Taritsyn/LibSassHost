@@ -4,7 +4,9 @@ using System.Linq;
 
 using LibSassHost.Internal;
 using LibSassHost.Resources;
+#if !NETSTANDARD1_3
 using LibSassHost.Utilities;
+#endif
 
 namespace LibSassHost
 {
@@ -22,6 +24,11 @@ namespace LibSassHost
 		/// Version of Sass language
 		/// </summary>
 		private static readonly string _languageVersion;
+
+		/// <summary>
+		/// Default compilation options
+		/// </summary>
+		private static readonly CompilationOptions _defaultOptions = new CompilationOptions();
 
 		/// <summary>
 		/// Instance of file manager
@@ -250,7 +257,7 @@ namespace LibSassHost
 		private static void BeginCompile(SassContextBase context, bool indentedSyntax, string inputPath,
 			string outputPath, string sourceMapPath, CompilationOptions options)
 		{
-			options = options ?? new CompilationOptions();
+			options = options ?? _defaultOptions;
 
 			string inputFilePath = !string.IsNullOrWhiteSpace(inputPath) ? inputPath : string.Empty;
 			string outputFilePath = !string.IsNullOrWhiteSpace(outputPath) ? outputPath : string.Empty;

@@ -111,21 +111,16 @@ namespace LibSassHost
 
 			if (path.Length > 0)
 			{
-				if (path[0] == '/')
-				{
-					return true;
-				}
-
 				if (Utils.IsWindows() && PathStartsWithDriveLetter(path))
 				{
 					return true;
 				}
 
-				if (path.Length >= 3)
-				{
-					int charPosition = 0;
-					char charValue;
+				int charPosition = 0;
+				char charValue;
 
+				if (path.Length >= 2)
+				{
 					// check if we have a protocol
 					if (path.TryGetChar(charPosition, out charValue) && charValue.IsAlpha())
 					{
@@ -139,10 +134,10 @@ namespace LibSassHost
 
 						charPosition = charValue == ':' ? charPosition + 1 : 0;
 					}
-
-					path.TryGetChar(charPosition, out charValue);
-					result = charValue == '/';
 				}
+
+				path.TryGetChar(charPosition, out charValue);
+				result = charValue == '/';
 			}
 
 			return result;
