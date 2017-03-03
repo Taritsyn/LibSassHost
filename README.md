@@ -4,100 +4,16 @@
 
 ## Installation
 This library can be installed through NuGet.
-[LibSassHost](http://nuget.org/packages/LibSassHost/1.0.0-beta1) package does not contain the native implementations of the libSass.
+[LibSassHost](http://nuget.org/packages/LibSassHost/) package does not contain the native implementations of the libSass.
 Therefore, you need to choose and install the most appropriate package(s) for your platform.
 The following packages are available:
 
- * [LibSassHost.Native.win-x86](http://nuget.org/packages/LibSassHost.Native.win-x86/1.0.0-beta1)<sup>*</sup> contains the native assemblies for Windows (x86).
- * [LibSassHost.Native.win-x64](http://nuget.org/packages/LibSassHost.Native.win-x64/1.0.0-beta1)<sup>*</sup> contains the native assemblies for Windows (x64).
- * [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/1.0.0-beta1) contains the native assemblies for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint). Only compatible with .NET Core.
- * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/1.0.0-beta1) contains the native assemblies for OS X (x64). Only compatible with .NET Core.
+ * [LibSassHost.Native.win-x86](http://nuget.org/packages/LibSassHost.Native.win-x86/)<sup>*</sup> contains the native assemblies for Windows (x86).
+ * [LibSassHost.Native.win-x64](http://nuget.org/packages/LibSassHost.Native.win-x64/)<sup>*</sup> contains the native assemblies for Windows (x64).
+ * [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/) contains the native assemblies for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint). Only compatible with .NET Core.
+ * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/) contains the native assemblies for OS X (x64). Only compatible with .NET Core.
 
 <sup>* - Requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](http://www.microsoft.com/en-us/download/details.aspx?id=48145).<sup>
-
-## Building LibSass
-LibSassHost uses a modified version of the libSass library.
-In most cases, you do not need to build the libSass from source code, because the native assemblies is published as `LibSassHost.Native.*` NuGet packages.
-The only exception is the case, when you want to build library for a specific Linux distro.
-
-To build a modified version of the libSass you must first clone the LibSassHost repository:
-
-```
-mkdir Github && cd Github
-git clone https://github.com/Taritsyn/LibSassHost.git
-cd LibSassHost
-git checkout 1.0
-```
-
-Further actions depend on your operating system.
-
-###Windows
-In your system must be installed Visual Studio 2013 or 2015 with C++ support.
-
-To build the libSass on Windows:
-
- 1. Open `libsass.sln` in Visual Studio.
- 2. Select the **Configuration** and target **Platform**, and build the solution.
- 3. Build output will be under `src\libsass\bin\[Debug|Release]\[Win32|x64]`.
-
-Alternatively, you can use the build script.
-Open a Visual Studio developer command prompt and run the `build-libsass.cmd` script from your `LibSassHost` project directory:
-
-```
-C:\Users\username\Github\LibSassHost> build-libsass
-```
-
-Build script can also take a options, information about which can be obtained by using the following command:
-
-```
-build-libsass /?
-```
-
-###Linux
-In your system must be installed GCC (GNU Compiler Collection).
-In every Linux distro installation of GCC is made in different ways.
-For example, in Ubuntu 16.04 this is done as follows:
-
-```
-sudo apt-get update
-sudo apt-get install build-essential
-```
-
-To build the libSass on Linux open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
-
-```
-username@ubuntu-16:~/Github/LibSassHost$ ./build-libsass.sh
-```
-
-Build output will be under `src/libsass/bin/[Debug|Release]/Linux`.
-
-Build script can also take a options, information about which can be obtained by using the following command:
-
-```
-./build-libsass.sh --help
-```
-
-###OS X
-In your system must be installed Xcode Command Line Tools.
-To install Xcode Command Line Tools, in your terminal simply run:
-
-```
-xcode-select --install
-```
-
-To build the libSass on OS X open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
-
-```
-My-Mac:LibSassHost username$ ./build-libsass.sh
-```
-
-Build output will be under `src/libsass/bin/[Debug|Release]/OSX`.
-
-Build script can also take a options, information about which can be obtained by using the following command:
-
-```
-./build-libsass.sh --help
-```
 
 ## Usage
 The main difference between this library from other .NET wrappers around the libSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. You can set the file manager by using `FileManager` property of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class:
@@ -362,6 +278,87 @@ namespace LibSassHost.Example.ConsoleApplication
 
 In this case, the `inputPath` parameter is used instead of the `content` parameter. Moreover, value of the `inputPath` parameter now should contain the path to real file.
 
+## Building LibSass
+LibSassHost uses a modified version of the libSass library.
+In most cases, you do not need to build the libSass from source code, because the native assemblies is published as `LibSassHost.Native.*` NuGet packages.
+The only exception is the case, when you want to build library for a specific Linux distro.
+
+To build a modified version of the libSass you must first clone the LibSassHost repository:
+
+```
+mkdir Github && cd Github
+git clone https://github.com/Taritsyn/LibSassHost.git
+```
+
+Further actions depend on your operating system.
+
+###Windows
+In your system must be installed Visual Studio 2013 or 2015 with C++ support.
+
+To build the libSass on Windows:
+
+ 1. Open `libsass.sln` in Visual Studio.
+ 2. Select the **Configuration** and target **Platform**, and build the solution.
+ 3. Build output will be under `src\libsass\bin\[Debug|Release]\[Win32|x64]`.
+
+Alternatively, you can use the build script.
+Open a Visual Studio developer command prompt and run the `build-libsass.cmd` script from your `LibSassHost` project directory:
+
+```
+C:\Users\username\Github\LibSassHost> build-libsass
+```
+
+Build script can also take a options, information about which can be obtained by using the following command:
+
+```
+build-libsass /?
+```
+
+###Linux
+In your system must be installed GCC (GNU Compiler Collection).
+In every Linux distro installation of GCC is made in different ways.
+For example, in Ubuntu 16.04 this is done as follows:
+
+```
+sudo apt-get update
+sudo apt-get install build-essential
+```
+
+To build the libSass on Linux open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
+
+```
+username@ubuntu-16:~/Github/LibSassHost$ ./build-libsass.sh
+```
+
+Build output will be under `src/libsass/bin/[Debug|Release]/Linux`.
+
+Build script can also take a options, information about which can be obtained by using the following command:
+
+```
+./build-libsass.sh --help
+```
+
+###OS X
+In your system must be installed Xcode Command Line Tools.
+To install Xcode Command Line Tools, in your terminal simply run:
+
+```
+xcode-select --install
+```
+
+To build the libSass on OS X open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
+
+```
+My-Mac:LibSassHost username$ ./build-libsass.sh
+```
+
+Build output will be under `src/libsass/bin/[Debug|Release]/OSX`.
+
+Build script can also take a options, information about which can be obtained by using the following command:
+
+```
+./build-libsass.sh --help
+```
 
 ## Who's Using LibSass Host for .NET
 If you use the LibSass Host for .NET in some project, please send me a message so I can include it in this list:

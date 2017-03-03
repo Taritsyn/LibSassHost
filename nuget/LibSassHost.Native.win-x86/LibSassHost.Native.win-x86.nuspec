@@ -2,12 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost.Native.win-x86</id>
-		<version>1.0.0-beta1</version>
+		<version>1.0.0</version>
 		<title>LibSass Host Native for Windows (x86)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
 		<licenseUrl>http://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
 		<projectUrl>http://github.com/Taritsyn/LibSassHost</projectUrl>
+		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This package complements the LibSassHost package and contains the native implementation of libSass version 3.4.3 for Windows (x86).
 

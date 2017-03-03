@@ -1,8 +1,8 @@
 ﻿{
-	"version": "1.0.0-alpha2",
+	"version": "1.0.0",
 
 	"dependencies": {
-		"LibSassHost.Test.Common": "1.0.0-alpha2"
+		"LibSassHost.Test.Common": "1.0.0"
 	},
 
 	"buildOptions": {
