@@ -1,5 +1,5 @@
 ﻿{
-	"version": "1.0.0",
+	"version": "1.0.1",
 
 	"buildOptions": {
 		"emitEntryPoint": true,
@@ -14,7 +14,7 @@
 
 	"dependencies": {
 		"Microsoft.Extensions.PlatformAbstractions": "1.0.0",
-		"LibSassHost": "1.0.0",
+		"LibSassHost": "1.0.1",
 		"LibSassHost.Native.win-x64": "1.0.0",
 		"LibSassHost.Native.win-x86": "1.0.0",
 		"LibSassHost.Native.debian-x64": "1.0.0",

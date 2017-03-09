@@ -1,12 +1,12 @@
 ﻿{
-	"version": "1.0.0",
+	"version": "1.0.1",
 
 	"dependencies": {
 		"dotnet-test-xunit": "2.2.0-preview2-build1029",
 		"Microsoft.Extensions.PlatformAbstractions": "1.0.0",
 		"Microsoft.NETCore.Platforms": "1.0.2",
 		"xunit": "2.2.0-beta4-build3444",
-		"LibSassHost": "1.0.0",
+		"LibSassHost": "1.0.1",
 		"LibSassHost.Native.win-x64": "1.0.0",
 		"LibSassHost.Native.win-x86": "1.0.0",
 		"LibSassHost.Native.debian-x64": "1.0.0",
