@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 ORIGINAL_CURRENT_DIR=%cd%
-KOREBUILD_DOTNET_CHANNEL=preview
-KOREBUILD_DOTNET_VERSION=1.0.0-preview2-003156
 
 repoFolder="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $repoFolder
 
-koreBuildZip="https://github.com/aspnet/KoreBuild/archive/1.0.0.zip"
+koreBuildZip="https://github.com/aspnet/KoreBuild/archive/rel/1.1.2.zip"
 if [ ! -z $KOREBUILD_ZIP ]; then
     koreBuildZip=$KOREBUILD_ZIP
 fi
