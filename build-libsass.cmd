@@ -67,7 +67,8 @@ echo *** Warning: Your operating system does not support 64-bit build.
 :check-vs
 if "%VisualStudioVersion%"=="12.0" goto check-vs-done
 if "%VisualStudioVersion%"=="14.0" goto check-vs-done
-echo *** Error: This script requires a Developer Command Prompt for VS2013 or VS2015.
+if "%VisualStudioVersion%"=="15.0" goto check-vs-done
+echo *** Error: This script requires a Developer Command Prompt for VS2013, VS2015 or VS2017.
 goto exit
 :check-vs-done
 

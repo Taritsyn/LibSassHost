@@ -295,7 +295,7 @@ git clone https://github.com/Taritsyn/LibSassHost.git
 Further actions depend on your operating system.
 
 ###Windows
-In your system must be installed Visual Studio 2013 or 2015 with C++ support.
+In your system must be installed Visual Studio 2013, 2015 or 2017 with C++ support.
 
 To build the libSass on Windows:
 
