@@ -19,7 +19,7 @@ This package does not contain the native implementations of libSass. Therefore, 
  * LibSassHost.Native.debian-x64
  * LibSassHost.Native.osx-x64</description>
 		<summary>.NET wrapper around the libSass with the ability to support a virtual file system.</summary>
-		<releaseNotes>Fixed a error #14 “Unable to debug ASP.NET MVC project”.</releaseNotes>
+		<releaseNotes>Added support of .NET Core 1.0.4.</releaseNotes>
 		<copyright>Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
 		<language>en-US</language>
 		<tags>libSass Sass SCSS CSS</tags>
@@ -27,17 +27,7 @@ This package does not contain the native implementations of libSass. Therefore, 
 			<group targetFramework=".NETFramework4.0-Client" />
 			<group targetFramework=".NETFramework4.5" />
 			<group targetFramework=".NETStandard1.3">
-				<dependency id="System.Collections" version="4.0.11" />
-				<dependency id="System.Globalization" version="4.0.11" />
-				<dependency id="System.IO" version="4.1.0" />
-				<dependency id="System.IO.FileSystem" version="4.0.1" />
-				<dependency id="System.Linq" version="4.1.0" />
-				<dependency id="System.Resources.ResourceManager" version="4.0.1" />
-				<dependency id="System.Runtime.Extensions" version="4.1.0" />
-				<dependency id="System.Runtime.InteropServices" version="4.1.0" />
-				<dependency id="System.Runtime.InteropServices.RuntimeInformation" version="4.0.0" />
-				<dependency id="System.Text.RegularExpressions" version="4.1.0" />
-				<dependency id="System.Threading" version="4.0.11" />
+				<dependency id="NETStandard.Library" version="1.6.0" exclude="Build,Analyzers" />
 			</group>
 		</dependencies>
 		<references>

@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a error #14 “Unable to debug ASP.NET MVC project”.
+   Added support of .NET Core 1.0.4.
 
    ============
    PROJECT SITE
