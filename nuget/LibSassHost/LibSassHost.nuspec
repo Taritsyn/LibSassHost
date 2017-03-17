@@ -27,7 +27,7 @@ This package does not contain the native implementations of libSass. Therefore, 
 			<group targetFramework=".NETFramework4.0-Client" />
 			<group targetFramework=".NETFramework4.5" />
 			<group targetFramework=".NETStandard1.3">
-				<dependency id="NETStandard.Library" version="1.6.0" exclude="Build,Analyzers" />
+				<dependency id="NETStandard.Library" version="1.6.0" />
 			</group>
 		</dependencies>
 		<references>
