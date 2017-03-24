@@ -12,9 +12,9 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of libSass version 3.4.3 for Windows (x86).
+   implementation of LibSass version 3.4.3 for Windows (x86).
 
-   For correct working of the libSass require `msvcp140.dll` assembly from the
+   For correct working of the LibSass require `msvcp140.dll` assembly from the
    Visual C++ Redistributable for Visual Studio 2015.
 
    ====================

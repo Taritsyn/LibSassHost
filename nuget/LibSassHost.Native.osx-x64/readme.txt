@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of libSass version 3.4.3 for OS X (x64).
+   implementation of LibSass version 3.4.3 for OS X (x64).
 
    This package is only compatible with .NET Core.
 

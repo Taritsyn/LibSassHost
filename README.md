@@ -1,10 +1,11 @@
-# LibSass Host for .NET
+LibSass Host for .NET
+=====================
 
-.NET wrapper around the [libSass](http://sass-lang.com/libsass) library with the ability to support a virtual file system.
+.NET wrapper around the [LibSass](http://sass-lang.com/libsass) library with the ability to support a virtual file system.
 
 ## Installation
 This library can be installed through NuGet.
-[LibSassHost](http://nuget.org/packages/LibSassHost/) package does not contain the native implementations of the libSass.
+[LibSassHost](http://nuget.org/packages/LibSassHost/) package does not contain the native implementations of the LibSass.
 Therefore, you need to choose and install the most appropriate package(s) for your platform.
 The following packages are available:
 
@@ -18,14 +19,14 @@ The following packages are available:
 If you need support for other operating systems, then you should read the [“Building LibSass”](#building-libsass) section.
 
 ## Usage
-The main difference between this library from other .NET wrappers around the libSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. You can set the file manager by using `FileManager` property of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class:
+The main difference between this library from other .NET wrappers around the LibSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. You can set the file manager by using `FileManager` property of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class:
 
 ```csharp
 SassCompiler.FileManager = CustomFileManager();
 ```
 
 Any class, that implements an <code title="LibSassHost.IFileManager">IFileManager</code> interface, can be used as a file manager.
-By default, file manager is not specified, and for access to the file system are used built-in tools of the libSass library.
+By default, file manager is not specified, and for access to the file system are used built-in tools of the LibSass library.
 The main advantage of using built-in tools is the low memory consumption.
 But there is a disadvantage: there is no ability to process files in UTF-16 encoding.
 
@@ -281,11 +282,11 @@ namespace LibSassHost.Example.ConsoleApplication
 In this case, the `inputPath` parameter is used instead of the `content` parameter. Moreover, value of the `inputPath` parameter now should contain the path to real file.
 
 ## Building LibSass
-LibSassHost uses a modified version of the libSass library.
-In most cases, you do not need to build the libSass from source code, because the native assemblies is published as `LibSassHost.Native.*` NuGet packages.
+LibSassHost uses a modified version of the LibSass library.
+In most cases, you do not need to build the LibSass from source code, because the native assemblies is published as `LibSassHost.Native.*` NuGet packages.
 The only exception is the case, when you want to build library for a specific Linux distro.
 
-To build a modified version of the libSass you must first clone the LibSassHost repository:
+To build a modified version of the LibSass you must first clone the LibSassHost repository:
 
 ```
 mkdir Github && cd Github
@@ -297,7 +298,7 @@ Further actions depend on your operating system.
 ###Windows
 In your system must be installed Visual Studio 2013, 2015 or 2017 with C++ support.
 
-To build the libSass on Windows:
+To build the LibSass on Windows:
 
  1. Open `libsass.sln` in Visual Studio.
  2. Select the **Configuration** and target **Platform**, and build the solution.
@@ -326,7 +327,7 @@ sudo apt-get update
 sudo apt-get install build-essential
 ```
 
-To build the libSass on Linux open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
+To build the LibSass on Linux open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
 
 ```
 username@ubuntu-16:~/Github/LibSassHost$ ./build-libsass.sh
@@ -348,7 +349,7 @@ To install Xcode Command Line Tools, in your terminal simply run:
 xcode-select --install
 ```
 
-To build the libSass on OS X open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
+To build the LibSass on OS X open a terminal window and run the `build-libsass.sh` script from your `LibSassHost` project directory:
 
 ```
 My-Mac:LibSassHost username$ ./build-libsass.sh

@@ -10,19 +10,19 @@
 		<projectUrl>http://github.com/Taritsyn/LibSassHost</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>.NET wrapper around the libSass (http://sass-lang.com/libsass) with the ability to support a virtual file system.
+		<description>.NET wrapper around the LibSass (http://sass-lang.com/libsass) with the ability to support a virtual file system.
 
-This package does not contain the native implementations of libSass. Therefore, you need to choose and install the most appropriate package(s) for your platform. The following packages are available:
+This package does not contain the native implementations of LibSass. Therefore, you need to choose and install the most appropriate package(s) for your platform. The following packages are available:
 
  * LibSassHost.Native.win-x86
  * LibSassHost.Native.win-x64
  * LibSassHost.Native.debian-x64
  * LibSassHost.Native.osx-x64</description>
-		<summary>.NET wrapper around the libSass with the ability to support a virtual file system.</summary>
+		<summary>.NET wrapper around the LibSass with the ability to support a virtual file system.</summary>
 		<releaseNotes>Added support of .NET Core 1.0.4.</releaseNotes>
 		<copyright>Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
 		<language>en-US</language>
-		<tags>libSass Sass SCSS CSS</tags>
+		<tags>LibSass Sass SCSS CSS</tags>
 		<dependencies>
 			<group targetFramework=".NETFramework4.0-Client" />
 			<group targetFramework=".NETFramework4.5" />

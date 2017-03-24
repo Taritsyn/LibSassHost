@@ -10,13 +10,13 @@
 		<projectUrl>http://github.com/Taritsyn/LibSassHost</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>This package complements the LibSassHost package and contains the native implementation of libSass version 3.4.3 for Windows (x64).
+		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.4.3 for Windows (x64).
 
-For correct working of the libSass require `msvcp140.dll` assembly from the Visual C++ Redistributable for Visual Studio 2015.</description>
-		<summary>This package complements the LibSassHost package and contains the native implementation of libSass version 3.4.3 for Windows (x64).</summary>
+For correct working of the LibSass require `msvcp140.dll` assembly from the Visual C++ Redistributable for Visual Studio 2015.</description>
+		<summary>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.4.3 for Windows (x64).</summary>
 		<copyright>Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
 		<language>en-US</language>
-		<tags>libSass Sass SCSS CSS Windows x64</tags>
+		<tags>LibSass Sass SCSS CSS Windows x64</tags>
 	</metadata>
 	<files>
 		<file src="**\*.*" exclude="build-package.cmd" />

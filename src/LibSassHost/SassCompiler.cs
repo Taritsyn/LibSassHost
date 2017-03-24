@@ -16,7 +16,7 @@ namespace LibSassHost
 	public static class SassCompiler
 	{
 		/// <summary>
-		/// Version of the libSass library
+		/// Version of the LibSass library
 		/// </summary>
 		private static readonly string _version;
 
@@ -41,7 +41,7 @@ namespace LibSassHost
 		private static readonly object _fileManagerSynchronizer = new object();
 
 		/// <summary>
-		/// Gets a version of the libSass library
+		/// Gets a version of the LibSass library
 		/// </summary>
 		public static string Version
 		{

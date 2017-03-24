@@ -10,7 +10,7 @@ namespace LibSassHost.Test.Common
 	public class VersionInfoTests
 	{
 		/// <summary>
-		/// Regular expression for working with the version of the libSass library
+		/// Regular expression for working with the version of the LibSass library
 		/// </summary>
 		private static readonly Regex _versionRegex = new Regex(@"\d+(?:\.\d+){2}");
 

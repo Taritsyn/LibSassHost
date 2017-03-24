@@ -11,10 +11,10 @@
    ===========
    DESCRIPTION
    ===========
-   .NET wrapper around the libSass (http://sass-lang.com/libsass) with the ability
+   .NET wrapper around the LibSass (http://sass-lang.com/libsass) with the ability
    to support a virtual file system.
 
-   This package does not contain the native implementations of libSass. Therefore,
+   This package does not contain the native implementations of LibSass. Therefore,
    you need to choose and install the most appropriate package(s) for your platform.
    The following packages are available:
 

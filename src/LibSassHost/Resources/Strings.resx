@@ -147,7 +147,7 @@
   <data name="Runtime_SassCompilerNotLoaded" xml:space="preserve">
     <value>During loading of Sass-compiler error has occurred.
 
-Most likely it happened, because failed to load the native implementation of the libSass library. Therefore, you need to choose and install the most appropriate NuGet package(s) for your platform. The following packages are available:
+Most likely it happened, because failed to load the native implementation of the LibSass library. Therefore, you need to choose and install the most appropriate NuGet package(s) for your platform. The following packages are available:
 
 * LibSassHost.Native.win-x86
 * LibSassHost.Native.win-x64

@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of libSass version 3.4.3 for Debian-based Linux (x64) (Debian,
+   implementation of LibSass version 3.4.3 for Debian-based Linux (x64) (Debian,
    Ubuntu and Linux Mint).
 
    This package is only compatible with .NET Core.
