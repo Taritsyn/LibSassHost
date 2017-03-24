@@ -1,6 +1,8 @@
 LibSass Host for .NET
 =====================
 
+<img src="https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo.png" width="360" height="100" alt="LibSass Host logo" />
+
 .NET wrapper around the [LibSass](http://sass-lang.com/libsass) library with the ability to support a virtual file system.
 
 ## Installation
