@@ -15,7 +15,7 @@
 
 namespace Sass {
 
-  Inspect::Inspect(Emitter emi)
+  Inspect::Inspect(const Emitter& emi)
   : Emitter(emi)
   { }
   Inspect::~Inspect() { }
@@ -166,7 +166,7 @@ namespace Sass {
 
       import->urls().front()->perform(this);
       if (import->urls().size() == 1) {
-        if (&import->import_queries()) {
+        if (import->import_queries()) {
           append_mandatory_space();
           import->import_queries()->perform(this);
         }
@@ -179,7 +179,7 @@ namespace Sass {
 
         import->urls()[i]->perform(this);
         if (import->urls().size() - 1 == i) {
-          if (&import->import_queries()) {
+          if (import->import_queries()) {
             append_mandatory_space();
             import->import_queries()->perform(this);
           }
@@ -354,6 +354,8 @@ namespace Sass {
       if (items_output) append_comma_separator();
       key->perform(this);
       append_colon_separator();
+      LOCAL_FLAG(in_space_array, true);
+      LOCAL_FLAG(in_comma_array, true);
       map->at(key)->perform(this);
       items_output = true;
     }
@@ -378,8 +380,9 @@ namespace Sass {
     if (output_style() == TO_SASS &&
         list->length() == 1 &&
         !list->from_selector() &&
-        !SASS_MEMORY_CAST(List, list->at(0)) &&
-        !SASS_MEMORY_CAST(Selector_List, list->at(0))) {
+        !Cast<List>(list->at(0)) &&
+        !Cast<Selector_List>(list->at(0))
+    ) {
       append_string("(");
     }
     else if (!in_declaration && (list->separator() == SASS_HASH ||
@@ -399,7 +402,7 @@ namespace Sass {
       if (output_style() != TO_SASS) {
         if (list_item->is_invisible()) {
           // this fixes an issue with "" in a list
-          if (!SASS_MEMORY_CAST(String_Constant, list_item)) {
+          if (!Cast<String_Constant>(list_item)) {
             continue;
           }
         }
@@ -419,8 +422,9 @@ namespace Sass {
     if (output_style() == TO_SASS &&
         list->length() == 1 &&
         !list->from_selector() &&
-        !SASS_MEMORY_CAST(List, list->at(0)) &&
-        !SASS_MEMORY_CAST(Selector_List, list->at(0))) {
+        !Cast<List>(list->at(0)) &&
+        !Cast<Selector_List>(list->at(0))
+    ) {
       append_string(",)");
     }
     else if (!in_declaration && (list->separator() == SASS_HASH ||
@@ -443,7 +447,7 @@ namespace Sass {
               expr->is_right_interpolant())
 
     )) append_string(" ");
-    switch (expr->type()) {
+    switch (expr->optype()) {
       case Sass_OP::AND: append_string("&&"); break;
       case Sass_OP::OR:  append_string("||");  break;
       case Sass_OP::EQ:  append_string("==");  break;
@@ -471,8 +475,8 @@ namespace Sass {
 
   void Inspect::operator()(Unary_Expression_Ptr expr)
   {
-    if (expr->type() == Unary_Expression::PLUS) append_string("+");
-    else                                        append_string("-");
+    if (expr->optype() == Unary_Expression::PLUS) append_string("+");
+    else                                          append_string("-");
     expr->operand()->perform(this);
   }
 
@@ -491,11 +495,6 @@ namespace Sass {
   void Inspect::operator()(Variable_Ptr var)
   {
     append_token(var->name(), var);
-  }
-
-  void Inspect::operator()(Textual_Ptr txt)
-  {
-    append_token(txt->value(), txt);
   }
 
   void Inspect::operator()(Number_Ptr n)
@@ -744,9 +743,9 @@ namespace Sass {
   {
     append_token("not", sn);
     append_mandatory_space();
-    if (sn->needs_parens(&sn->condition())) append_string("(");
+    if (sn->needs_parens(sn->condition())) append_string("(");
     sn->condition()->perform(this);
-    if (sn->needs_parens(&sn->condition())) append_string(")");
+    if (sn->needs_parens(sn->condition())) append_string(")");
   }
 
   void Inspect::operator()(Supports_Declaration_Ptr sd)
@@ -766,7 +765,7 @@ namespace Sass {
   void Inspect::operator()(Media_Query_Ptr mq)
   {
     size_t i = 0;
-    if (&mq->media_type()) {
+    if (mq->media_type()) {
       if      (mq->is_negated())    append_string("not ");
       else if (mq->is_restricted()) append_string("only ");
       mq->media_type()->perform(this);
@@ -851,7 +850,7 @@ namespace Sass {
       return;
     }
     if (a->value()->concrete_type() == Expression::STRING) {
-      String_Constant_Ptr s = SASS_MEMORY_CAST(String_Constant, a->value());
+      String_Constant_Ptr s = Cast<String_Constant>(a->value());
       if (s) s->perform(this);
     } else {
       a->value()->perform(this);
@@ -919,7 +918,7 @@ namespace Sass {
     append_token(s->ns_name(), s);
     if (!s->matcher().empty()) {
       append_string(s->matcher());
-      if (&s->value() && *s->value()) {
+      if (s->value() && *s->value()) {
         s->value()->perform(this);
       }
     }
@@ -1014,6 +1013,7 @@ namespace Sass {
         if (tail) append_mandatory_space();
         else append_optional_space();
       break;
+      default: break;
     }
     if (tail && comb != Complex_Selector::ANCESTOR_OF) {
       if (c->has_line_break()) append_optional_linefeed();
@@ -1040,8 +1040,8 @@ namespace Sass {
     bool was_comma_array = in_comma_array;
     // probably ruby sass eqivalent of element_needs_parens
     if (output_style() == TO_SASS && g->length() == 1 &&
-      (!SASS_MEMORY_CAST(List, (*g)[0]) &&
-       !SASS_MEMORY_CAST(Selector_List, (*g)[0]))) {
+      (!Cast<List>((*g)[0]) &&
+       !Cast<Selector_List>((*g)[0]))) {
       append_string("(");
     }
     else if (!in_declaration && in_comma_array) {
@@ -1053,7 +1053,7 @@ namespace Sass {
     for (size_t i = 0, L = g->length(); i < L; ++i) {
       if (!in_wrapped && i == 0) append_indentation();
       if ((*g)[i] == 0) continue;
-      schedule_mapping(&g->at(i)->last());
+      schedule_mapping(g->at(i)->last());
       // add_open_mapping((*g)[i]->last());
       (*g)[i]->perform(this);
       // add_close_mapping((*g)[i]->last());
@@ -1066,8 +1066,8 @@ namespace Sass {
     in_comma_array = was_comma_array;
     // probably ruby sass eqivalent of element_needs_parens
     if (output_style() == TO_SASS && g->length() == 1 &&
-      (!SASS_MEMORY_CAST(List, (*g)[0]) &&
-       !SASS_MEMORY_CAST(Selector_List, (*g)[0]))) {
+      (!Cast<List>((*g)[0]) &&
+       !Cast<Selector_List>((*g)[0]))) {
       append_string(",)");
     }
     else if (!in_declaration && in_comma_array) {

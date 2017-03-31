@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of .NET Core 1.0.4.
+   Added support of LibSass version 3.4.4.
 
    ============
    PROJECT SITE

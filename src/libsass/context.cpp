@@ -73,6 +73,8 @@ namespace Sass {
     sheets(),
     subset_map(),
     import_stack(),
+    callee_stack(),
+    c_compiler(NULL),
 
     c_headers               (std::vector<Sass_Importer_Entry>()),
     c_importers             (std::vector<Sass_Importer_Entry>()),
@@ -88,8 +90,9 @@ namespace Sass {
 
   {
 
-    // add cwd to include paths
-    include_paths.push_back(CWD);
+    // Sass 3.4: The current working directory will no longer be placed onto the Sass load path by default.
+    // If you need the current working directory to be available, set SASS_PATH=. in your shell's environment.
+    // include_paths.push_back(CWD);
 
     // collect more paths from different options
     collect_include_paths(c_options.include_path);
@@ -408,8 +411,8 @@ namespace Sass {
       String_Constant_Ptr loc = SASS_MEMORY_NEW(String_Constant, pstate, unquote(load_path));
       Argument_Obj loc_arg = SASS_MEMORY_NEW(Argument, pstate, loc);
       Arguments_Obj loc_args = SASS_MEMORY_NEW(Arguments, pstate);
-      loc_args->append(&loc_arg);
-      Function_Call_Ptr new_url = SASS_MEMORY_NEW(Function_Call, pstate, "url", &loc_args);
+      loc_args->append(loc_arg);
+      Function_Call_Ptr new_url = SASS_MEMORY_NEW(Function_Call, pstate, "url", loc_args);
       imp->urls().push_back(new_url);
     }
     else {
@@ -432,12 +435,12 @@ namespace Sass {
     // need one correct import
     bool has_import = false;
     // process all custom importers (or custom headers)
-    for (Sass_Importer_Entry& importer : importers) {
+    for (Sass_Importer_Entry& importer_ent : importers) {
       // int priority = sass_importer_get_priority(importer);
-      Sass_Importer_Fn fn = sass_importer_get_function(importer);
+      Sass_Importer_Fn fn = sass_importer_get_function(importer_ent);
       // skip importer if it returns NULL
       if (Sass_Import_List includes =
-          fn(load_path.c_str(), importer, c_compiler)
+          fn(load_path.c_str(), importer_ent, c_compiler)
       ) {
         // get c pointer copy to iterate over
         Sass_Import_List it_includes = includes;
@@ -452,15 +455,15 @@ namespace Sass {
           // create the importer struct
           Importer importer(uniq_path, ctx_path);
           // query data from the current include
-          Sass_Import_Entry include = *it_includes;
-          char* source = sass_import_take_source(include);
-          char* srcmap = sass_import_take_srcmap(include);
-          size_t line = sass_import_get_error_line(include);
-          size_t column = sass_import_get_error_column(include);
-          const char *abs_path = sass_import_get_abs_path(include);
+          Sass_Import_Entry include_ent = *it_includes;
+          char* source = sass_import_take_source(include_ent);
+          char* srcmap = sass_import_take_srcmap(include_ent);
+          size_t line = sass_import_get_error_line(include_ent);
+          size_t column = sass_import_get_error_column(include_ent);
+          const char *abs_path = sass_import_get_abs_path(include_ent);
           // handle error message passed back from custom importer
           // it may (or may not) override the line and column info
-          if (const char* err_message = sass_import_get_error_message(include)) {
+          if (const char* err_message = sass_import_get_error_message(include_ent)) {
             if (source || srcmap) register_resource({ importer, uniq_path }, { source, srcmap }, &pstate);
             if (line == std::string::npos && column == std::string::npos) error(err_message, pstate);
             else error(err_message, ParserState(ctx_path, source, Position(line, column)));
@@ -545,11 +548,11 @@ namespace Sass {
     Import_Obj imp = SASS_MEMORY_NEW(Import, pstate);
     // dispatch headers which will add custom functions
     // custom headers are added to the import instance
-    call_headers(entry_path, ctx_path, pstate, &imp);
+    call_headers(entry_path, ctx_path, pstate, imp);
     // increase head count to skip later
     head_imports += resources.size() - 1;
     // add the statement if we have urls
-    if (!imp->urls().empty()) root->append(&imp);
+    if (!imp->urls().empty()) root->append(imp);
     // process all other resources (add Import_Stub nodes)
     for (size_t i = 0, S = imp->incs().size(); i < S; ++i) {
       root->append(SASS_MEMORY_NEW(Import_Stub, pstate, imp->incs()[i]));
@@ -667,24 +670,24 @@ namespace Sass {
     Cssize cssize(*this, &backtrace);
     CheckNesting check_nesting;
     // check nesting
-    check_nesting(&root);
+    check_nesting(root);
     // expand and eval the tree
-    root = expand(&root);
+    root = expand(root);
     // check nesting
-    check_nesting(&root);
+    check_nesting(root);
     // merge and bubble certain rules
-    root = cssize(&root);
+    root = cssize(root);
     // should we extend something?
     if (!subset_map.empty()) {
       // create crtp visitor object
-      Extend extend(*this, subset_map);
+      Extend extend(subset_map);
       // extend tree nodes
-      extend(&root);
+      extend(root);
     }
 
     // clean up by removing empty placeholders
     // ToDo: maybe we can do this somewhere else?
-    Remove_Placeholders remove_placeholders(*this);
+    Remove_Placeholders remove_placeholders;
     root->perform(&remove_placeholders);
     // return processed tree
     return root;
@@ -712,10 +715,8 @@ namespace Sass {
   char* Context::render_srcmap()
   {
     if (source_map_file == "") return 0;
-    char* result = 0;
     std::string map = emitter.render_srcmap(*this);
-    result = sass_copy_c_string(map.c_str());
-    return result;
+    return sass_copy_c_string(map.c_str());
   }
 
 

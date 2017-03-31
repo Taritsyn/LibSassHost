@@ -6,10 +6,14 @@ MKDIR_P ?= mkdir -p
 CFLAGS ?= -Wall
 CXXFLAGS ?= -Wall
 LDFLAGS ?= -Wall
-ifneq "$(COVERAGE)" "yes"
+ifeq "x$(COVERAGE)" "x"
 	CFLAGS += -O2
 	CXXFLAGS += -O2
 	LDFLAGS += -O2
+else
+	CFLAGS += -O1 -fno-omit-frame-pointer
+	CXXFLAGS += -O1 -fno-omit-frame-pointer
+	LDFLAGS += -O1 -fno-omit-frame-pointer
 endif
 LDFLAGS += -Wl,-undefined,error
 

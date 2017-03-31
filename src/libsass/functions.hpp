@@ -12,7 +12,6 @@ name(Env& env, Env& d_env, Context& ctx, Signature sig, ParserState pstate, Back
 
 namespace Sass {
   struct Backtrace;
-  typedef Environment<AST_Node_Obj> Env;
   typedef const char* Signature;
   typedef Expression_Ptr (*Native_Function)(Env&, Env&, Context&, Signature, ParserState, Backtrace*, std::vector<Selector_List_Obj>);
 
@@ -89,7 +88,6 @@ namespace Sass {
     extern Signature call_sig;
     extern Signature not_sig;
     extern Signature if_sig;
-    extern Signature image_url_sig;
     extern Signature map_get_sig;
     extern Signature map_merge_sig;
     extern Signature map_remove_sig;
@@ -171,7 +169,6 @@ namespace Sass {
     BUILT_IN(call);
     BUILT_IN(sass_not);
     BUILT_IN(sass_if);
-    BUILT_IN(image_url);
     BUILT_IN(map_get);
     BUILT_IN(map_merge);
     BUILT_IN(map_remove);
