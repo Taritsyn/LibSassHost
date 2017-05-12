@@ -297,7 +297,7 @@ git clone https://github.com/Taritsyn/LibSassHost.git
 
 Further actions depend on your operating system.
 
-###Windows
+### Windows
 In your system must be installed Visual Studio 2013, 2015 or 2017 with C++ support.
 
 To build the LibSass on Windows:
@@ -319,7 +319,7 @@ Build script can also take a options, information about which can be obtained by
 build-libsass /?
 ```
 
-###Linux
+### Linux
 In your system must be installed GCC (GNU Compiler Collection).
 In every Linux distro installation of GCC is made in different ways.
 For example, in Ubuntu 16.04 this is done as follows:
@@ -343,7 +343,7 @@ Build script can also take a options, information about which can be obtained by
 ./build-libsass.sh --help
 ```
 
-###OS X
+### OS X
 In your system must be installed Xcode Command Line Tools.
 To install Xcode Command Line Tools, in your terminal simply run:
 
