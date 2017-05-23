@@ -19,6 +19,45 @@ namespace Sass {
 
   static Null sass_null(ParserState("null"));
 
+  bool Wrapped_Selector::find ( bool (*f)(AST_Node_Obj) )
+  {
+    // check children first
+    if (selector_) {
+      if (selector_->find(f)) return true;
+    }
+    // execute last
+    return f(this);
+  }
+
+  bool Selector_List::find ( bool (*f)(AST_Node_Obj) )
+  {
+    // check children first
+    for (Complex_Selector_Obj sel : elements()) {
+      if (sel->find(f)) return true;
+    }
+    // execute last
+    return f(this);
+  }
+
+  bool Compound_Selector::find ( bool (*f)(AST_Node_Obj) )
+  {
+    // check children first
+    for (Simple_Selector_Obj sel : elements()) {
+      if (sel->find(f)) return true;
+    }
+    // execute last
+    return f(this);
+  }
+
+  bool Complex_Selector::find ( bool (*f)(AST_Node_Obj) )
+  {
+    // check children first
+    if (head_ && head_->find(f)) return true;
+    if (tail_ && tail_->find(f)) return true;
+    // execute last
+    return f(this);
+  }
+
   bool Supports_Operator::needs_parens(Supports_Condition_Obj cond) const {
     if (Supports_Operator_Obj op = Cast<Supports_Operator>(cond)) {
       return op->operand() != operand();
@@ -379,6 +418,7 @@ namespace Sass {
     // solve the double dispatch problem by using RTTI information via dynamic cast
     if (const Pseudo_Selector* lhs = Cast<Pseudo_Selector>(this)) {return *lhs == rhs; }
     else if (const Wrapped_Selector* lhs = Cast<Wrapped_Selector>(this)) {return *lhs == rhs; }
+    else if (const Element_Selector* lhs = Cast<Element_Selector>(this)) {return *lhs == rhs; }
     else if (const Attribute_Selector* lhs = Cast<Attribute_Selector>(this)) {return *lhs == rhs; }
     else if (name_ == rhs.name_)
     { return is_ns_eq(rhs); }
@@ -390,6 +430,7 @@ namespace Sass {
     // solve the double dispatch problem by using RTTI information via dynamic cast
     if (const Pseudo_Selector* lhs = Cast<Pseudo_Selector>(this)) {return *lhs < rhs; }
     else if (const Wrapped_Selector* lhs = Cast<Wrapped_Selector>(this)) {return *lhs < rhs; }
+    else if (const Element_Selector* lhs = Cast<Element_Selector>(this)) {return *lhs < rhs; }
     else if (const Attribute_Selector* lhs = Cast<Attribute_Selector>(this)) {return *lhs < rhs; }
     if (is_ns_eq(rhs))
     { return name_ < rhs.name_; }
@@ -661,10 +702,46 @@ namespace Sass {
   {
     if (Attribute_Selector_Ptr_Const w = Cast<Attribute_Selector>(&rhs))
     {
-      return *this == *w;
+      return is_ns_eq(rhs) &&
+             name() == rhs.name() &&
+             *this == *w;
     }
+    return false;
+  }
+
+  bool Element_Selector::operator< (const Element_Selector& rhs) const
+  {
+    if (is_ns_eq(rhs))
+    { return name() < rhs.name(); }
+    return ns() < rhs.ns();
+  }
+
+  bool Element_Selector::operator< (const Simple_Selector& rhs) const
+  {
+    if (Element_Selector_Ptr_Const w = Cast<Element_Selector>(&rhs))
+    {
+      return *this < *w;
+    }
+    if (is_ns_eq(rhs))
+    { return name() < rhs.name(); }
+    return ns() < rhs.ns();
+  }
+
+  bool Element_Selector::operator== (const Element_Selector& rhs) const
+  {
     return is_ns_eq(rhs) &&
            name() == rhs.name();
+  }
+
+  bool Element_Selector::operator== (const Simple_Selector& rhs) const
+  {
+    if (Element_Selector_Ptr_Const w = Cast<Element_Selector>(&rhs))
+    {
+      return is_ns_eq(rhs) &&
+             name() == rhs.name() &&
+             *this == *w;
+    }
+    return false;
   }
 
   bool Pseudo_Selector::operator== (const Pseudo_Selector& rhs) const

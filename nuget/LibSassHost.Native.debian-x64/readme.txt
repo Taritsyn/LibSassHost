@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Debian x64 v1.0.3
+               README file for LibSass Host Native for Debian x64 v1.0.4
 
    --------------------------------------------------------------------------------
 
@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of LibSass version 3.4.4 for Debian-based Linux (x64) (Debian,
+   implementation of LibSass version 3.4.5 for Debian-based Linux (x64) (Debian,
    Ubuntu and Linux Mint).
 
    This package is only compatible with .NET Core.
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.4.4.
+   Added support of LibSass version 3.4.5.
 
    ============
    PROJECT SITE

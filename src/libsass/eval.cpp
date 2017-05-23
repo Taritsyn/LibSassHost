@@ -52,7 +52,8 @@ namespace Sass {
   : exp(exp),
     ctx(exp.ctx),
     force(false),
-    is_in_comment(false)
+    is_in_comment(false),
+    is_in_selector_schema(false)
   {
     bool_true = SASS_MEMORY_NEW(Boolean, "[NA]", true);
     bool_false = SASS_MEMORY_NEW(Boolean, "[NA]", false);
@@ -893,6 +894,10 @@ namespace Sass {
         cpy->value( - cpy->value() ); // negate value
         return cpy.detach(); // return the copy
       }
+      else if (u->optype() == Unary_Expression::SLASH) {
+        std::string str = '/' + nr->to_string(ctx.c_options);
+        return SASS_MEMORY_NEW(String_Constant, u->pstate(), str);
+      }
       // nothing for positive
       return nr.detach();
     }
@@ -1207,6 +1212,7 @@ namespace Sass {
       if (l->size() > 1) {
         // string_to_output would fail "#{'_\a' '_\a'}";
         std::string str(ll->to_string(ctx.c_options));
+        str = read_hex_escapes(str); // read escapes
         newline_to_space(str); // replace directly
         res += str; // append to result string
       } else {
@@ -1227,7 +1233,9 @@ namespace Sass {
       if (into_quotes && ex->is_interpolant()) {
         res += evacuate_escapes(ex ? ex->to_string(ctx.c_options) : "");
       } else {
-        res += ex ? ex->to_string(ctx.c_options) : "";
+        std::string str(ex ? ex->to_string(ctx.c_options) : "");
+        if (into_quotes) str = read_hex_escapes(str);
+        res += str; // append to result string
       }
     }
 
@@ -1812,7 +1820,10 @@ namespace Sass {
   Selector_List_Ptr Eval::operator()(Complex_Selector_Ptr s)
   {
     bool implicit_parent = !exp.old_at_root_without_rule;
-    return s->resolve_parent_refs(exp.selector_stack, implicit_parent);
+    if (is_in_selector_schema) exp.selector_stack.push_back(0);
+    Selector_List_Obj resolved = s->resolve_parent_refs(exp.selector_stack, implicit_parent);
+    if (is_in_selector_schema) exp.selector_stack.pop_back();
+    return resolved.detach();
   }
 
   // XXX: this is never hit via spec tests
@@ -1827,6 +1838,7 @@ namespace Sass {
 
   Selector_List_Ptr Eval::operator()(Selector_Schema_Ptr s)
   {
+    LOCAL_FLAG(is_in_selector_schema, true);
     // the parser will look for a brace to end the selector
     Expression_Obj sel = s->contents()->perform(this);
     std::string result_str(sel->to_string(ctx.c_options));
@@ -1836,6 +1848,7 @@ namespace Sass {
     // a selector schema may or may not connect to parent?
     bool chroot = s->connect_parent() == false;
     Selector_List_Obj sl = p.parse_selector_list(chroot);
+    flag_is_in_selector_schema.reset();
     return operator()(sl);
   }
 

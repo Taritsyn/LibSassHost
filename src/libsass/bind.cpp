@@ -14,6 +14,8 @@ namespace Sass {
     std::string callee(type + " " + name);
 
     std::map<std::string, Parameter_Obj> param_map;
+    List_Obj varargs = SASS_MEMORY_NEW(List, as->pstate());
+    varargs->is_arglist(true); // enable keyword size handling
 
     for (size_t i = 0, L = as->length(); i < L; ++i) {
       if (auto str = Cast<String_Quoted>((*as)[i]->value())) {
@@ -95,13 +97,17 @@ namespace Sass {
           env->local_frame()[p->name()] = arglist;
           Map_Obj argmap = Cast<Map>(a->value());
           for (auto key : argmap->keys()) {
-            std::string param = unquote(Cast<String_Constant>(key)->value());
-            arglist->append(SASS_MEMORY_NEW(Argument,
-                                            key->pstate(),
-                                            argmap->at(key),
-                                            "$" + param,
-                                            false,
-                                            false));
+            if (String_Constant_Obj str = Cast<String_Constant>(key)) {
+              std::string param = unquote(str->value());
+              arglist->append(SASS_MEMORY_NEW(Argument,
+                                              key->pstate(),
+                                              argmap->at(key),
+                                              "$" + param,
+                                              false,
+                                              false));
+            } else {
+              throw Exception::InvalidVarKwdType(key->pstate(), key->inspect(), a);
+            }
           }
 
         } else {
@@ -241,15 +247,21 @@ namespace Sass {
       else {
         // named arg -- bind it to the appropriately named param
         if (!param_map.count(a->name())) {
-          std::stringstream msg;
-          msg << callee << " has no parameter named " << a->name();
-          error(msg.str(), a->pstate());
+          if (ps->has_rest_parameter()) {
+            varargs->append(a);
+          } else {
+            std::stringstream msg;
+            msg << callee << " has no parameter named " << a->name();
+            error(msg.str(), a->pstate());
+          }
         }
-        if (param_map[a->name()]->is_rest_parameter()) {
-          std::stringstream msg;
-          msg << "argument " << a->name() << " of " << callee
-              << "cannot be used as named argument";
-          error(msg.str(), a->pstate());
+        if (param_map[a->name()]) {
+          if (param_map[a->name()]->is_rest_parameter()) {
+            std::stringstream msg;
+            msg << "argument " << a->name() << " of " << callee
+                << "cannot be used as named argument";
+            error(msg.str(), a->pstate());
+          }
         }
         if (env->has_local(a->name())) {
           std::stringstream msg;
@@ -272,11 +284,7 @@ namespace Sass {
       // cerr << "********" << endl;
       if (!env->has_local(leftover->name())) {
         if (leftover->is_rest_parameter()) {
-          env->local_frame()[leftover->name()] = SASS_MEMORY_NEW(List,
-                                                                   leftover->pstate(),
-                                                                   0,
-                                                                   SASS_COMMA,
-                                                                   true);
+          env->local_frame()[leftover->name()] = varargs;
         }
         else if (leftover->default_value()) {
           Expression_Ptr dv = leftover->default_value()->perform(eval);

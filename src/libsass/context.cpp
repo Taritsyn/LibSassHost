@@ -68,6 +68,7 @@ namespace Sass {
     plugins(),
     emitter(c_options),
 
+    ast_gc(),
     strings(),
     resources(),
     sheets(),

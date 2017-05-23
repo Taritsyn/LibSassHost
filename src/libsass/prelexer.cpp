@@ -437,6 +437,10 @@ namespace Sass {
         optional <
           sequence <
           exactly <'/'>,
+          negate < sequence <
+            exactly < calc_fn_kwd >,
+            exactly < '(' >
+          > >,
           multiple_units
         > >
       >(src);
@@ -1577,7 +1581,7 @@ namespace Sass {
             class_char < selector_lookahead_ops >,
             // match selector combinators /[>+~]/
             class_char < selector_combinator_ops >,
-            // match attribute compare operators
+            // match pseudo selectors
             sequence <
               exactly <'('>,
               optional_spaces,
@@ -1585,6 +1589,7 @@ namespace Sass {
               optional_spaces,
               exactly <')'>
             >,
+            // match attribute compare operators
             alternatives <
               exact_match, class_match, dash_match,
               prefix_match, suffix_match, substring_match
@@ -1603,12 +1608,21 @@ namespace Sass {
                 // class match
                 exactly <'.'>,
                 // single or double colon
-                optional < pseudo_prefix >
+                sequence <
+                  optional < pseudo_prefix >,
+                  // fix libsass issue 2376
+                  negate < exactly < url_kwd > >
+                >
               >,
               // accept hypens in token
               one_plus < sequence <
                 // can start with hyphens
-                zero_plus < exactly<'-'> >,
+                zero_plus <
+                  sequence <
+                    exactly <'-'>,
+                    optional_spaces
+                  >
+                >,
                 // now the main token
                 alternatives <
                   kwd_optional,

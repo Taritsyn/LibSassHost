@@ -176,7 +176,13 @@ namespace Sass {
 
   Statement_Ptr Expand::operator()(Media_Block_Ptr m)
   {
-    Media_Block_Ptr cpy = m->copy();
+    Media_Block_Obj cpy = SASS_MEMORY_COPY(m);
+    // Media_Blocks are prone to have circular references
+    // Copy could leak memory if it does not get picked up
+    // Looks like we are able to reset block reference for copy
+    // Good as it will ensure a low memory overhead for this fix
+    // So this is a cheap solution with a minimal price
+    ctx.ast_gc.push_back(cpy); cpy->block(0);
     Expression_Obj mq = eval(m->media_queries());
     std::string str_mq(mq->to_string(ctx.c_options));
     char* str = sass_copy_c_string(str_mq.c_str());
@@ -382,6 +388,11 @@ namespace Sass {
 
   Statement_Ptr Expand::operator()(Comment_Ptr c)
   {
+    if (ctx.output_style() == COMPRESSED) {
+      // comments should not be evaluated in compact
+      // https://github.com/sass/libsass/issues/2359
+      if (!c->is_important()) return NULL;
+    }
     eval.is_in_comment = true;
     Comment_Ptr rv = SASS_MEMORY_NEW(Comment, c->pstate(), Cast<String>(c->text()->perform(&eval)), c->is_important());
     eval.is_in_comment = false;
