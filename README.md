@@ -368,4 +368,4 @@ Build script can also take a options, information about which can be obtained by
 ## Who's Using LibSass Host for .NET
 If you use the LibSass Host for .NET in some project, please send me a message so I can include it in this list:
 
- * [Bundle Transformer](http://bundletransformer.codeplex.com/) by Andrey Taritsyn
+ * [Bundle Transformer](https://github.com/Taritsyn/BundleTransformer) by Andrey Taritsyn
