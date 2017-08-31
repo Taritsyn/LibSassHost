@@ -16,7 +16,7 @@ The following packages are available:
  * [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/) contains the native assemblies for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint). Only compatible with .NET Core.
  * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/) contains the native assemblies for OS X (x64). Only compatible with .NET Core.
 
-<sup>* - Requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=52685).<sup>
+<sup>* - Requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=53840).<sup>
 
 If you need support for other operating systems, then you should read the [“Building LibSass”](#building-libsass) section.
 

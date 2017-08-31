@@ -16,7 +16,7 @@ Change log
 ## v1.0.0 - March 3, 2017
  * Added support of .NET Core 1.0.3 and .NET Framework 4.5
  * Native assemblies for Windows have been moved to separate packages: LibSassHost.Native.win-x86 and LibSassHost.Native.win-x64
- * Now the LibSass for Windows requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145)
+ * Now the LibSass for Windows requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=53840)
  * Added a packages, that contains a native assemblies for Debian-based Linux (x64) and OS X (x64)
  * `SassCompiler` class was converted to a static class
  * In `SassCompiler` class was added two static properties: `Version` and `LanguageVersion`
@@ -43,7 +43,7 @@ Change log
 ## v1.0.0 Alpha 1 - January 30, 2017
  * Added support of .NET Core 1.0.3 and .NET Framework 4.5
  * Native assemblies have been moved to separate packages: LibSassHost.Native.win-x86 and LibSassHost.Native.win-x64
- * Now the LibSass for Windows requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48145)
+ * Now the LibSass for Windows requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=53840)
 
 ## v0.6.4 - January 8, 2017
  * Added support of LibSass version 3.4.3
