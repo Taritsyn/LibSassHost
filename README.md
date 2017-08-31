@@ -20,6 +20,41 @@ The following packages are available:
 
 If you need support for other operating systems, then you should read the [“Building LibSass”](#building-libsass) section.
 
+### Mono support
+
+LibSassHost.Native.debian-x64 and LibSassHost.Native.osx-x64 packages do not support installation under [Mono](http://www.mono-project.com/), but you can to install the native assemblies manually.
+
+#### Linux
+
+First you need to get the `libsass.so` assembly file. If you are using the Debian-based Linux (x64), then you have 3 ways to do this:
+
+ 1. [Download a assembly file](https://github.com/Taritsyn/LibSassHost/blob/master/lib/debian-x64/libsass.so) from the LibSass Host's project repository.
+ 1. Extract a assembly file from the [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/) package. The `libsass.so` file is located in the `runtimes/debian-x64/native/` directory of NuGet package.
+ 1. [Build a assembly file](#building-libsass) from the source code.
+
+If you use some other Linux distro, then only 3 way will suit for you.
+
+Afterwards open a terminal window and change directory to the directory where the `libsass.so` file is located. Next, enter the following command:
+
+```
+sudo cp libsass.so /usr/local/lib/
+sudo ldconfig
+```
+
+#### OS X
+
+First you need to get the `libsass.dylib` assembly file. You have 3 ways to do this:
+
+ 1. [Download a assembly file](https://github.com/Taritsyn/LibSassHost/blob/master/lib/osx-x64/libsass.dylib) from the LibSass Host's project repository.
+ 1. Extract a assembly file from the [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/) package. The `libsass.dylib` file is located in the `runtimes/osx-x64/native/` directory of NuGet package.
+ 1. [Build a assembly file](#building-libsass) from the source code.
+
+Afterwards open a terminal window and change directory to the directory where the `libsass.dylib` file is located. Next, enter the following command:
+
+```
+mkdir -p /usr/local/lib/ && cp libsass.dylib "$_"
+```
+
 ## Usage
 The main difference between this library from other .NET wrappers around the LibSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. You can set the file manager by using `FileManager` property of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class:
 
@@ -119,10 +154,10 @@ body {
 First we call the `Compile` method of <code title="LibSassHost.SassCompiler">SassCompiler</code> class with the following parameters:
 
  1. `content` - text content written on Sass/SCSS.
- 2. `inputPath` - path to input Sass/SCSS file. Needed for generation of source map.
- 3. `outputPath` (optional) - path to output CSS file. Needed for generation of source map. If path to output file is not specified, but specified a path to input file, then value of this parameter is obtained by replacing extension in the input file path by `.css` extension.
- 4. `sourceMapPath` (optional) - path to source map file. If path to source map file is not specified, but specified a path to output file, then value of this parameter is obtained by replacing extension in the output file path by `.css.map` extension.
- 5. `options` (optional) - compilation options (instance of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class)
+ 1. `inputPath` - path to input Sass/SCSS file. Needed for generation of source map.
+ 1. `outputPath` (optional) - path to output CSS file. Needed for generation of source map. If path to output file is not specified, but specified a path to input file, then value of this parameter is obtained by replacing extension in the input file path by `.css` extension.
+ 1. `sourceMapPath` (optional) - path to source map file. If path to source map file is not specified, but specified a path to output file, then value of this parameter is obtained by replacing extension in the output file path by `.css.map` extension.
+ 1. `options` (optional) - compilation options (instance of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class)
 
 Then output result of compilation to the console. In addition, we provide handling of the <code title="LibSassHost.SassСompilationException">SassСompilationException</code> exception.
 
@@ -303,8 +338,8 @@ In your system must be installed Visual Studio 2013, 2015 or 2017 with C++ suppo
 To build the LibSass on Windows:
 
  1. Open `libsass.sln` in Visual Studio.
- 2. Select the **Configuration** and target **Platform**, and build the solution.
- 3. Build output will be under `src\libsass\bin\[Debug|Release]\[Win32|x64]`.
+ 1. Select the **Configuration** and target **Platform**, and build the solution.
+ 1. Build output will be under `src\libsass\bin\[Debug|Release]\[Win32|x64]`.
 
 Alternatively, you can use the build script.
 Open a Visual Studio developer command prompt and run the `build-libsass.cmd` script from your `LibSassHost` project directory:
