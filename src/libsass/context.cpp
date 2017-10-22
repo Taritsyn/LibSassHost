@@ -91,9 +91,8 @@ namespace Sass {
 
   {
 
-    // Sass 3.4: The current working directory will no longer be placed onto the Sass load path by default.
-    // If you need the current working directory to be available, set SASS_PATH=. in your shell's environment.
-    // include_paths.push_back(CWD);
+    // add cwd to include paths
+    include_paths.push_back(CWD);
 
     // collect more paths from different options
     collect_include_paths(c_options.include_path);
@@ -134,7 +133,7 @@ namespace Sass {
 
   Context::~Context()
   {
-    // resources were allocated by strdup or malloc
+    // resources were allocated by malloc
     for (size_t i = 0; i < resources.size(); ++i) {
       free(resources[i].contents);
       free(resources[i].srcmap);

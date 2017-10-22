@@ -385,27 +385,22 @@ namespace Sass {
 
   Parameters_Obj Parser::parse_parameters()
   {
+    std::string name(lexed);
+    Position position = after_token;
     Parameters_Obj params = SASS_MEMORY_NEW(Parameters, pstate);
     if (lex_css< exactly<'('> >()) {
       // if there's anything there at all
       if (!peek_css< exactly<')'> >()) {
-        do {
-          if (peek< exactly<')'> >()) break;
-          params->append(parse_parameter());
-        } while (lex_css< exactly<','> >());
+        do params->append(parse_parameter());
+        while (lex_css< exactly<','> >());
       }
-      if (!lex_css< exactly<')'> >()) {
-        css_error("Invalid CSS", " after ", ": expected \")\", was ");
-      }
+      if (!lex_css< exactly<')'> >()) error("expected a variable name (e.g. $x) or ')' for the parameter list for " + name, position);
     }
     return params;
   }
 
   Parameter_Obj Parser::parse_parameter()
   {
-    if (peek< alternatives< exactly<','>, exactly< '{' >, exactly<';'> > >()) {
-      css_error("Invalid CSS", " after ", ": expected variable (e.g. $foo), was ");
-    }
     while (lex< alternatives < spaces, block_comment > >());
     lex < variable >();
     std::string name(Util::normalize_underscores(lexed));
@@ -425,27 +420,22 @@ namespace Sass {
 
   Arguments_Obj Parser::parse_arguments()
   {
+    std::string name(lexed);
+    Position position = after_token;
     Arguments_Obj args = SASS_MEMORY_NEW(Arguments, pstate);
     if (lex_css< exactly<'('> >()) {
       // if there's anything there at all
       if (!peek_css< exactly<')'> >()) {
-        do {
-          if (peek< exactly<')'> >()) break;
-          args->append(parse_argument());
-        } while (lex_css< exactly<','> >());
+        do args->append(parse_argument());
+        while (lex_css< exactly<','> >());
       }
-      if (!lex_css< exactly<')'> >()) {
-        css_error("Invalid CSS", " after ", ": expected expression (e.g. 1px, bold), was ");
-      }
+      if (!lex_css< exactly<')'> >()) error("expected a variable name (e.g. $x) or ')' for the parameter list for " + name, position);
     }
     return args;
   }
 
   Argument_Obj Parser::parse_argument()
   {
-    if (peek< alternatives< exactly<','>, exactly< '{' >, exactly<';'> > >()) {
-      css_error("Invalid CSS", " after ", ": expected \")\", was ");
-    }
     if (peek_css< sequence < exactly< hash_lbrace >, exactly< rbrace > > >()) {
       position += 2;
       css_error("Invalid CSS", " after ", ": expected expression (e.g. 1px, bold), was ");
@@ -503,6 +493,7 @@ namespace Sass {
   // a ruleset connects a selector and a block
   Ruleset_Obj Parser::parse_ruleset(Lookahead lookahead)
   {
+    NESTING_GUARD(nestings);
     // inherit is_root from parent block
     Block_Obj parent = block_stack.back();
     bool is_root = parent && parent->is_root();
@@ -535,6 +526,7 @@ namespace Sass {
   // in the eval stage we will be re-parse it into an actual selector
   Selector_Schema_Obj Parser::parse_selector_schema(const char* end_of_selector, bool chroot)
   {
+    NESTING_GUARD(nestings);
     // move up to the start
     lex< optional_spaces >();
     const char* i = position;
@@ -646,6 +638,7 @@ namespace Sass {
   {
     bool reloop;
     bool had_linefeed = false;
+    NESTING_GUARD(nestings);
     Complex_Selector_Obj sel;
     Selector_List_Obj group = SASS_MEMORY_NEW(Selector_List, pstate);
     group->media_block(last_media_block);
@@ -700,6 +693,7 @@ namespace Sass {
   Complex_Selector_Obj Parser::parse_complex_selector(bool chroot)
   {
 
+    NESTING_GUARD(nestings);
     String_Obj reference = 0;
     lex < block_comment >();
     advanceToNextToken();
@@ -1055,6 +1049,7 @@ namespace Sass {
 
   Expression_Obj Parser::parse_map()
   {
+    NESTING_GUARD(nestings);
     Expression_Obj key = parse_list();
     List_Obj map = SASS_MEMORY_NEW(List, pstate, 0, SASS_HASH);
 
@@ -1101,12 +1096,14 @@ namespace Sass {
   // so to speak: we unwrap items from lists if possible here!
   Expression_Obj Parser::parse_list(bool delayed)
   {
+    NESTING_GUARD(nestings);
     return parse_comma_list(delayed);
   }
 
   // will return singletons unwrapped
   Expression_Obj Parser::parse_comma_list(bool delayed)
   {
+    NESTING_GUARD(nestings);
     // check if we have an empty list
     // return the empty list as such
     if (peek_css< alternatives <
@@ -1167,6 +1164,7 @@ namespace Sass {
   // will return singletons unwrapped
   Expression_Obj Parser::parse_space_list()
   {
+    NESTING_GUARD(nestings);
     Expression_Obj disj1 = parse_disjunction();
     // if it's a singleton, return it (don't wrap it)
     if (peek_css< alternatives <
@@ -1212,6 +1210,7 @@ namespace Sass {
   // parse logical OR operation
   Expression_Obj Parser::parse_disjunction()
   {
+    NESTING_GUARD(nestings);
     advanceToNextToken();
     ParserState state(pstate);
     // parse the left hand side conjunction
@@ -1233,6 +1232,7 @@ namespace Sass {
   // parse logical AND operation
   Expression_Obj Parser::parse_conjunction()
   {
+    NESTING_GUARD(nestings);
     advanceToNextToken();
     ParserState state(pstate);
     // parse the left hand side relation
@@ -1255,6 +1255,7 @@ namespace Sass {
   // parse comparison operations
   Expression_Obj Parser::parse_relation()
   {
+    NESTING_GUARD(nestings);
     advanceToNextToken();
     ParserState state(pstate);
     // parse the left hand side expression
@@ -1307,6 +1308,7 @@ namespace Sass {
   // parse addition and subtraction operations
   Expression_Obj Parser::parse_expression()
   {
+    NESTING_GUARD(nestings);
     advanceToNextToken();
     ParserState state(pstate);
     // parses multiple add and subtract operations
@@ -1350,6 +1352,7 @@ namespace Sass {
   // parse addition and subtraction operations
   Expression_Obj Parser::parse_operators()
   {
+    NESTING_GUARD(nestings);
     advanceToNextToken();
     ParserState state(pstate);
     Expression_Obj factor = parse_factor();
@@ -1382,6 +1385,7 @@ namespace Sass {
   // called from parse_value_schema
   Expression_Obj Parser::parse_factor()
   {
+    NESTING_GUARD(nestings);
     lex < css_comments >(false);
     if (lex_css< exactly<'('> >()) {
       // parse_map may return a list
