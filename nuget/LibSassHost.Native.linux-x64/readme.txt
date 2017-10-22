@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Debian x64 v1.1.0
+               README file for LibSass Host Native for Linux x64 v1.1.0
 
    --------------------------------------------------------------------------------
 
@@ -11,8 +11,10 @@
    ===========
    DESCRIPTION
    ===========
-   This package is deprecated. Instead, it is recommended to use a
-   'LibSassHost.Native.linux-x64' package.
+   This package complements the LibSassHost package and contains the native
+   implementation of LibSass version 3.4.6 for Linux (x64).
+
+   This package is only compatible with .NET Core.
 
    =============
    RELEASE NOTES

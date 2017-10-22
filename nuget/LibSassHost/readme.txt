@@ -26,7 +26,9 @@
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.4.6.
+   1. Added support of LibSass version 3.4.6;
+   2. LibSassHost.Native.debian-x64 package has been replaced by the
+      LibSassHost.Native.linux-x64 package.
 
    ============
    PROJECT SITE
