@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-#if NETCOREAPP1_0 || NET451
+#if NETCOREAPP1_0 || NET452
 
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
@@ -28,15 +28,9 @@ namespace LibSassHost.Test.Common
 			TestsInitializer.Initialize();
 
 #endif
-#if NETCOREAPP1_0 || NET451
+#if NETCOREAPP1_0 || NET452
 			var appEnv = PlatformServices.Default.Application;
-			string baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath,
-#if NETCOREAPP1_0
-				"../../../"
-#else
-				"../../../../"
-#endif
-			);
+			string baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath, "../../../");
 #elif NET40
 			string baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../");
 #else

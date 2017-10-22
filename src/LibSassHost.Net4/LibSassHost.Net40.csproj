@@ -41,18 +41,16 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\lib\win-x86\libsass.dll">
+      <Link>x86\libsass.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\..\lib\win-x64\libsass.dll">
       <Link>x64\libsass.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="..\..\tools\Key.snk">
       <Link>Key.snk</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\lib\win-x86\libsass.dll">
-      <Link>x86\libsass.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
