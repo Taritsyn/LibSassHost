@@ -1,6 +1,6 @@
 ﻿using LibSassHost.Sample.Logic;
 
-namespace LibSassHost.Sample.NetCore1.ConsoleApp
+namespace LibSassHost.Sample.NetCore2.ConsoleApp
 {
 	class Program : CompilationExampleBase
 	{

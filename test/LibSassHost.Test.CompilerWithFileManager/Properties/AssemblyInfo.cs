@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_0 && !NETCOREAPP2_0
 using System.Runtime.InteropServices;
 #endif
 
@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-#if !NETCOREAPP1_0
+#if !NETCOREAPP1_0 && !NETCOREAPP2_0
 [assembly: ComVisible(false)]
 [assembly: Guid("00005ba4-b443-4778-9bc3-7e88018262fd")]
 #endif

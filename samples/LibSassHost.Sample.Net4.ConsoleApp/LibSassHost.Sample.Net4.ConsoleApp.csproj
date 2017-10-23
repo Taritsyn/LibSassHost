@@ -7,8 +7,8 @@
     <ProjectGuid>{106CB6B3-52BB-4FA2-AAC5-460824FCA356}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LibSassHost.Sample.ConsoleApp.Net4</RootNamespace>
-    <AssemblyName>LibSassHost.Sample.ConsoleApp.Net4</AssemblyName>
+    <RootNamespace>LibSassHost.Sample.Net4.ConsoleApp</RootNamespace>
+    <AssemblyName>LibSassHost.Sample.Net4.ConsoleApp</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -52,32 +52,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\LibSassHost.Sample.NetCore1.ConsoleApp\Files\style.scss">
-      <Link>Files\style.scss</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\LibSassHost.Sample.NetCore1.ConsoleApp\Files\_reset.scss">
-      <Link>Files\_reset.scss</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\LibSassHost.Net4\LibSassHost.Net40.csproj">
-      <Project>{6f97eacf-4401-4aed-9bf9-41d5e1be4f86}</Project>
-      <Name>LibSassHost.Net40</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\LibSassHost.Sample.NetCore1.ConsoleApp\Program.cs">
-      <Link>Program.cs</Link>
-    </Compile>
-    <Compile Include="..\LibSassHost.Sample.NetCore1.ConsoleApp\Properties\AssemblyInfo.cs">
-      <Link>AssemblyInfo.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -100,6 +78,15 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibSassHost.Sample.Logic.Net4\LibSassHost.Sample.Logic.Net40.csproj">
+      <Project>{7f182501-c43a-4db7-b718-a3801c190d4a}</Project>
+      <Name>LibSassHost.Sample.Logic.Net40</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

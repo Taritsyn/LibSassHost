@@ -2,8 +2,7 @@
 
 	<PropertyGroup>
 		<VersionPrefix>1.0.4</VersionPrefix>
-		<TargetFramework>netcoreapp1.0</TargetFramework>
-		<RuntimeFrameworkVersion>1.0.7</RuntimeFrameworkVersion>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
 		<OutputType>Exe</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
