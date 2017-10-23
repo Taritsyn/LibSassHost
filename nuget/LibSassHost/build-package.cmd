@@ -23,6 +23,10 @@ xcopy "%dotnet_project_bin_dir%\net45\%project_name%.xml" lib\net45\
 xcopy "%dotnet_project_bin_dir%\netstandard1.3\%project_name%.dll" lib\netstandard1.3\
 xcopy "%dotnet_project_bin_dir%\netstandard1.3\%project_name%.xml" lib\netstandard1.3\
 
+%dotnet_cli% build "%dotnet_project_source_dir%" --framework netstandard2.0 --configuration Release --no-dependencies --no-incremental
+xcopy "%dotnet_project_bin_dir%\netstandard2.0\%project_name%.dll" lib\netstandard2.0\
+xcopy "%dotnet_project_bin_dir%\netstandard2.0\%project_name%.xml" lib\netstandard2.0\
+
 copy "..\..\src\libsass\LICENSE" libsass-license.txt /Y
 
 %nuget_package_manager% pack "..\%project_name%\%project_name%.nuspec"

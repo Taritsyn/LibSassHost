@@ -3,7 +3,7 @@
 using System.Linq;
 #endif
 using System.Runtime.CompilerServices;
-#if NETSTANDARD1_3
+#if NETSTANDARD1_3 || NETSTANDARD2_0
 using System.Runtime.InteropServices;
 #endif
 
@@ -37,7 +37,7 @@ namespace LibSassHost.Utilities
 
 		private static bool InnerIsWindows()
 		{
-#if NETSTANDARD1_3
+#if NETSTANDARD1_3 || NETSTANDARD2_0
 			bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 #else
 			PlatformID[] windowsPlatformIDs =

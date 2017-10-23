@@ -4,7 +4,7 @@ using System.Linq;
 
 using LibSassHost.Internal;
 using LibSassHost.Resources;
-#if !NETSTANDARD1_3
+#if !NETSTANDARD1_3 && !NETSTANDARD2_0
 using LibSassHost.Utilities;
 #endif
 
@@ -85,7 +85,7 @@ namespace LibSassHost
 		/// <exception cref="SassCompilerLoadException">Failed to load a Sass-compiler.</exception>
 		static SassCompiler()
 		{
-#if !NETSTANDARD1_3
+#if !NETSTANDARD1_3 && !NETSTANDARD2_0
 			if (Utils.IsWindows())
 			{
 				AssemblyResolver.Initialize();
