@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Test.CompilerWi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Test.CompilerWithoutFileManager", "test\LibSassHost.Test.CompilerWithoutFileManager\LibSassHost.Test.CompilerWithoutFileManager.csproj", "{B6BBBF01-4E06-4A3A-93F6-65213DA7CA8A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.ConsoleApp", "samples\LibSassHost.Sample.ConsoleApp\LibSassHost.Sample.ConsoleApp.csproj", "{6D2B94AD-1351-4C5A-A43D-097B67B199C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore1.ConsoleApp", "samples\LibSassHost.Sample.NetCore1.ConsoleApp\LibSassHost.Sample.NetCore1.ConsoleApp.csproj", "{6D2B94AD-1351-4C5A-A43D-097B67B199C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
