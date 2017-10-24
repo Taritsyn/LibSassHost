@@ -1,4 +1,4 @@
-LibSass Host for .NET
+LibSass Host for .NET [![NuGet](https://img.shields.io/nuget/v/LibSassHost.svg?style=flat)](https://www.nuget.org/packages/LibSassHost/)
 =====================
 
 <img src="https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo.png" width="360" height="100" alt="LibSass Host logo" />
@@ -13,7 +13,7 @@ The following packages are available:
 
  * [LibSassHost.Native.win-x86](http://nuget.org/packages/LibSassHost.Native.win-x86/)<sup>*</sup> contains the native assemblies for Windows (x86).
  * [LibSassHost.Native.win-x64](http://nuget.org/packages/LibSassHost.Native.win-x64/)<sup>*</sup> contains the native assemblies for Windows (x64).
- * [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/) contains the native assemblies for Debian-based Linux (x64) (Debian, Ubuntu and Linux Mint). Only compatible with .NET Core.
+ * [LibSassHost.Native.linux-x64](http://nuget.org/packages/LibSassHost.Native.linux-x64/) contains the native assemblies for Linux (x64). Only compatible with .NET Core.
  * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/) contains the native assemblies for OS X (x64). Only compatible with .NET Core.
 
 <sup>* - Requires `msvcp140.dll` assembly from the [Visual C++ Redistributable for Visual Studio 2015](https://www.microsoft.com/en-us/download/details.aspx?id=53840).<sup>
@@ -22,17 +22,15 @@ If you need support for other operating systems, then you should read the [“Bu
 
 ### Mono support
 
-LibSassHost.Native.debian-x64 and LibSassHost.Native.osx-x64 packages do not support installation under [Mono](http://www.mono-project.com/), but you can to install the native assemblies manually.
+LibSassHost.Native.linux-x64 and LibSassHost.Native.osx-x64 packages do not support installation under [Mono](http://www.mono-project.com/), but you can to install the native assemblies manually.
 
 #### Linux
 
-First you need to get the `libsass.so` assembly file. If you are using the Debian-based Linux (x64), then you have 3 ways to do this:
+First you need to get the `libsass.so` assembly file. You have 3 ways to do this:
 
- 1. [Download a assembly file](https://github.com/Taritsyn/LibSassHost/blob/master/lib/debian-x64/libsass.so) from the LibSass Host's project repository.
- 1. Extract a assembly file from the [LibSassHost.Native.debian-x64](http://nuget.org/packages/LibSassHost.Native.debian-x64/) package. The `libsass.so` file is located in the `runtimes/debian-x64/native/` directory of NuGet package.
+ 1. [Download a assembly file](https://github.com/Taritsyn/LibSassHost/blob/master/lib/linux-x64/libsass.so) from the LibSass Host's project repository.
+ 1. Extract a assembly file from the [LibSassHost.Native.linux-x64](http://nuget.org/packages/LibSassHost.Native.linux-x64/) package. The `libsass.so` file is located in the `runtimes/linux-x64/native/` directory of NuGet package.
  1. [Build a assembly file](#building-libsass) from the source code.
-
-If you use some other Linux distro, then only 3 way will suit for you.
 
 Afterwards open a terminal window and change directory to the directory where the `libsass.so` file is located. Next, enter the following command:
 

@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-                     README file for LibSass Host for .Net v1.0.4
+                     README file for LibSass Host for .Net v1.1.0
 
    --------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
 
     * LibSassHost.Native.win-x86
     * LibSassHost.Native.win-x64
-    * LibSassHost.Native.debian-x64
+    * LibSassHost.Native.linux-x64
     * LibSassHost.Native.osx-x64
 
    =============

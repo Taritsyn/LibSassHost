@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-#if NETSTANDARD1_3 || NETSTANDARD2_0
-using System.Text;
-#endif
 #if NETSTANDARD1_3 || NETSTANDARD2_0 || NET451
 
 using Microsoft.Extensions.PlatformAbstractions;
@@ -22,10 +19,6 @@ namespace LibSassHost.Sample.Logic
 		/// </summary>
 		static CompilationExampleBase()
 		{
-#if NETSTANDARD1_3 || NETSTANDARD2_0
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-#endif
 #if NETSTANDARD1_3 || NETSTANDARD2_0 || NET451
 			var appEnv = PlatformServices.Default.Application;
 			string baseDirectoryPath = appEnv.ApplicationBasePath;

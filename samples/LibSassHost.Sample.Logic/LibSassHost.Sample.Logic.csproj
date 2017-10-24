@@ -1,13 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<VersionPrefix>1.0.4</VersionPrefix>
+		<VersionPrefix>1.1.0</VersionPrefix>
 		<TargetFrameworks>netstandard1.3;netstandard2.0;net451</TargetFrameworks>
 		<NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.0</NetStandardImplicitPackageVersion>
 		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);CS1591</NoWarn>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -24,12 +22,10 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="4.0.1" />
 		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="4.4.0" />
 		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
 	</ItemGroup>
 

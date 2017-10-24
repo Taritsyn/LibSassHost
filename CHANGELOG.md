@@ -1,6 +1,11 @@
 Change log
 ==========
 
+## v1.1.0 - October 24, 2017
+ * Added support of LibSass version 3.4.6
+ * LibSassHost.Native.debian-x64 package has been replaced by the LibSassHost.Native.linux-x64 package
+ * Added support of .NET Standard 2.0
+
 ## v1.0.4 - May 23, 2017
  * Added support of LibSass version 3.4.5
 

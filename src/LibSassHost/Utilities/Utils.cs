@@ -1,5 +1,5 @@
 ﻿using System;
-#if !NETSTANDARD1_3
+#if !NETSTANDARD1_3 && !NETSTANDARD2_0
 using System.Linq;
 #endif
 using System.Runtime.CompilerServices;
