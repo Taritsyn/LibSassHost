@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.1.1 - October 25, 2017
+ * Fixed a “Arithmetic operation resulted in an overflow” error, that occurred during compilation of non-existent file
+
 ## v1.1.0 - October 24, 2017
  * Added support of LibSass version 3.4.6
  * LibSassHost.Native.debian-x64 package has been replaced by the LibSassHost.Native.linux-x64 package
