@@ -10,14 +10,14 @@ namespace LibSassHost.Internal.Native
 		/// <summary>
 		/// The reference
 		/// </summary>
-		public readonly UIntPtr Reference;
+		public readonly IntPtr Reference;
 
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="size_t"/> struct
 		/// </summary>
 		/// <param name="reference">The reference</param>
-		public size_t(UIntPtr reference)
+		public size_t(IntPtr reference)
 		{
 			Reference = reference;
 		}
@@ -28,7 +28,7 @@ namespace LibSassHost.Internal.Native
 		/// <param name="intValue">The <c>int</c> value</param>
 		public size_t(int intValue)
 		{
-			Reference = new UIntPtr((uint)intValue);
+			Reference = new IntPtr(intValue);
 		}
 
 		/// <summary>
@@ -37,18 +37,18 @@ namespace LibSassHost.Internal.Native
 		/// <param name="longValue">The <c>long</c> value</param>
 		public size_t(long longValue)
 		{
-			Reference = new UIntPtr((ulong)longValue);
+			Reference = new IntPtr(longValue);
 		}
 
 
 		public static implicit operator int(size_t value)
 		{
-			return (int)value.Reference.ToUInt32();
+			return value.Reference.ToInt32();
 		}
 
 		public static implicit operator long(size_t value)
 		{
-			return (long)value.Reference.ToUInt64();
+			return value.Reference.ToInt64();
 		}
 
 		public static implicit operator size_t(int intValue)

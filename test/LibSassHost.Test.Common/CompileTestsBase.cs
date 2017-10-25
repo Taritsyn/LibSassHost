@@ -13,6 +13,8 @@ namespace LibSassHost.Test.Common
 {
 	public abstract class CompileTestsBase
 	{
+		protected readonly SyntaxType _syntaxType;
+
 		protected readonly string _filesDirectoryPath;
 
 		protected readonly string _fileExtension;
@@ -37,6 +39,7 @@ namespace LibSassHost.Test.Common
 #error No implementation for this target
 #endif
 			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "../SharedFiles"));
+			_syntaxType = syntaxType;
 
 			if (syntaxType == SyntaxType.Sass)
 			{
@@ -61,6 +64,8 @@ namespace LibSassHost.Test.Common
 		{
 			return PathHelpers.ProcessBackSlashes(Path.GetFullPath(path));
 		}
+
+		#region Compilation
 
 		[Fact]
 		public virtual void CodeCompilationIsCorrect()
@@ -205,5 +210,105 @@ namespace LibSassHost.Test.Common
 			Assert.Equal(1, includedFilePaths.Count);
 			Assert.Equal(GetCanonicalPath(inputFilePath), includedFilePaths[0]);
 		}
+
+		#endregion
+
+		#region Mapping errors
+
+		[Fact]
+		public virtual void MappingFileNotFoundErrorDuringCompilationOfCodeIsCorrect()
+		{
+			// Arrange
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
+				string.Format("non-existing-files/{0}/base{1}", _subfolderName, _fileExtension));
+			string inputCode = File.ReadAllText(inputFilePath);
+			var options = new CompilationOptions
+			{
+				SourceMap = true
+			};
+
+			SassСompilationException exception = null;
+
+			// Act
+			try
+			{
+				CompilationResult result = SassCompiler.Compile(inputCode, inputFilePath, options: options);
+			}
+			catch (SassСompilationException e)
+			{
+				exception = e;
+			}
+
+			// Assert
+			Assert.NotNull(exception);
+			Assert.NotEmpty(exception.Message);
+			Assert.Equal(GetCanonicalPath(inputFilePath), exception.File);
+			Assert.Equal(_syntaxType == SyntaxType.Sass ? 5 : 6, exception.LineNumber);
+			Assert.Equal(1, exception.ColumnNumber);
+		}
+
+		[Fact]
+		public virtual void MappingSyntaxErrorDuringCompilationOfCodeIsCorrect()
+		{
+			// Arrange
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
+				string.Format("invalid-syntax/{0}/style{1}", _subfolderName, _fileExtension));
+			string inputCode = File.ReadAllText(inputFilePath);
+			var options = new CompilationOptions
+			{
+				SourceMap = true
+			};
+
+			SassСompilationException exception = null;
+
+			// Act
+			try
+			{
+				CompilationResult result = SassCompiler.Compile(inputCode, inputFilePath, options: options);
+			}
+			catch (SassСompilationException e)
+			{
+				exception = e;
+			}
+
+			// Assert
+			Assert.NotNull(exception);
+			Assert.NotEmpty(exception.Message);
+			Assert.Equal(GetCanonicalPath(inputFilePath), exception.File);
+			Assert.Equal(3, exception.LineNumber);
+			Assert.Equal(13, exception.ColumnNumber);
+		}
+
+		[Fact]
+		public abstract void MappingFileNotFoundErrorDuringCompilationOfFileIsCorrect();
+
+		[Fact]
+		public virtual void MappingSyntaxErrorDuringCompilationOfFileIsCorrect()
+		{
+			// Arrange
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
+				string.Format("invalid-syntax/{0}/style{1}", _subfolderName, _fileExtension));
+
+			SassСompilationException exception = null;
+
+			// Act
+			try
+			{
+				CompilationResult result = SassCompiler.CompileFile(inputFilePath);
+			}
+			catch (SassСompilationException e)
+			{
+				exception = e;
+			}
+
+			// Assert
+			Assert.NotNull(exception);
+			Assert.NotEmpty(exception.Message);
+			Assert.Equal(GetCanonicalPath(inputFilePath), exception.File);
+			Assert.Equal(3, exception.LineNumber);
+			Assert.Equal(13, exception.ColumnNumber);
+		}
+
+		#endregion
 	}
 }

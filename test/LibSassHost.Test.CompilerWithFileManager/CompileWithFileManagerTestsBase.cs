@@ -18,6 +18,8 @@ namespace LibSassHost.Test.CompilerWithFileManager
 		{ }
 
 
+		#region Compilation
+
 		[Fact]
 		public virtual void CodeWithUtf16CharactersCompilationIsCorrect()
 		{
@@ -59,5 +61,35 @@ namespace LibSassHost.Test.CompilerWithFileManager
 			Assert.Equal(1, includedFilePaths.Count);
 			Assert.Equal(GetCanonicalPath(inputFilePath), includedFilePaths[0]);
 		}
+
+		#endregion
+
+		#region Mapping errors
+
+		[Fact]
+		public override void MappingFileNotFoundErrorDuringCompilationOfFileIsCorrect()
+		{
+			// Arrange
+			string inputFilePath = Path.Combine(_filesDirectoryPath,
+				string.Format("non-existing-files/{0}/style{1}", _subfolderName, _fileExtension));
+
+			FileNotFoundException exception = null;
+
+			// Act
+			try
+			{
+				CompilationResult result = SassCompiler.CompileFile(inputFilePath);
+			}
+			catch (FileNotFoundException e)
+			{
+				exception = e;
+			}
+
+			// Assert
+			Assert.NotNull(exception);
+			Assert.NotEmpty(exception.Message);
+		}
+
+		#endregion
 	}
 }
