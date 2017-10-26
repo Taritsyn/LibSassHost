@@ -248,7 +248,28 @@ namespace LibSassHost
 			bool indentedSyntax = GetIndentedSyntax(inputPath);
 
 			BeginCompile(fileContext, indentedSyntax, inputPath, outputPath, sourceMapPath, options);
-			SassCompilerProxy.CompileFile(fileContext);
+
+			try
+			{
+				SassCompilerProxy.CompileFile(fileContext);
+			}
+			catch (FileNotFoundException e)
+			{
+				string filePath = e.FileName;
+				string text = string.Format("File to read not found or unreadable: {0}", filePath);
+				string message = string.Format("Internal Error: {0}", text);
+
+				throw new SassСompilationException(message, e)
+				{
+					Status = 3,
+					Text = text,
+					File = null,
+					LineNumber = -1,
+					ColumnNumber = -1,
+					Source = null
+				};
+			}
+
 			CompilationResult result = EndCompile(fileContext);
 
 			return result;

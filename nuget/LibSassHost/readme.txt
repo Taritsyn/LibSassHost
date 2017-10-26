@@ -26,8 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a “Arithmetic operation resulted in an overflow” error, that occurred
-   during compilation of non-existent file.
+   Improved a error handling.
 
    ============
    PROJECT SITE

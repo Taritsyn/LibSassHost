@@ -189,6 +189,7 @@
     <Compile Include="..\LibSassHost\Utilities\Utils.cs">
       <Link>Utilities\Utils.cs</Link>
     </Compile>
+    <Compile Include="Utilities\ExceptionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\LibSassHost\Resources\Strings.resx">

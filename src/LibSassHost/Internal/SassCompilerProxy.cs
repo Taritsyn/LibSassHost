@@ -1,4 +1,13 @@
-﻿using LibSassHost.Internal.Native;
+﻿using System;
+using System.Reflection;
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NET45
+using System.Runtime.ExceptionServices;
+
+#endif
+using LibSassHost.Internal.Native;
+#if NET40
+using LibSassHost.Utilities;
+#endif
 
 namespace LibSassHost.Internal
 {
@@ -37,6 +46,23 @@ namespace LibSassHost.Internal
 					FillManagedContextError(dataContext, ref base_ctx);
 				}
 			}
+			catch (TargetInvocationException e)
+			{
+				Exception innerException = e.InnerException;
+				if (innerException != null)
+				{
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NET45
+					ExceptionDispatchInfo.Capture(innerException).Throw();
+#elif NET40
+					innerException.PreserveStackTrace();
+					throw innerException;
+#else
+#error No implementation for this target
+#endif
+				}
+
+				throw;
+			}
 			finally
 			{
 				// Free resources
@@ -66,6 +92,23 @@ namespace LibSassHost.Internal
 				{
 					FillManagedContextError(fileContext, ref base_ctx);
 				}
+			}
+			catch (TargetInvocationException e)
+			{
+				Exception innerException = e.InnerException;
+				if (innerException != null)
+				{
+#if NETSTANDARD1_3 || NETSTANDARD2_0 || NET45
+					ExceptionDispatchInfo.Capture(innerException).Throw();
+#elif NET40
+					innerException.PreserveStackTrace();
+					throw innerException;
+#else
+#error No implementation for this target
+#endif
+				}
+
+				throw;
 			}
 			finally
 			{

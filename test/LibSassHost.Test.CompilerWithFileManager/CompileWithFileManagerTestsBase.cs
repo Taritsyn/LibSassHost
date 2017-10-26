@@ -63,33 +63,5 @@ namespace LibSassHost.Test.CompilerWithFileManager
 		}
 
 		#endregion
-
-		#region Mapping errors
-
-		[Fact]
-		public override void MappingFileNotFoundErrorDuringCompilationOfFileIsCorrect()
-		{
-			// Arrange
-			string inputFilePath = Path.Combine(_filesDirectoryPath,
-				string.Format("non-existing-files/{0}/style{1}", _subfolderName, _fileExtension));
-
-			FileNotFoundException exception = null;
-
-			// Act
-			try
-			{
-				CompilationResult result = SassCompiler.CompileFile(inputFilePath);
-			}
-			catch (FileNotFoundException e)
-			{
-				exception = e;
-			}
-
-			// Assert
-			Assert.NotNull(exception);
-			Assert.NotEmpty(exception.Message);
-		}
-
-		#endregion
 	}
 }
