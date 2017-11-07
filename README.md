@@ -1,4 +1,4 @@
-LibSass Host for .NET [![NuGet](https://img.shields.io/nuget/v/LibSassHost.svg?style=flat)](https://www.nuget.org/packages/LibSassHost/)
+LibSass Host for .NET [![NuGet version](http://img.shields.io/nuget/v/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)  [![Download count](https://img.shields.io/nuget/dt/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)
 =====================
 
 <img src="https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo.png" width="360" height="100" alt="LibSass Host logo" />
