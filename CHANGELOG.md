@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.1.2 - November 9, 2017
+ * Improved a error handling
+ * Fixed a [error #22](https://github.com/Taritsyn/LibSassHost/issues/22) “When using PackageReference DLL is not copied (with fix)”
+
 ## v1.1.1 - October 25, 2017
  * Fixed a “Arithmetic operation resulted in an overflow” error, that occurred during compilation of non-existent file
 
