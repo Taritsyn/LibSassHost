@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-              README file for LibSass Host Native for Windows x86 v1.1.0
+              README file for LibSass Host Native for Windows x86 v1.1.2
 
    --------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.4.6.
+   Fixed a error #22 “When using PackageReference DLL is not copied (with fix)”.
 
    ====================
    POST-INSTALL ACTIONS

@@ -32,15 +32,10 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' Or '$(TargetFramework)' == 'net45' ">
-		<None Include="..\..\lib\win-x86\libsass.dll">
-			<Link>x86\libsass.dll</Link>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Include="..\..\lib\win-x64\libsass.dll">
-			<Link>x64\libsass.dll</Link>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
 	</ItemGroup>
 
 	<ItemGroup>
