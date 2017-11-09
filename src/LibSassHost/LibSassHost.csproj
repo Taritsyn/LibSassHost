@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<VersionPrefix>1.1.1</VersionPrefix>
-		<TargetFrameworks>netstandard1.3;netstandard2.0;net45</TargetFrameworks>
+		<TargetFrameworks>netstandard1.3;netstandard2.0;net40-client;net45</TargetFrameworks>
 		<NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.0</NetStandardImplicitPackageVersion>
 		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -22,13 +22,17 @@
 		<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.1.0" PrivateAssets="All" />
+	</ItemGroup>
+
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' Or '$(TargetFramework)' == 'net45' ">
 		<None Include="..\..\lib\win-x86\libsass.dll">
 			<Link>x86\libsass.dll</Link>
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -49,5 +53,7 @@
 			<ResxToCsConversionWasRun>true</ResxToCsConversionWasRun>
 		</PropertyGroup>
 	</Target>
+
+	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
 </Project>

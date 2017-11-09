@@ -40,10 +40,20 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LibSassHost.Sample.Logic.Net4\LibSassHost.Sample.Logic.Net40.csproj">
-      <Project>{7f182501-c43a-4db7-b718-a3801c190d4a}</Project>
-      <Name>LibSassHost.Sample.Logic.Net40</Name>
+    <ProjectReference Include="..\LibSassHost.Sample.Logic\LibSassHost.Sample.Logic.csproj">
+      <Project>{b84b347e-4cd5-46ae-8459-05837116a61a}</Project>
+      <Name>LibSassHost.Sample.Logic</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\lib\win-x86\libsass.dll">
+      <Link>x86\libsass.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\lib\win-x64\libsass.dll">
+      <Link>x64\libsass.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
