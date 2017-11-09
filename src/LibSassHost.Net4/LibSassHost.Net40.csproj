@@ -12,6 +12,9 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>ed6a9cd9</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +55,7 @@
     <None Include="..\..\build\Key.snk">
       <Link>Key.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\LibSassHost\AssemblyResolver.cs">
@@ -200,12 +204,19 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>SET VS_PROJECT_DIR=$(ProjectDir)..\LibSassHost
-
-cd "$(ProjectDir)..\..\"
-build resx</PreBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\..\packages\ResxToCs.MSBuild.1.0.0-alpha2\build\ResxToCs.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\ResxToCs.MSBuild.1.0.0-alpha2\build\ResxToCs.MSBuild.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\ResxToCs.MSBuild.1.0.0-alpha2\build\ResxToCs.MSBuild.targets" Condition="Exists('..\..\packages\ResxToCs.MSBuild.1.0.0-alpha2\build\ResxToCs.MSBuild.targets')" />
+  <Target Name="СonvertResxToCs" BeforeTargets="BeforeCompile" Condition=" '$(ResxToCsConversionWasRun)' != 'true' ">
+    <ResxToCsTask ResourceDirectory="..\LibSassHost\Resources\" />
+    <PropertyGroup>
+      <ResxToCsConversionWasRun>true</ResxToCsConversionWasRun>
+    </PropertyGroup>
+  </Target>
 </Project>
