@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-#if NETSTANDARD1_3 || NETSTANDARD2_0 || NET451
+#if NET451 || NETSTANDARD1_3 || NETSTANDARD2_0
 
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
@@ -19,7 +19,7 @@ namespace LibSassHost.Sample.Logic
 		/// </summary>
 		static CompilationExampleBase()
 		{
-#if NETSTANDARD1_3 || NETSTANDARD2_0 || NET451
+#if NET451 || NETSTANDARD1_3 || NETSTANDARD2_0
 			var appEnv = PlatformServices.Default.Application;
 			string baseDirectoryPath = appEnv.ApplicationBasePath;
 #elif NET40

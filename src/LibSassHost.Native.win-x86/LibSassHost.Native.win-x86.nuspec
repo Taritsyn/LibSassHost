@@ -6,20 +6,25 @@
 		<title>LibSass Host Native for Windows (x86)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
-		<licenseUrl>http://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
-		<projectUrl>http://github.com/Taritsyn/LibSassHost</projectUrl>
+		<licenseUrl>https://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/Taritsyn/LibSassHost</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
+		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.4.6 for Windows (x86).
 
 For correct working of the LibSass require `msvcp140.dll` assembly from the Visual C++ Redistributable for Visual Studio 2015.</description>
-		<summary>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.4.6 for Windows (x86).</summary>
 		<releaseNotes>Fixed a error #22 “When using PackageReference DLL is not copied (with fix)”.</releaseNotes>
-		<copyright>Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
+		<copyright>Copyright © 2015-2017 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Windows x86</tags>
 	</metadata>
 	<files>
-		<file src="**\*.*" exclude="build-package.cmd" />
+		<file src="../../lib/win-x86/libsass.dll" target="runtimes/win7-x86/native/" />
+		<file src="build/LibSassHost.Native.win-x86.props" target="build/" />
+		<file src="tools/Install.ps1" target="tools/" />
+		<file src="tools/Uninstall.ps1" target="tools/" />
+		<file src="readme.txt" />
+		<file src="../libsass/LICENSE.txt" target="libsass-license.txt" />
 	</files>
 </package>

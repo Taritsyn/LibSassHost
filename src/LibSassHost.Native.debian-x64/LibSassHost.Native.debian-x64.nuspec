@@ -6,18 +6,20 @@
 		<title>LibSass Host Native for Debian (x64)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
-		<licenseUrl>http://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
-		<projectUrl>http://github.com/Taritsyn/LibSassHost</projectUrl>
+		<licenseUrl>https://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/Taritsyn/LibSassHost</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
+		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This package is deprecated. Instead, it is recommended to use a 'LibSassHost.Native.linux-x64' package.</description>
-		<summary>This package is deprecated. Instead, it is recommended to use a 'LibSassHost.Native.linux-x64' package.</summary>
 		<releaseNotes>Added support of LibSass version 3.4.6.</releaseNotes>
-		<copyright>Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru</copyright>
+		<copyright>Copyright © 2015-2017 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Debian Ubuntu LinuxMint x64</tags>
 	</metadata>
 	<files>
-		<file src="**\*.*" exclude="build-package.cmd" />
+		<file src="../../lib/linux-x64/libsass.so" target="runtimes/debian-x64/native/" />
+		<file src="readme.txt" />
+		<file src="../libsass/LICENSE.txt" target="libsass-license.txt" />
 	</files>
 </package>

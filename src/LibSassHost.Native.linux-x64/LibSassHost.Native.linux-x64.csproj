@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<NuspecFile>LibSassHost.Native.linux-x64.nuspec</NuspecFile>
+	</PropertyGroup>
+
+	<Import Project="../../build/nuget-common.props" />
+
+</Project>
