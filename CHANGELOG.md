@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.1.3 - November 15, 2017
+ * Added support of LibSass version 3.4.7
+
 ## v1.1.2 - November 9, 2017
  * Improved a error handling
  * Fixed a [error #22](https://github.com/Taritsyn/LibSassHost/issues/22) “When using PackageReference DLL is not copied (with fix)”

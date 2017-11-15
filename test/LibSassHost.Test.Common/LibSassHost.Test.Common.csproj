@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<Product>LibSass Host: Common Tests</Product>
-		<VersionPrefix>1.1.2</VersionPrefix>
+		<VersionPrefix>1.1.3</VersionPrefix>
 		<TargetFrameworks>net452;netcoreapp1.0;netcoreapp2.0</TargetFrameworks>
 		<RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.7</RuntimeFrameworkVersion>
 		<OutputType>Library</OutputType>
