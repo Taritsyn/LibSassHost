@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   Improved a error handling.
+   Added support of LibSass version 3.4.7.
 
    ============
    PROJECT SITE

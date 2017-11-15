@@ -1825,25 +1825,37 @@ namespace Sass {
     if (is_in_selector_schema) exp.selector_stack.push_back(0);
     Selector_List_Obj resolved = s->resolve_parent_refs(exp.selector_stack, implicit_parent);
     if (is_in_selector_schema) exp.selector_stack.pop_back();
+    for (size_t i = 0; i < resolved->length(); i++) {
+      Complex_Selector_Ptr is = resolved->at(i)->first();
+      while (is) {
+        if (is->head()) {
+          is->head(operator()(is->head()));
+        }
+        is = is->tail();
+      }
+    }
     return resolved.detach();
   }
 
-  // XXX: this is never hit via spec tests
-  Attribute_Selector_Ptr Eval::operator()(Attribute_Selector_Ptr s)
+  Compound_Selector_Ptr Eval::operator()(Compound_Selector_Ptr s)
   {
-    String_Obj attr = s->value();
-    if (attr) { attr = static_cast<String_Ptr>(attr->perform(this)); }
-    Attribute_Selector_Ptr ss = SASS_MEMORY_COPY(s);
-    ss->value(attr);
-    return ss;
+    for (size_t i = 0; i < s->length(); i++) {
+      Simple_Selector_Ptr ss = s->at(i);
+      // skip parents here (called via resolve_parent_refs)
+      if (ss == NULL || Cast<Parent_Selector>(ss)) continue;
+      s->at(i) = Cast<Simple_Selector>(ss->perform(this));
+    }
+    return s;
   }
 
   Selector_List_Ptr Eval::operator()(Selector_Schema_Ptr s)
   {
     LOCAL_FLAG(is_in_selector_schema, true);
     // the parser will look for a brace to end the selector
+    ctx.c_options.in_selector = true; // do not compress colors
     Expression_Obj sel = s->contents()->perform(this);
     std::string result_str(sel->to_string(ctx.c_options));
+    ctx.c_options.in_selector = false; // flag temporary only
     result_str = unquote(Util::rtrim(result_str));
     char* temp_cstr = sass_copy_c_string(result_str.c_str());
     ctx.strings.push_back(temp_cstr); // attach to context
@@ -1882,5 +1894,44 @@ namespace Sass {
       return SASS_MEMORY_NEW(Null, p->pstate());
     }
   }
+
+  Simple_Selector_Ptr Eval::operator()(Simple_Selector_Ptr s)
+  {
+    return s;
+  }
+
+  // hotfix to avoid invalid nested `:not` selectors
+  // probably the wrong place, but this should ultimately
+  // be fixed by implement superselector correctly for `:not`
+  // first use of "find" (ATM only implemented for selectors)
+  bool hasNotSelector(AST_Node_Obj obj) {
+    if (Wrapped_Selector_Ptr w = Cast<Wrapped_Selector>(obj)) {
+      return w->name() == ":not";
+    }
+    return false;
+  }
+
+  Wrapped_Selector_Ptr Eval::operator()(Wrapped_Selector_Ptr s)
+  {
+
+    if (s->name() == ":not") {
+      if (exp.selector_stack.back()) {
+        if (s->selector()->find(hasNotSelector)) {
+          s->selector()->clear();
+          s->name(" ");
+        } else if (s->selector()->length() == 1) {
+          Complex_Selector_Ptr cs = s->selector()->at(0);
+          if (cs->tail()) {
+            s->selector()->clear();
+            s->name(" ");
+          }
+        } else if (s->selector()->length() > 1) {
+          s->selector()->clear();
+          s->name(" ");
+        }
+      }
+    }
+    return s;
+  };
 
 }

@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-              README file for LibSass Host Native for Windows x64 v1.1.2
+              README file for LibSass Host Native for Windows x64 v1.1.3
 
    --------------------------------------------------------------------------------
 
@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of LibSass version 3.4.6 for Windows (x64).
+   implementation of LibSass version 3.4.7 for Windows (x64).
 
    For correct working of the LibSass require `msvcp140.dll` assembly from the
    Visual C++ Redistributable for Visual Studio 2015.
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a error #22 “When using PackageReference DLL is not copied (with fix)”.
+   Added support of LibSass version 3.4.7.
 
    ====================
    POST-INSTALL ACTIONS
