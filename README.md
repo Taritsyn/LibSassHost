@@ -402,4 +402,4 @@ Build script can also take a options, information about which can be obtained by
 If you use the LibSass Host for .NET in some project, please send me a message so I can include it in this list:
 
  * [Bundle Transformer](https://github.com/Taritsyn/BundleTransformer) by Andrey Taritsyn
-  * [VirtoCommerce Storefront for ASP.NET Core](https://github.com/VirtoCommerce/vc-storefront-core) by Virto Solutions LTD
+ * [VirtoCommerce Storefront for ASP.NET Core](https://github.com/VirtoCommerce/vc-storefront-core) by Virto Solutions LTD

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-#if NET45 || NETSTANDARD1_3 || NETSTANDARD2_0
+#if NET45 || NETSTANDARD
 using System.Runtime.ExceptionServices;
 
 #endif
@@ -51,7 +51,7 @@ namespace LibSassHost.Internal
 				Exception innerException = e.InnerException;
 				if (innerException != null)
 				{
-#if NET45 || NETSTANDARD1_3 || NETSTANDARD2_0
+#if NET45 || NETSTANDARD
 					ExceptionDispatchInfo.Capture(innerException).Throw();
 #elif NET40
 					innerException.PreserveStackTrace();
@@ -98,7 +98,7 @@ namespace LibSassHost.Internal
 				Exception innerException = e.InnerException;
 				if (innerException != null)
 				{
-#if NET45 || NETSTANDARD1_3 || NETSTANDARD2_0
+#if NET45 || NETSTANDARD
 					ExceptionDispatchInfo.Capture(innerException).Throw();
 #elif NET40
 					innerException.PreserveStackTrace();

@@ -1,9 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{19575E10-6B8E-4CF0-B7D2-898FFF47E157}"
+	ProjectSection(SolutionItems) = preProject
+		build-libsass.cmd = build-libsass.cmd
+		build-libsass.sh = build-libsass.sh
+		CHANGELOG.md = CHANGELOG.md
+		global.json = global.json
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55626F15-1AA6-45B5-BB21-A592BD268B88}"
+	ProjectSection(SolutionItems) = preProject
+		build\common.props = build\common.props
+		build\nuget-common.props = build\nuget-common.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F040905A-670E-4E77-82DB-721CD7B3FAC2}"
 EndProject
@@ -99,15 +113,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore2.ConsoleApp", "samples\LibSassHost.Sample.NetCore2.ConsoleApp\LibSassHost.Sample.NetCore2.ConsoleApp.csproj", "{7E10904A-E9B8-4E47-A606-F399AE7F4F7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Native.debian-x64", "src\LibSassHost.Native.debian-x64\LibSassHost.Native.debian-x64.csproj", "{474920F2-757C-4E3F-92DE-FA566B94E356}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Native.debian-x64", "src\LibSassHost.Native.debian-x64\LibSassHost.Native.debian-x64.csproj", "{474920F2-757C-4E3F-92DE-FA566B94E356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Native.linux-x64", "src\LibSassHost.Native.linux-x64\LibSassHost.Native.linux-x64.csproj", "{B8E1B482-5C3C-4410-BCC5-A14C83F3A8EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Native.linux-x64", "src\LibSassHost.Native.linux-x64\LibSassHost.Native.linux-x64.csproj", "{B8E1B482-5C3C-4410-BCC5-A14C83F3A8EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Native.osx-x64", "src\LibSassHost.Native.osx-x64\LibSassHost.Native.osx-x64.csproj", "{08D3758C-DAB6-4555-80B6-F11EE12063E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Native.osx-x64", "src\LibSassHost.Native.osx-x64\LibSassHost.Native.osx-x64.csproj", "{08D3758C-DAB6-4555-80B6-F11EE12063E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Native.win-x64", "src\LibSassHost.Native.win-x64\LibSassHost.Native.win-x64.csproj", "{B67FA9F1-84BA-4325-A892-C047037492D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Native.win-x64", "src\LibSassHost.Native.win-x64\LibSassHost.Native.win-x64.csproj", "{B67FA9F1-84BA-4325-A892-C047037492D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Native.win-x86", "src\LibSassHost.Native.win-x86\LibSassHost.Native.win-x86.csproj", "{F374E87A-8074-4AD6-BB22-301AB0300E12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Native.win-x86", "src\LibSassHost.Native.win-x86\LibSassHost.Native.win-x86.csproj", "{F374E87A-8074-4AD6-BB22-301AB0300E12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -50,6 +50,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
 		<Content Include="../libsass/LICENSE.txt">
 			<PackagePath>libsass-license.txt</PackagePath>
 			<Pack>true</Pack>
+			<Visible>false</Visible>
 		</Content>
 	</ItemGroup>
 
