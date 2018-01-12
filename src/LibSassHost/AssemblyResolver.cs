@@ -37,11 +37,6 @@ namespace LibSassHost
 				baseDirectoryPath = currentDomain.BaseDirectory;
 			}
 
-			if (!PathHelpers.ContainsDirectory(baseDirectoryPath, "bin"))
-			{
-				return;
-			}
-
 			string platform = Utils.Is64BitProcess() ? "x64" : "x86";
 
 			string assemblyFileName = ASSEMBLY_NAME + ".dll";

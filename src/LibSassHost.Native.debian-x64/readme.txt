@@ -1,11 +1,11 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Debian x64 v1.1.3
+               README file for LibSass Host Native for Debian x64 v1.1.4
 
    --------------------------------------------------------------------------------
 
-           Copyright (c) 2015-2017 Andrey Taritsyn - http://www.taritsyn.ru
+           Copyright (c) 2015-2018 Andrey Taritsyn - http://www.taritsyn.ru
 
 
    ===========
@@ -17,7 +17,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.4.7.
+   Added support of LibSass version 3.4.8.
 
    ============
    PROJECT SITE
