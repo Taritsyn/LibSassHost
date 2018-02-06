@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost.Native.osx-x64</id>
-		<version>1.1.4</version>
+		<version>1.1.5</version>
 		<title>LibSass Host Native for OS X (x64)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
@@ -11,10 +11,10 @@
 		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.4.8 for OS X (x64).
+		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.4.9 for OS X (x64).
 
 This package is only compatible with .NET Core.</description>
-		<releaseNotes>Added support of LibSass version 3.4.8.</releaseNotes>
+		<releaseNotes>Added support of LibSass version 3.4.9.</releaseNotes>
 		<copyright>Copyright © 2015-2018 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS macOS OSX x64</tags>
