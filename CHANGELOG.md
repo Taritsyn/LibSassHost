@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.1.5 - February 6, 2018
+ * Added support of LibSass version 3.4.9
+
 ## v1.1.4 - January 12, 2018
  * Added support of LibSass version 3.4.8
 
