@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost.Native.debian-x64</id>
-		<version>1.1.5</version>
+		<version>1.1.6</version>
 		<title>LibSass Host Native for Debian (x64)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
@@ -12,7 +12,7 @@
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This package is deprecated. Instead, it is recommended to use a 'LibSassHost.Native.linux-x64' package.</description>
-		<releaseNotes>Added support of LibSass version 3.4.9.</releaseNotes>
+		<releaseNotes>Added support of LibSass version 3.5.0.</releaseNotes>
 		<copyright>Copyright © 2015-2018 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Debian Ubuntu LinuxMint x64</tags>

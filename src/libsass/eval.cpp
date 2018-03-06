@@ -355,7 +355,7 @@ namespace Sass {
       Sass_Function_Fn c_func = sass_function_get_function(c_function);
 
       To_C to_c;
-      union Sass_Value* c_args = sass_make_list(1, SASS_COMMA);
+      union Sass_Value* c_args = sass_make_list(1, SASS_COMMA, false);
       sass_list_set_value(c_args, 0, message->perform(&to_c));
       union Sass_Value* c_val = c_func(c_args, c_function, ctx.c_compiler);
       ctx.c_options.output_style = outstyle;
@@ -402,7 +402,7 @@ namespace Sass {
       Sass_Function_Fn c_func = sass_function_get_function(c_function);
 
       To_C to_c;
-      union Sass_Value* c_args = sass_make_list(1, SASS_COMMA);
+      union Sass_Value* c_args = sass_make_list(1, SASS_COMMA, false);
       sass_list_set_value(c_args, 0, message->perform(&to_c));
       union Sass_Value* c_val = c_func(c_args, c_function, ctx.c_compiler);
       ctx.c_options.output_style = outstyle;
@@ -446,7 +446,7 @@ namespace Sass {
       Sass_Function_Fn c_func = sass_function_get_function(c_function);
 
       To_C to_c;
-      union Sass_Value* c_args = sass_make_list(1, SASS_COMMA);
+      union Sass_Value* c_args = sass_make_list(1, SASS_COMMA, false);
       sass_list_set_value(c_args, 0, message->perform(&to_c));
       union Sass_Value* c_val = c_func(c_args, c_function, ctx.c_compiler);
       ctx.c_options.output_style = outstyle;
@@ -498,7 +498,8 @@ namespace Sass {
                                l->pstate(),
                                l->length(),
                                l->separator(),
-                               l->is_arglist());
+                               l->is_arglist(),
+                               l->is_bracketed());
     for (size_t i = 0, L = l->length(); i < L; ++i) {
       ll->append((*l)[i]->perform(this));
     }
@@ -841,10 +842,10 @@ namespace Sass {
         if (op_type == Sass_OP::SUB) interpolant = false;
         // if (op_type == Sass_OP::DIV) interpolant = true;
         // check for type violations
-        if (l_type == Expression::MAP) {
+        if (l_type == Expression::MAP || l_type == Expression::FUNCTION_VAL) {
           throw Exception::InvalidValue(*v_l);
         }
-        if (r_type == Expression::MAP) {
+        if (r_type == Expression::MAP || l_type == Expression::FUNCTION_VAL) {
           throw Exception::InvalidValue(*v_r);
         }
         Value_Ptr ex = op_strings(b->op(), *v_l, *v_r, ctx.c_options, pstate, !interpolant); // pass true to compress
@@ -1004,6 +1005,8 @@ namespace Sass {
     }
     Definition_Ptr def = Cast<Definition>((*env)[full_name]);
 
+    if (c->func()) def = c->func()->definition();
+
     if (def->is_overload_stub()) {
       std::stringstream ss;
       size_t L = args->length();
@@ -1025,6 +1028,8 @@ namespace Sass {
     Block_Obj          body   = def->block();
     Native_Function func   = def->native_function();
     Sass_Function_Entry c_function = def->c_function();
+
+    if (c->is_css()) return result.detach();
 
     Parameters_Obj params = def->parameters();
     Env fn_env(def->environment());
@@ -1085,7 +1090,7 @@ namespace Sass {
       });
 
       To_C to_c;
-      union Sass_Value* c_args = sass_make_list(params->length(), SASS_COMMA);
+      union Sass_Value* c_args = sass_make_list(params->length(), SASS_COMMA, false);
       for(size_t i = 0; i < params->length(); i++) {
         Parameter_Obj param = params->at(i);
         std::string key = param->name();
@@ -1177,7 +1182,9 @@ namespace Sass {
       ex = ll;
     }
     if (Number_Ptr nr = Cast<Number>(ex)) {
-      if (!nr->is_valid_css_unit()) {
+      Number reduced(nr);
+      reduced.reduce();
+      if (!reduced.is_valid_css_unit()) {
         throw Exception::InvalidValue(*nr);
       }
     }
@@ -1762,6 +1769,7 @@ namespace Sass {
         for (size_t i = 0, L = sass_list_get_length(v); i < L; ++i) {
           l->append(cval_to_astnode(sass_list_get_value(v, i), backtrace, pstate));
         }
+        l->is_bracketed(sass_list_get_is_bracketed(v));
         e = l;
       } break;
       case SASS_MAP: {

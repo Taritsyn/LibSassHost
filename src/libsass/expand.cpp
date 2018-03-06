@@ -265,6 +265,7 @@ namespace Sass {
                                         new_p,
                                         value,
                                         d->is_important(),
+                                        d->is_custom_property(),
                                         bb);
     decl->tabs(d->tabs());
     return decl;
@@ -679,9 +680,9 @@ namespace Sass {
       d->name() == "url"
     )) {
       deprecated(
-        "Naming a function \"" + d->name() + "\" is disallowed",
+        "Naming a function \"" + d->name() + "\" is disallowed and will be an error in future versions of Sass.",
         "This name conflicts with an existing CSS function with special parse rules.",
-         d->pstate()
+        false, d->pstate()
       );
     }
 
@@ -692,7 +693,6 @@ namespace Sass {
 
   Statement_Ptr Expand::operator()(Mixin_Call_Ptr c)
   {
-
     if (recursions > maxRecursion) {
       throw Exception::StackError(*c);
     }
@@ -743,7 +743,7 @@ namespace Sass {
     Block_Obj trace_block = SASS_MEMORY_NEW(Block, c->pstate());
     Trace_Obj trace = SASS_MEMORY_NEW(Trace, c->pstate(), c->name(), trace_block);
 
-
+    env->set_global("is_in_mixin", bool_true);
     if (Block_Ptr pr = block_stack.back()) {
       trace_block->is_root(pr->is_root());
     }
@@ -756,6 +756,7 @@ namespace Sass {
       if (ith) trace->block()->append(ith);
     }
     block_stack.pop_back();
+    env->del_global("is_in_mixin");
 
     env_stack.pop_back();
     backtrace_stack.pop_back();

@@ -25,6 +25,7 @@ struct Lookahead {
   const char* position;
   bool parsable;
   bool has_interpolants;
+  bool is_custom_property;
 };
 
 namespace Sass {
@@ -32,7 +33,7 @@ namespace Sass {
   class Parser : public ParserState {
   public:
 
-    enum Scope { Root, Mixin, Function, Media, Control, Properties, Rules };
+    enum Scope { Root, Mixin, Function, Media, Control, Properties, Rules, AtRoot };
 
     Context& ctx;
     std::vector<Block_Obj> block_stack;
@@ -46,7 +47,6 @@ namespace Sass {
     ParserState pstate;
     size_t indentation;
     size_t nestings;
-
 
     Token lexed;
 
@@ -267,6 +267,7 @@ namespace Sass {
     bool parse_number_prefix();
     Declaration_Obj parse_declaration();
     Expression_Obj parse_map();
+    Expression_Obj parse_bracket_list();
     Expression_Obj parse_list(bool delayed = false);
     Expression_Obj parse_comma_list(bool delayed = false);
     Expression_Obj parse_space_list();
@@ -285,6 +286,8 @@ namespace Sass {
     String_Obj parse_interpolated_chunk(Token, bool constant = false);
     String_Obj parse_string();
     String_Constant_Obj parse_static_value();
+    String_Schema_Obj parse_css_variable_value(bool top_level = true);
+    String_Schema_Obj parse_css_variable_value_token(bool top_level = true);
     String_Obj parse_ie_property();
     String_Obj parse_ie_keyword_arg();
     String_Schema_Obj parse_value_schema(const char* stop);

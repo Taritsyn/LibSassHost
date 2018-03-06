@@ -310,16 +310,43 @@ namespace Sass {
       "global-variable-shadowing",
       "extend-selector-pseudoclass",
       "at-error",
-      "units-level-3"
+      "units-level-3",
+      "custom-property"
     };
 
     ////////////////
     // RGB FUNCTIONS
     ////////////////
 
+    inline bool special_number(String_Constant_Ptr s) {
+      if (s) {
+        std::string calc("calc(");
+        std::string var("var(");
+        std::string ss(s->value());
+        return std::equal(calc.begin(), calc.end(), ss.begin()) ||
+               std::equal(var.begin(), var.end(), ss.begin());
+      }
+      return false;
+    }
+
     Signature rgb_sig = "rgb($red, $green, $blue)";
     BUILT_IN(rgb)
     {
+      if (
+        special_number(Cast<String_Constant>(env["$red"])) ||
+        special_number(Cast<String_Constant>(env["$green"])) ||
+        special_number(Cast<String_Constant>(env["$blue"]))
+      ) {
+        return SASS_MEMORY_NEW(String_Constant, pstate, "rgb("
+                                                        + env["$red"]->to_string()
+                                                        + ", "
+                                                        + env["$green"]->to_string()
+                                                        + ", "
+                                                        + env["$blue"]->to_string()
+                                                        + ")"
+        );
+      }
+
       return SASS_MEMORY_NEW(Color,
                              pstate,
                              COLOR_NUM("$red"),
@@ -330,6 +357,24 @@ namespace Sass {
     Signature rgba_4_sig = "rgba($red, $green, $blue, $alpha)";
     BUILT_IN(rgba_4)
     {
+      if (
+        special_number(Cast<String_Constant>(env["$red"])) ||
+        special_number(Cast<String_Constant>(env["$green"])) ||
+        special_number(Cast<String_Constant>(env["$blue"])) ||
+        special_number(Cast<String_Constant>(env["$alpha"]))
+      ) {
+        return SASS_MEMORY_NEW(String_Constant, pstate, "rgba("
+                                                        + env["$red"]->to_string()
+                                                        + ", "
+                                                        + env["$green"]->to_string()
+                                                        + ", "
+                                                        + env["$blue"]->to_string()
+                                                        + ", "
+                                                        + env["$alpha"]->to_string()
+                                                        + ")"
+        );
+      }
+
       return SASS_MEMORY_NEW(Color,
                              pstate,
                              COLOR_NUM("$red"),
@@ -341,7 +386,32 @@ namespace Sass {
     Signature rgba_2_sig = "rgba($color, $alpha)";
     BUILT_IN(rgba_2)
     {
+      if (
+        special_number(Cast<String_Constant>(env["$color"]))
+      ) {
+        return SASS_MEMORY_NEW(String_Constant, pstate, "rgba("
+                                                        + env["$color"]->to_string()
+                                                        + ", "
+                                                        + env["$alpha"]->to_string()
+                                                        + ")"
+        );
+      }
+
       Color_Ptr c_arg = ARG("$color", Color);
+
+      if (
+        special_number(Cast<String_Constant>(env["$alpha"]))
+      ) {
+        std::stringstream strm;
+        strm << "rgba("
+                 << (int)c_arg->r() << ", "
+                 << (int)c_arg->g() << ", "
+                 << (int)c_arg->b() << ", "
+                 << env["$alpha"]->to_string()
+             << ")";
+        return SASS_MEMORY_NEW(String_Constant, pstate, strm.str());
+      }
+
       Color_Ptr new_c = SASS_MEMORY_COPY(c_arg);
       new_c->a(ALPHA_NUM("$alpha"));
       new_c->disp("");
@@ -471,6 +541,21 @@ namespace Sass {
     Signature hsl_sig = "hsl($hue, $saturation, $lightness)";
     BUILT_IN(hsl)
     {
+      if (
+        special_number(Cast<String_Constant>(env["$hue"])) ||
+        special_number(Cast<String_Constant>(env["$saturation"])) ||
+        special_number(Cast<String_Constant>(env["$lightness"]))
+      ) {
+        return SASS_MEMORY_NEW(String_Constant, pstate, "hsl("
+                                                        + env["$hue"]->to_string()
+                                                        + ", "
+                                                        + env["$saturation"]->to_string()
+                                                        + ", "
+                                                        + env["$lightness"]->to_string()
+                                                        + ")"
+        );
+      }
+
       return hsla_impl(ARGVAL("$hue"),
                        ARGVAL("$saturation"),
                        ARGVAL("$lightness"),
@@ -482,6 +567,24 @@ namespace Sass {
     Signature hsla_sig = "hsla($hue, $saturation, $lightness, $alpha)";
     BUILT_IN(hsla)
     {
+      if (
+        special_number(Cast<String_Constant>(env["$hue"])) ||
+        special_number(Cast<String_Constant>(env["$saturation"])) ||
+        special_number(Cast<String_Constant>(env["$lightness"])) ||
+        special_number(Cast<String_Constant>(env["$alpha"]))
+      ) {
+        return SASS_MEMORY_NEW(String_Constant, pstate, "hsla("
+                                                        + env["$hue"]->to_string()
+                                                        + ", "
+                                                        + env["$saturation"]->to_string()
+                                                        + ", "
+                                                        + env["$lightness"]->to_string()
+                                                        + ", "
+                                                        + env["$alpha"]->to_string()
+                                                        + ")"
+        );
+      }
+
       return hsla_impl(ARGVAL("$hue"),
                        ARGVAL("$saturation"),
                        ARGVAL("$lightness"),
@@ -676,7 +779,7 @@ namespace Sass {
                        pstate);
     }
 
-    Signature invert_sig = "invert($color)";
+    Signature invert_sig = "invert($color, $weight: 100%)";
     BUILT_IN(invert)
     {
       // CSS3 filter function overload: pass literal through directly
@@ -685,13 +788,15 @@ namespace Sass {
         return SASS_MEMORY_NEW(String_Quoted, pstate, "invert(" + amount->to_string(ctx.c_options) + ")");
       }
 
+      double weight = DARG_U_PRCT("$weight");
       Color_Ptr rgb_color = ARG("$color", Color);
-      return SASS_MEMORY_NEW(Color,
+      Color_Obj inv = SASS_MEMORY_NEW(Color,
                              pstate,
                              255 - rgb_color->r(),
                              255 - rgb_color->g(),
                              255 - rgb_color->b(),
                              rgb_color->a());
+      return colormix(ctx, pstate, inv, rgb_color, weight);
     }
 
     ////////////////////
@@ -1373,7 +1478,7 @@ namespace Sass {
       if (l->empty()) error("argument `$list` of `" + std::string(sig) + "` must not be empty", pstate);
       double index = std::floor(n->value() < 0 ? l->length() + n->value() : n->value() - 1);
       if (index < 0 || index > l->length() - 1) error("index out of bounds for `" + std::string(sig) + "`", pstate);
-      List_Ptr result = SASS_MEMORY_NEW(List, pstate, l->length(), l->separator());
+      List_Ptr result = SASS_MEMORY_NEW(List, pstate, l->length(), l->separator(), false, l->is_bracketed());
       for (size_t i = 0, L = l->length(); i < L; ++i) {
         result->append(((i == index) ? v : (*l)[i]));
       }
@@ -1399,7 +1504,7 @@ namespace Sass {
       return SASS_MEMORY_NEW(Null, pstate);
     }
 
-    Signature join_sig = "join($list1, $list2, $separator: auto)";
+    Signature join_sig = "join($list1, $list2, $separator: auto, $bracketed: auto)";
     BUILT_IN(join)
     {
       Map_Obj m1 = Cast<Map>(env["$list1"]);
@@ -1408,10 +1513,13 @@ namespace Sass {
       List_Obj l2 = Cast<List>(env["$list2"]);
       String_Constant_Obj sep = ARG("$separator", String_Constant);
       enum Sass_Separator sep_val = (l1 ? l1->separator() : SASS_SPACE);
+      Value* bracketed = ARG("$bracketed", Value);
+      bool is_bracketed = (l1 ? l1->is_bracketed() : false);
       if (!l1) {
         l1 = SASS_MEMORY_NEW(List, pstate, 1);
         l1->append(ARG("$list1", Expression));
         sep_val = (l2 ? l2->separator() : SASS_SPACE);
+        is_bracketed = (l2 ? l2->is_bracketed() : false);
       }
       if (!l2) {
         l2 = SASS_MEMORY_NEW(List, pstate, 1);
@@ -1429,7 +1537,12 @@ namespace Sass {
       if (sep_str == "space") sep_val = SASS_SPACE;
       else if (sep_str == "comma") sep_val = SASS_COMMA;
       else if (sep_str != "auto") error("argument `$separator` of `" + std::string(sig) + "` must be `space`, `comma`, or `auto`", pstate);
-      List_Obj result = SASS_MEMORY_NEW(List, pstate, len, sep_val);
+      String_Constant_Obj bracketed_as_str = Cast<String_Constant>(bracketed);
+      bool bracketed_is_auto = bracketed_as_str && unquote(bracketed_as_str->value()) == "auto";
+      if (!bracketed_is_auto) {
+        is_bracketed = !bracketed->is_false();
+      }
+      List_Obj result = SASS_MEMORY_NEW(List, pstate, len, sep_val, false, is_bracketed);
       result->concat(l1);
       result->concat(l2);
       return result.detach();
@@ -1636,7 +1749,7 @@ namespace Sass {
 
     Signature unit_sig = "unit($number)";
     BUILT_IN(unit)
-    { 
+    {
       Number_Obj arg = ARGN("$number");
       std::string str(quote(arg->unit(), '"'));
       return SASS_MEMORY_NEW(String_Quoted, pstate, str);
@@ -1694,9 +1807,14 @@ namespace Sass {
     Signature function_exists_sig = "function-exists($name)";
     BUILT_IN(function_exists)
     {
-      std::string s = Util::normalize_underscores(unquote(ARG("$name", String_Constant)->value()));
+      String_Constant_Ptr ss = Cast<String_Constant>(env["$name"]);
+      if (!ss) {
+        error("$name: " + (env["$name"]->to_string()) + " is not a string for `function-exists'", pstate, backtrace);
+      }
 
-      if(d_env.has_global(s+"[f]")) {
+      std::string name = Util::normalize_underscores(unquote(ss->value()));
+
+      if(d_env.has_global(name+"[f]")) {
         return SASS_MEMORY_NEW(Boolean, pstate, true);
       }
       else {
@@ -1733,7 +1851,20 @@ namespace Sass {
     Signature call_sig = "call($name, $args...)";
     BUILT_IN(call)
     {
-      std::string name = Util::normalize_underscores(unquote(ARG("$name", String_Constant)->value()));
+      std::string name;
+      Function_Ptr ff = Cast<Function>(env["$name"]);
+      String_Constant_Ptr ss = Cast<String_Constant>(env["$name"]);
+
+      if (ss) {
+        name = Util::normalize_underscores(unquote(ss->value()));
+        std::cerr << "DEPRECATION WARNING: ";
+        std::cerr << "Passing a string to call() is deprecated and will be illegal" << std::endl;
+        std::cerr << "in Sass 4.0. Use call(get-function(" + quote(name) + ")) instead." << std::endl;
+        std::cerr << std::endl;
+      } else if (ff) {
+        name = ff->name();
+      }
+
       List_Obj arglist = SASS_MEMORY_COPY(ARG("$args", List));
 
       Arguments_Obj args = SASS_MEMORY_NEW(Arguments, pstate);
@@ -1764,8 +1895,8 @@ namespace Sass {
       Function_Call_Obj func = SASS_MEMORY_NEW(Function_Call, pstate, name, args);
       Expand expand(ctx, &d_env, backtrace, &selector_stack);
       func->via_call(true); // calc invoke is allowed
+      if (ff) func->func(ff);
       return func->perform(&expand.eval);
-
     }
 
     ////////////////////
@@ -2057,6 +2188,54 @@ namespace Sass {
       uint_fast32_t distributed = static_cast<uint_fast32_t>(distributor(rand));
       ss << "u" << std::setfill('0') << std::setw(8) << std::hex << distributed;
       return SASS_MEMORY_NEW(String_Quoted, pstate, ss.str());
+    }
+
+    Signature is_bracketed_sig = "is-bracketed($list)";
+    BUILT_IN(is_bracketed)
+    {
+      Value_Obj value = ARG("$list", Value);
+      List_Obj list = Cast<List>(value);
+      return SASS_MEMORY_NEW(Boolean, pstate, list && list->is_bracketed());
+    }
+
+    Signature content_exists_sig = "content-exists()";
+    BUILT_IN(content_exists)
+    {
+      if (!d_env.has_global("is_in_mixin")) {
+        error("Cannot call content-exists() except within a mixin.", pstate, backtrace);
+      }
+      return SASS_MEMORY_NEW(Boolean, pstate, d_env.has_lexical("@content[m]"));
+    }
+
+    Signature get_function_sig = "get-function($name, $css: false)";
+    BUILT_IN(get_function)
+    {
+      String_Constant_Ptr ss = Cast<String_Constant>(env["$name"]);
+      if (!ss) {
+        error("$name: " + (env["$name"]->to_string()) + " is not a string for `get-function'", pstate, backtrace);
+      }
+
+      std::string name = Util::normalize_underscores(unquote(ss->value()));
+      std::string full_name = name + "[f]";
+
+      Boolean_Obj css = ARG("$css", Boolean);
+      if (!css->is_false()) {
+        Definition_Ptr def = SASS_MEMORY_NEW(Definition,
+                                         pstate,
+                                         name,
+                                         SASS_MEMORY_NEW(Parameters, pstate),
+                                         SASS_MEMORY_NEW(Block, pstate, 0, false),
+                                         Definition::FUNCTION);
+        return SASS_MEMORY_NEW(Function, pstate, def, true);
+      }
+
+
+      if (!d_env.has_global(full_name)) {
+        error("Function not found: " + name, pstate, backtrace);
+      }
+
+      Definition_Ptr def = Cast<Definition>(d_env[full_name]);
+      return SASS_MEMORY_NEW(Function, pstate, def, false);
     }
   }
 }

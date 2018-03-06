@@ -172,6 +172,7 @@ namespace Sass {
       MAP,
       SELECTOR,
       NULL_VAL,
+      FUNCTION_VAL,
       C_WARNING,
       C_ERROR,
       FUNCTION,
@@ -662,19 +663,22 @@ namespace Sass {
     ADD_PROPERTY(String_Obj, property)
     ADD_PROPERTY(Expression_Obj, value)
     ADD_PROPERTY(bool, is_important)
+    ADD_PROPERTY(bool, is_custom_property)
     ADD_PROPERTY(bool, is_indented)
   public:
     Declaration(ParserState pstate,
-                String_Obj prop, Expression_Obj val, bool i = false, Block_Obj b = 0)
-    : Has_Block(pstate, b), property_(prop), value_(val), is_important_(i), is_indented_(false)
+                String_Obj prop, Expression_Obj val, bool i = false, bool c = false, Block_Obj b = 0)
+    : Has_Block(pstate, b), property_(prop), value_(val), is_important_(i), is_custom_property_(c), is_indented_(false)
     { statement_type(DECLARATION); }
     Declaration(const Declaration* ptr)
     : Has_Block(ptr),
       property_(ptr->property_),
       value_(ptr->value_),
       is_important_(ptr->is_important_),
+      is_custom_property_(ptr->is_custom_property_),
       is_indented_(ptr->is_indented_)
     { statement_type(DECLARATION); }
+    virtual bool is_invisible() const;
     ATTACH_AST_OPERATIONS(Declaration)
     ATTACH_OPERATIONS()
   };
@@ -1067,14 +1071,16 @@ namespace Sass {
   private:
     ADD_PROPERTY(enum Sass_Separator, separator)
     ADD_PROPERTY(bool, is_arglist)
+    ADD_PROPERTY(bool, is_bracketed)
     ADD_PROPERTY(bool, from_selector)
   public:
     List(ParserState pstate,
-         size_t size = 0, enum Sass_Separator sep = SASS_SPACE, bool argl = false)
+         size_t size = 0, enum Sass_Separator sep = SASS_SPACE, bool argl = false, bool bracket = false)
     : Value(pstate),
       Vectorized<Expression_Obj>(size),
       separator_(sep),
       is_arglist_(argl),
+      is_bracketed_(bracket),
       from_selector_(false)
     { concrete_type(LIST); }
     List(const List* ptr)
@@ -1082,6 +1088,7 @@ namespace Sass {
       Vectorized<Expression_Obj>(*ptr),
       separator_(ptr->separator_),
       is_arglist_(ptr->is_arglist_),
+      is_bracketed_(ptr->is_bracketed_),
       from_selector_(ptr->from_selector_)
     { concrete_type(LIST); }
     std::string type() const { return is_arglist_ ? "arglist" : "list"; }
@@ -1090,7 +1097,7 @@ namespace Sass {
       return separator() == SASS_SPACE ?
         " " : (compressed ? "," : ", ");
     }
-    bool is_invisible() const { return empty(); }
+    bool is_invisible() const { return empty() && !is_bracketed(); }
     Expression_Obj value_at_index(size_t i);
 
     virtual size_t size() const;
@@ -1099,6 +1106,7 @@ namespace Sass {
     {
       if (hash_ == 0) {
         hash_ = std::hash<std::string>()(sep_string());
+        hash_combine(hash_, std::hash<bool>()(is_bracketed()));
         for (size_t i = 0, L = length(); i < L; ++i)
           hash_combine(hash_, (elements()[i])->hash());
       }
@@ -1433,18 +1441,54 @@ namespace Sass {
     ATTACH_OPERATIONS()
   };
 
+  ////////////////////////////////////////////////////
+  // Function reference.
+  ////////////////////////////////////////////////////
+  class Function : public Value {
+  public:
+    ADD_PROPERTY(Definition_Obj, definition)
+    ADD_PROPERTY(bool, is_css)
+  public:
+    Function(ParserState pstate, Definition_Obj def, bool css)
+    : Value(pstate), definition_(def), is_css_(css)
+    { concrete_type(FUNCTION_VAL); }
+    Function(const Function* ptr)
+    : Value(ptr), definition_(ptr->definition_), is_css_(ptr->is_css_)
+    { concrete_type(FUNCTION_VAL); }
+
+    std::string type() const { return "function"; }
+    static std::string type_name() { return "function"; }
+    bool is_invisible() const { return true; }
+
+    std::string name() {
+      if (definition_) {
+        return definition_->name();
+      }
+      return "";
+    }
+
+    virtual bool operator== (const Expression& rhs) const;
+
+    ATTACH_AST_OPERATIONS(Function)
+    ATTACH_OPERATIONS()
+  };
+
   //////////////////
   // Function calls.
   //////////////////
   class Function_Call : public PreValue {
     HASH_CONSTREF(std::string, name)
     HASH_PROPERTY(Arguments_Obj, arguments)
+    HASH_PROPERTY(Function_Obj, func)
     ADD_PROPERTY(bool, via_call)
     ADD_PROPERTY(void*, cookie)
     size_t hash_;
   public:
     Function_Call(ParserState pstate, std::string n, Arguments_Obj args, void* cookie)
-    : PreValue(pstate), name_(n), arguments_(args), via_call_(false), cookie_(cookie), hash_(0)
+    : PreValue(pstate), name_(n), arguments_(args), func_(0), via_call_(false), cookie_(cookie), hash_(0)
+    { concrete_type(FUNCTION); }
+    Function_Call(ParserState pstate, std::string n, Arguments_Obj args, Function_Obj func)
+    : PreValue(pstate), name_(n), arguments_(args), func_(func), via_call_(false), cookie_(0), hash_(0)
     { concrete_type(FUNCTION); }
     Function_Call(ParserState pstate, std::string n, Arguments_Obj args)
     : PreValue(pstate), name_(n), arguments_(args), via_call_(false), cookie_(0), hash_(0)
@@ -1453,10 +1497,16 @@ namespace Sass {
     : PreValue(ptr),
       name_(ptr->name_),
       arguments_(ptr->arguments_),
+      func_(ptr->func_),
       via_call_(ptr->via_call_),
       cookie_(ptr->cookie_),
       hash_(ptr->hash_)
     { concrete_type(FUNCTION); }
+
+    bool is_css() {
+      if (func_) return func_->is_css();
+      return false;
+    }
 
     virtual bool operator==(const Expression& rhs) const
     {

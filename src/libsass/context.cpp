@@ -91,8 +91,9 @@ namespace Sass {
 
   {
 
-    // add cwd to include paths
-    include_paths.push_back(CWD);
+    // Sass 3.4: The current working directory will no longer be placed onto the Sass load path by default.
+    // If you need the current working directory to be available, set SASS_PATH=. in your shell's environment.
+    // include_paths.push_back(CWD);
 
     // collect more paths from different options
     collect_include_paths(c_options.include_path);
@@ -829,6 +830,7 @@ namespace Sass {
     register_function(ctx, append_sig, append, env);
     register_function(ctx, zip_sig, zip, env);
     register_function(ctx, list_separator_sig, list_separator, env);
+    register_function(ctx, is_bracketed_sig, is_bracketed, env);
     // Map Functions
     register_function(ctx, map_get_sig, map_get, env);
     register_function(ctx, map_merge_sig, map_merge, env);
@@ -848,6 +850,8 @@ namespace Sass {
     register_function(ctx, mixin_exists_sig, mixin_exists, env);
     register_function(ctx, feature_exists_sig, feature_exists, env);
     register_function(ctx, call_sig, call, env);
+    register_function(ctx, content_exists_sig, content_exists, env);
+    register_function(ctx, get_function_sig, get_function, env);
     // Boolean Functions
     register_function(ctx, not_sig, sass_not, env);
     register_function(ctx, if_sig, sass_if, env);

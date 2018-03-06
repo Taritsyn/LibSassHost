@@ -156,7 +156,7 @@ namespace Sass {
             Expression_Ptr item = list->at(list_i);
             if (!item->is_invisible()) all_invisible = false;
           }
-          if (all_invisible) bPrintExpression = false;
+          if (all_invisible && !list->is_bracketed()) bPrintExpression = false;
         }
       }
       // Print if OK
@@ -325,7 +325,7 @@ namespace Sass {
     if (s->can_compress_whitespace() && output_style() == COMPRESSED) {
       value.erase(std::remove_if(value.begin(), value.end(), ::isspace), value.end());
     }
-    if (!in_comment) {
+    if (!in_comment && !in_custom_property) {
       append_token(string_to_output(value), s);
     } else {
       append_token(value, s);

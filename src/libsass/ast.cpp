@@ -1985,6 +1985,7 @@ namespace Sass {
     if (List_Ptr_Const r = Cast<List>(&rhs)) {
       if (length() != r->length()) return false;
       if (separator() != r->separator()) return false;
+      if (is_bracketed() != r->is_bracketed()) return false;
       for (size_t i = 0, L = length(); i < L; ++i) {
         Expression_Obj rv = r->at(i);
         Expression_Obj lv = this->at(i);
@@ -2014,6 +2015,16 @@ namespace Sass {
   bool Null::operator== (const Expression& rhs) const
   {
     return rhs.concrete_type() == NULL_VAL;
+  }
+
+  bool Function::operator== (const Expression& rhs) const
+  {
+    if (Function_Ptr_Const r = Cast<Function>(&rhs)) {
+      Definition_Ptr_Const d1 = Cast<Definition>(definition());
+      Definition_Ptr_Const d2 = Cast<Definition>(r->definition());
+      return d1 && d2 && d1 == d2 && is_css() == r->is_css();
+    }
+    return false;
   }
 
   size_t List::size() const {
@@ -2069,6 +2080,13 @@ namespace Sass {
   std::string String_Constant::inspect() const
   {
     return quote(value_, '*');
+  }
+
+  bool Declaration::is_invisible() const
+  {
+    if (is_custom_property()) return false;
+
+    return !(value_ && value_->concrete_type() != Expression::NULL_VAL);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////
@@ -2151,6 +2169,7 @@ namespace Sass {
   IMPLEMENT_AST_OPERATORS(Custom_Error);
   IMPLEMENT_AST_OPERATORS(List);
   IMPLEMENT_AST_OPERATORS(Map);
+  IMPLEMENT_AST_OPERATORS(Function);
   IMPLEMENT_AST_OPERATORS(Number);
   IMPLEMENT_AST_OPERATORS(Binary_Expression);
   IMPLEMENT_AST_OPERATORS(String_Schema);
@@ -2201,5 +2220,4 @@ namespace Sass {
   IMPLEMENT_AST_OPERATORS(Placeholder_Selector);
   IMPLEMENT_AST_OPERATORS(Definition);
   IMPLEMENT_AST_OPERATORS(Declaration);
-
 }
