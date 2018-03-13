@@ -137,11 +137,11 @@ namespace LibSassHost.Resources
 			get { return GetString("Runtime_SassCompilerNotLoaded"); }
 		}
 
-			private static string GetString(string name)
-			{
-				string value = ResourceManager.GetString(name, _resourceCulture);
+		private static string GetString(string name)
+		{
+			string value = ResourceManager.GetString(name, _resourceCulture);
 
-				return value;
-			}
+			return value;
 		}
 	}
+}
