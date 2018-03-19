@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-              README file for LibSass Host Native for Windows x86 v1.1.7
+              README file for LibSass Host Native for Windows x86 v1.1.8
 
    --------------------------------------------------------------------------------
 
@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of LibSass version 3.5.1 for Windows (x86).
+   implementation of LibSass version 3.5.2 for Windows (x86).
 
    For correct working of the LibSass require the Microsoft Visual C++ 2015
    Redistributable.
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.5.1.
+   Added support of LibSass version 3.5.2.
 
    ====================
    POST-INSTALL ACTIONS

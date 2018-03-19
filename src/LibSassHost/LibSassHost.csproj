@@ -29,7 +29,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
 		<RepositoryUrl>https://github.com/Taritsyn/LibSassHost</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>LibSass;Sass;SCSS;CSS</PackageTags>
-		<PackageReleaseNotes>Added support of LibSass version 3.5.1.</PackageReleaseNotes>
+		<PackageReleaseNotes>Added support of LibSass version 3.5.2.</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>

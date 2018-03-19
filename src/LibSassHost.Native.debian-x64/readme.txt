@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Debian x64 v1.1.7
+               README file for LibSass Host Native for Debian x64 v1.1.8
 
    --------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.5.1.
+   Added support of LibSass version 3.5.2.
 
    ============
    PROJECT SITE
