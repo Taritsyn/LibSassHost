@@ -99,8 +99,7 @@ namespace LibSassHost
 			}
 			catch (DllNotFoundException e)
 			{
-				throw new SassCompilerLoadException(
-					Strings.Runtime_SassCompilerNotLoaded, e);
+				throw new SassCompilerLoadException(Strings.Runtime_SassCompilerNotLoaded, e);
 			}
 		}
 
@@ -119,13 +118,17 @@ namespace LibSassHost
 			if (content == null)
 			{
 				throw new ArgumentNullException(
-					"content", string.Format(Strings.Common_ArgumentIsNull, "content"));
+					nameof(content),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(content))
+				);
 			}
 
 			if (string.IsNullOrWhiteSpace(content))
 			{
 				throw new ArgumentException(
-					string.Format(Strings.Common_ArgumentIsEmpty, "content"), "content");
+					string.Format(Strings.Common_ArgumentIsEmpty, nameof(content)),
+					nameof(content)
+				);
 			}
 
 			return InnerCompile(content, false, null, null, null, options);
@@ -147,13 +150,17 @@ namespace LibSassHost
 			if (content == null)
 			{
 				throw new ArgumentNullException(
-					"content", string.Format(Strings.Common_ArgumentIsNull, "content"));
+					nameof(content),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(content))
+				);
 			}
 
 			if (string.IsNullOrWhiteSpace(content))
 			{
 				throw new ArgumentException(
-					string.Format(Strings.Common_ArgumentIsEmpty, "content"), "content");
+					string.Format(Strings.Common_ArgumentIsEmpty, nameof(content)),
+					nameof(content)
+				);
 			}
 
 			return InnerCompile(content, indentedSyntax, null, null, null, options);
@@ -177,25 +184,33 @@ namespace LibSassHost
 			if (content == null)
 			{
 				throw new ArgumentNullException(
-					"content", string.Format(Strings.Common_ArgumentIsNull, "content"));
+					nameof(content),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(content))
+				);
 			}
 
 			if (inputPath == null)
 			{
 				throw new ArgumentNullException(
-					"inputPath", string.Format(Strings.Common_ArgumentIsNull, "inputPath"));
+					nameof(inputPath),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(inputPath))
+				);
 			}
 
 			if (string.IsNullOrWhiteSpace(content))
 			{
 				throw new ArgumentException(
-					string.Format(Strings.Common_ArgumentIsEmpty, "content"), "content");
+					string.Format(Strings.Common_ArgumentIsEmpty, nameof(content)),
+					nameof(content)
+				);
 			}
 
 			if (string.IsNullOrWhiteSpace(inputPath))
 			{
 				throw new ArgumentException(
-					string.Format(Strings.Common_ArgumentIsEmpty, "inputPath"), "inputPath");
+					string.Format(Strings.Common_ArgumentIsEmpty, nameof(inputPath)),
+					nameof(inputPath)
+				);
 			}
 
 			bool indentedSyntax = GetIndentedSyntax(inputPath);
@@ -235,13 +250,17 @@ namespace LibSassHost
 			if (inputPath == null)
 			{
 				throw new ArgumentNullException(
-					"inputPath", string.Format(Strings.Common_ArgumentIsNull, "inputPath"));
+					nameof(inputPath),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(inputPath))
+				);
 			}
 
 			if (string.IsNullOrWhiteSpace(inputPath))
 			{
 				throw new ArgumentException(
-					string.Format(Strings.Common_ArgumentIsEmpty, "inputPath"), "inputPath");
+					string.Format(Strings.Common_ArgumentIsEmpty, nameof(inputPath)),
+					nameof(inputPath)
+				);
 			}
 
 			var fileContext = new SassFileContext();

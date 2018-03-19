@@ -17,7 +17,7 @@ namespace LibSassHost.Utilities
 		{
 			if (source == null)
 			{
-				throw new ArgumentNullException("source");
+				throw new ArgumentNullException(nameof(source));
 			}
 
 			string result = source.Replace("\t", "".PadRight(tabSize));
@@ -39,7 +39,7 @@ namespace LibSassHost.Utilities
 		{
 			if (source == null)
 			{
-				throw new ArgumentNullException("source");
+				throw new ArgumentNullException(nameof(source));
 			}
 
 			bool isSuccess;

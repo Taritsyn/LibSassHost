@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-using LibSassHost.Helpers;
 using LibSassHost.Resources;
 using LibSassHost.Utilities;
 

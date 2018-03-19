@@ -63,8 +63,10 @@ namespace LibSassHost
 		{
 			if (path == null)
 			{
-				throw new ArgumentNullException("path",
-					string.Format(Strings.Common_ArgumentIsNull, "path"));
+				throw new ArgumentNullException(
+					nameof(path),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(path))
+				);
 			}
 
 			bool result = path.Length >= 2 && path[0].IsAlpha() && path[1] == ':';
@@ -90,8 +92,10 @@ namespace LibSassHost
 		{
 			if (path == null)
 			{
-				throw new ArgumentNullException("path",
-					string.Format(Strings.Common_ArgumentIsNull, "path"));
+				throw new ArgumentNullException(
+					nameof(path),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(path))
+				);
 			}
 
 			bool result = File.Exists(path);
@@ -103,8 +107,10 @@ namespace LibSassHost
 		{
 			if (path == null)
 			{
-				throw new ArgumentNullException("path",
-					string.Format(Strings.Common_ArgumentIsNull, "path"));
+				throw new ArgumentNullException(
+					nameof(path),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(path))
+				);
 			}
 
 			bool result = false;
@@ -152,8 +158,10 @@ namespace LibSassHost
 		{
 			if (path == null)
 			{
-				throw new ArgumentNullException("path",
-					string.Format(Strings.Common_ArgumentIsNull, "path"));
+				throw new ArgumentNullException(
+					nameof(path),
+					string.Format(Strings.Common_ArgumentIsNull, nameof(path))
+				);
 			}
 
 			string content = File.ReadAllText(path);
