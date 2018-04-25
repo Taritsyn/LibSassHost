@@ -172,6 +172,12 @@ And now let's consider in detail properties of the <code title="LibSassHost.Comp
 	</thead>
 	<tbody>
 		<tr valign="top">
+			<td><code>AdditionalImportExtensions</code></td>
+			<td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
+			<td><code>.css</code></td>
+			<td>List of additional <code>@import</code> file extensions.</td>
+		</tr>
+		<tr valign="top">
 			<td><code>IncludePaths</code></td>
 			<td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
 			<td>Empty list</td>

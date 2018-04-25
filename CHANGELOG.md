@@ -1,6 +1,11 @@
 Change log
 ==========
 
+## v1.1.9 - April 25, 2018
+ * Added support of LibSass version 3.5.4
+ * In compilation options was added one new property - `AdditionalImportExtensions` (default `.css`)
+ * In LibSassHost.Native.win-* packages the directories with `win7-*` RIDs was renamed to `win-*`
+
 ## v1.1.8 - March 19, 2018
  * Added support of LibSass version 3.5.2
 
