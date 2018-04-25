@@ -121,6 +121,11 @@ namespace LibSassHost.Internal
 		{
 			SassOptions options = context.Options;
 
+			foreach (string importExtension in options.AdditionalImportExtensions)
+			{
+				Sass_Api.sass_option_push_import_extension(ctx_options, importExtension);
+			}
+
 			Sass_Api.sass_option_set_include_path(ctx_options, options.IncludePath);
 			Sass_Api.sass_option_set_indent(ctx_options, options.Indent);
 			Sass_Api.sass_option_set_input_path(ctx_options, context.InputPath);

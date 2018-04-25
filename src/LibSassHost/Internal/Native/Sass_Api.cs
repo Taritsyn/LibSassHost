@@ -159,6 +159,13 @@ namespace LibSassHost.Internal.Native
 
 		#endregion
 
+		#region Push function for import extenions
+
+		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void sass_option_push_import_extension(Sass_Options options, Utf8_String ext);
+
+		#endregion
+
 		#region Getters for File_Manager properties
 
 		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]

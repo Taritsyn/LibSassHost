@@ -315,6 +315,7 @@ namespace LibSassHost
 			context.IsIndentedSyntaxSource = indentedSyntax;
 			context.Options = new SassOptions
 			{
+				AdditionalImportExtensions = options.AdditionalImportExtensions.ToArray(),
 				IncludePath = string.Join(";", options.IncludePaths),
 				Indent = GetIndentString(options.IndentType, options.IndentWidth),
 				LineFeed = GetLineFeedString(options.LineFeedType),
