@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   1. Added support of LibSass version 3.5.3;
+   1. Added support of LibSass version 3.5.4;
    2. In compilation options was added one new property -
       `AdditionalImportExtensions` (default `.css`).
 

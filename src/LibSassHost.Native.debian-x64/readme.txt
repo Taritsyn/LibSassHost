@@ -17,7 +17,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.5.3.
+   Added support of LibSass version 3.5.4.
 
    ============
    PROJECT SITE

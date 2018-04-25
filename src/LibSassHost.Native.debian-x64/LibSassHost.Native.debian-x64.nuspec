@@ -12,7 +12,7 @@
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This package is deprecated. Instead, it is recommended to use a 'LibSassHost.Native.linux-x64' package.</description>
-		<releaseNotes>Added support of LibSass version 3.5.3.</releaseNotes>
+		<releaseNotes>Added support of LibSass version 3.5.4.</releaseNotes>
 		<copyright>Copyright © 2015-2018 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Debian Ubuntu LinuxMint x64</tags>

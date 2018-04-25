@@ -12,14 +12,14 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of LibSass version 3.5.3 for Linux (x64).
+   implementation of LibSass version 3.5.4 for Linux (x64).
 
    This package is only compatible with .NET Core.
 
    =============
    RELEASE NOTES
    =============
-   Added support of LibSass version 3.5.3.
+   Added support of LibSass version 3.5.4.
 
    ============
    PROJECT SITE

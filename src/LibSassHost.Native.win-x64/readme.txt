@@ -12,7 +12,7 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of LibSass version 3.5.3 for Windows (x64).
+   implementation of LibSass version 3.5.4 for Windows (x64).
 
    For correct working of the LibSass require the Microsoft Visual C++ 2015
    Redistributable.
@@ -20,7 +20,7 @@
    =============
    RELEASE NOTES
    =============
-   1. Added support of LibSass version 3.5.3;
+   1. Added support of LibSass version 3.5.4;
    2. The directory with `win7-x64` RID was renamed to `win-x64`.
 
    ====================
