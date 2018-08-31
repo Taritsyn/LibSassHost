@@ -11,10 +11,9 @@
 	</PropertyGroup>
 
 	<Import Project="../../build/common.props" />
+	<Import Project="../../build/net40-client-target.props" />
 
 	<ItemGroup>
-		<PackageReference Include="MSBuild.Sdk.Extras" Version="1.1.0" PrivateAssets="All" />
-
 		<ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
 	</ItemGroup>
 
@@ -45,7 +44,5 @@
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</None>
 	</ItemGroup>
-
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
 </Project>
