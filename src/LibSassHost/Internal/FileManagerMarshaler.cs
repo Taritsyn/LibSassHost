@@ -63,6 +63,11 @@ namespace LibSassHost.Internal
 
 		public static void UnsetFileManager()
 		{
+			if (!Sass_Api.sass_file_manager_get_is_initialized())
+			{
+				return;
+			}
+
 			Sass_Api.sass_file_manager_set_is_initialized(false);
 			Sass_Api.sass_file_manager_set_supports_conversion_to_absolute_path(false);
 			Sass_Api.sass_file_manager_unset_get_current_directory_delegate();

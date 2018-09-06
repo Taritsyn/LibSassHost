@@ -263,22 +263,12 @@ namespace LibSassHost
 				);
 			}
 
-			var fileContext = new SassFileContext();
-			bool indentedSyntax = GetIndentedSyntax(inputPath);
-
-			BeginCompile(fileContext, indentedSyntax, inputPath, outputPath, sourceMapPath, options);
-
-			try
+			if (_fileManager != null && !_fileManager.FileExists(inputPath))
 			{
-				SassCompilerProxy.CompileFile(fileContext);
-			}
-			catch (FileNotFoundException e)
-			{
-				string filePath = e.FileName;
-				string text = string.Format("File to read not found or unreadable: {0}", filePath);
+				string text = string.Format("File to read not found or unreadable: {0}", inputPath);
 				string message = string.Format("Internal Error: {0}", text);
 
-				throw new SassСompilationException(message, e)
+				throw new SassСompilationException(message)
 				{
 					Status = 3,
 					Text = text,
@@ -289,6 +279,11 @@ namespace LibSassHost
 				};
 			}
 
+			var fileContext = new SassFileContext();
+			bool indentedSyntax = GetIndentedSyntax(inputPath);
+
+			BeginCompile(fileContext, indentedSyntax, inputPath, outputPath, sourceMapPath, options);
+			SassCompilerProxy.CompileFile(fileContext);
 			CompilationResult result = EndCompile(fileContext);
 
 			return result;
