@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.2.0 Beta 1 - September 7, 2018
+ * Fixed a error #30 “Conflict of using multiple sites in one application pool”
+
 ## v1.1.9 - April 25, 2018
  * Added support of LibSass version 3.5.4
  * In compilation options was added one new property - `AdditionalImportExtensions` (default `.css`)
