@@ -26,9 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   1. Added support of LibSass version 3.5.4;
-   2. In compilation options was added one new property -
-      `AdditionalImportExtensions` (default `.css`).
+   Fixed a error #30 “Conflict of using multiple sites in one application pool”.
 
    ============
    PROJECT SITE

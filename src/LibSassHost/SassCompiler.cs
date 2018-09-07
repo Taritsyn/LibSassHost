@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 using LibSassHost.Internal;
 using LibSassHost.Resources;
@@ -36,9 +37,9 @@ namespace LibSassHost
 		private static IFileManager _fileManager;
 
 		/// <summary>
-		/// Synchronizer of file manager
+		/// Instance of mutex
 		/// </summary>
-		private static readonly object _fileManagerSynchronizer = new object();
+		private static Mutex _mutex = new Mutex();
 
 		/// <summary>
 		/// Gets a version of the LibSass library
@@ -61,21 +62,8 @@ namespace LibSassHost
 		/// </summary>
 		public static IFileManager FileManager
 		{
-			get
-			{
-				lock (_fileManagerSynchronizer)
-				{
-					return _fileManager;
-				}
-			}
-			set
-			{
-				lock (_fileManagerSynchronizer)
-				{
-					_fileManager = value;
-					FileManagerMarshaler.SetFileManager(_fileManager);
-				}
-			}
+			get { return _fileManager; }
+			set { _fileManager = value; }
 		}
 
 
@@ -221,14 +209,27 @@ namespace LibSassHost
 		private static CompilationResult InnerCompile(string content, bool indentedSyntax, string inputPath,
 			string outputPath, string sourceMapPath, CompilationOptions options)
 		{
+			CompilationResult result;
 			var dataContext = new SassDataContext
 			{
 				SourceString = content
 			};
 
 			BeginCompile(dataContext, indentedSyntax, inputPath, outputPath, sourceMapPath, options);
-			SassCompilerProxy.Compile(dataContext);
-			CompilationResult result = EndCompile(dataContext);
+
+			try
+			{
+				_mutex.WaitOne();
+				FileManagerMarshaler.SetFileManager(_fileManager);
+				SassCompilerProxy.Compile(dataContext);
+			}
+			finally
+			{
+				FileManagerMarshaler.UnsetFileManager();
+				_mutex.ReleaseMutex();
+			}
+
+			result = EndCompile(dataContext);
 
 			return result;
 		}
@@ -263,7 +264,8 @@ namespace LibSassHost
 				);
 			}
 
-			if (_fileManager != null && !_fileManager.FileExists(inputPath))
+			IFileManager fileManager = _fileManager;
+			if (fileManager != null && !fileManager.FileExists(inputPath))
 			{
 				string text = string.Format("File to read not found or unreadable: {0}", inputPath);
 				string message = string.Format("Internal Error: {0}", text);
@@ -279,12 +281,27 @@ namespace LibSassHost
 				};
 			}
 
+			CompilationResult result;
 			var fileContext = new SassFileContext();
 			bool indentedSyntax = GetIndentedSyntax(inputPath);
 
 			BeginCompile(fileContext, indentedSyntax, inputPath, outputPath, sourceMapPath, options);
-			SassCompilerProxy.CompileFile(fileContext);
-			CompilationResult result = EndCompile(fileContext);
+
+			try
+			{
+				_mutex.WaitOne();
+				FileManagerMarshaler.SetFileManager(fileManager);
+				SassCompilerProxy.CompileFile(fileContext);
+			}
+			finally
+			{
+				FileManagerMarshaler.UnsetFileManager();
+				_mutex.ReleaseMutex();
+			}
+
+			GC.KeepAlive(fileManager);
+
+			result = EndCompile(fileContext);
 
 			return result;
 		}
@@ -330,8 +347,8 @@ namespace LibSassHost
 		private static CompilationResult EndCompile(SassContextBase context)
 		{
 			CompilationResult result;
-
 			SassErrorInfo error = context.Error;
+
 			if (error == null)
 			{
 				result = new CompilationResult

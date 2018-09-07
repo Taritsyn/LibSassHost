@@ -29,8 +29,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
 		<RepositoryUrl>https://github.com/Taritsyn/LibSassHost</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>LibSass;Sass;SCSS;CSS</PackageTags>
-		<PackageReleaseNotes>1. Added support of LibSass version 3.5.4;
-2. In compilation options was added one new property - `AdditionalImportExtensions` (default `.css`).</PackageReleaseNotes>
+		<PackageReleaseNotes>Fixed a error #30 “Conflict of using multiple sites in one application pool”.</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
