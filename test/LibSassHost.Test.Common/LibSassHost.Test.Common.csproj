@@ -4,7 +4,7 @@
 		<Product>LibSass Host: Common Tests</Product>
 		<VersionPrefix>1.1.9</VersionPrefix>
 		<TargetFrameworks>net452;netcoreapp1.0;netcoreapp2.0</TargetFrameworks>
-		<RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.9</RuntimeFrameworkVersion>
+		<RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.13</RuntimeFrameworkVersion>
 		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<IsPackable>false</IsPackable>
