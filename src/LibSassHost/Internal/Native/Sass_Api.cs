@@ -159,17 +159,13 @@ namespace LibSassHost.Internal.Native
 
 		#endregion
 
-		#region Push function for import extenions
-
-		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-		internal static extern void sass_option_push_import_extension(Sass_Options options, Utf8_String ext);
-
-		#endregion
-
 		#region Getters for File_Manager properties
 
 		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 		internal static extern bool sass_file_manager_get_is_initialized();
+
+		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+		internal static extern size_t sass_file_manager_get_id();
 
 		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 		internal static extern bool sass_file_manager_get_supports_conversion_to_absolute_path();
@@ -180,6 +176,9 @@ namespace LibSassHost.Internal.Native
 
 		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 		internal static extern void sass_file_manager_set_is_initialized(bool is_initialized);
+
+		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void sass_file_manager_set_id(size_t id);
 
 		[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 		internal static extern void sass_file_manager_set_supports_conversion_to_absolute_path(

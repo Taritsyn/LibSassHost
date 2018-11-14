@@ -17,9 +17,6 @@
 		<ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">
-	</ItemGroup>
-
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
 		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.0.0" />
 	</ItemGroup>

@@ -8,15 +8,6 @@ namespace LibSassHost
 	public sealed class CompilationOptions
 	{
 		/// <summary>
-		/// Gets or sets a list of additional <code>@import</code> file extensions
-		/// </summary>
-		public IList<string> AdditionalImportExtensions
-		{
-			get;
-			set;
-		}
-
-		/// <summary>
 		/// Gets or sets a list of include paths
 		/// </summary>
 		public IList<string> IncludePaths
@@ -140,10 +131,6 @@ namespace LibSassHost
 		/// </summary>
 		public CompilationOptions()
 		{
-			AdditionalImportExtensions = new List<string>
-			{
-				".css"
-			};
 			IncludePaths = new List<string>();
 			IndentType = IndentType.Space;
 			IndentWidth = 2;

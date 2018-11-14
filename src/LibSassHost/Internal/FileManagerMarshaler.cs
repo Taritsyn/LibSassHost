@@ -22,6 +22,16 @@ namespace LibSassHost.Internal
 		{
 			if (fileManager != null)
 			{
+#if SUPPORT_FILE_MANAGER_ID_GENERATION
+				int previousFileManagerId = Sass_Api.sass_file_manager_get_id();
+				int currentFileManagerId = FileManagerIDGenerator.GenerateID(fileManager);
+
+				if (currentFileManagerId > 0 && previousFileManagerId == currentFileManagerId)
+				{
+					return;
+				}
+
+#endif
 				if (Utils.IsWindows())
 				{
 					_getCurrentDirectoryDelegateUtf16 = fileManager.GetCurrentDirectory;
@@ -53,6 +63,9 @@ namespace LibSassHost.Internal
 
 				Sass_Api.sass_file_manager_set_supports_conversion_to_absolute_path(
 					fileManager.SupportsConversionToAbsolutePath);
+#if SUPPORT_FILE_MANAGER_ID_GENERATION
+				Sass_Api.sass_file_manager_set_id(currentFileManagerId);
+#endif
 				Sass_Api.sass_file_manager_set_is_initialized(true);
 			}
 			else

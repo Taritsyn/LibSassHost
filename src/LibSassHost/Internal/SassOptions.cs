@@ -2,12 +2,6 @@
 {
 	internal sealed class SassOptions
 	{
-		public string[] AdditionalImportExtensions
-		{
-			get;
-			set;
-		}
-
 		public string IncludePath
 		{
 			get;

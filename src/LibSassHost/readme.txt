@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-                  README file for LibSass Host for .Net v1.2.0 Beta 1
+                     README file for LibSass Host for .Net v1.2.0
 
    --------------------------------------------------------------------------------
 
@@ -26,7 +26,10 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a error #30 “Conflict of using multiple sites in one application pool”.
+   1. Added support of the LibSass version 3.5.5;
+   2. From compilation options was removed the `AdditionalImportExtensions`
+      property;
+   3. Fixed a error #30 “Conflict of using multiple sites in one application pool”.
 
    ============
    PROJECT SITE

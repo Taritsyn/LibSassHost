@@ -20,13 +20,4 @@
 		<ProjectReference Include="..\LibSassHost.Test.Common\LibSassHost.Test.Common.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
-	</ItemGroup>
-
 </Project>

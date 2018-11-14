@@ -21,10 +21,12 @@ extern "C" {
 
 // Getters for File_Manager properties
 ADDAPI bool ADDCALL sass_file_manager_get_is_initialized ();
+ADDAPI size_t ADDCALL sass_file_manager_get_id ();
 ADDAPI bool ADDCALL sass_file_manager_get_supports_conversion_to_absolute_path ();
 
 // Setters for File_Manager properties
 ADDAPI void ADDCALL sass_file_manager_set_is_initialized (bool is_initialized);
+ADDAPI void ADDCALL sass_file_manager_set_id (size_t id);
 ADDAPI void ADDCALL sass_file_manager_set_supports_conversion_to_absolute_path (
   bool supports_conversion_to_absolute_path);
 ADDAPI void ADDCALL sass_file_manager_set_get_current_directory_delegate (Func_String del);
