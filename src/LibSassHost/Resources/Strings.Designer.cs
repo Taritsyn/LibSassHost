@@ -82,11 +82,107 @@ namespace LibSassHost.Resources
 		}
 
 		/// <summary>
+		/// Looks up a localized string similar to "See the original error message: “{0}”."
+		/// </summary>
+		public static string Common_SeeOriginalErrorMessage
+		{
+			get { return GetString("Common_SeeOriginalErrorMessage"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "Failed to add the '{0}' directory to the search path used to locate DLLs for the application."
+		/// </summary>
+		public static string Compiler_AddingDirectoryToDllSearchPathFailed
+		{
+			get { return GetString("Compiler_AddingDirectoryToDllSearchPathFailed"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "Most likely it happened, because the '{0}' assembly or one of its dependencies was not found."
+		/// </summary>
+		public static string Compiler_AssemblyNotFound
+		{
+			get { return GetString("Compiler_AssemblyNotFound"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "You can build the '{0}' assembly for the current processor architecture by using following..."
+		/// </summary>
+		public static string Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture
+		{
+			get { return GetString("Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "{0} packages do not support installation under Mono, but you can to install the native assembly..."
+		/// </summary>
+		public static string Compiler_ManualInstallationUnderMonoRequired
+		{
+			get { return GetString("Compiler_ManualInstallationUnderMonoRequired"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "There is no {0} package for the {1} processor architecture."
+		/// </summary>
+		public static string Compiler_NoNuGetPackageForProcessorArchitecture
+		{
+			get { return GetString("Compiler_NoNuGetPackageForProcessorArchitecture"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "Try to install the {0} package via NuGet."
+		/// </summary>
+		public static string Compiler_NuGetPackageInstallationRequired
+		{
+			get { return GetString("Compiler_NuGetPackageInstallationRequired"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "Your operating system is not supported by the engine."
+		/// </summary>
+		public static string Compiler_OperatingSystemNotSupported
+		{
+			get { return GetString("Compiler_OperatingSystemNotSupported"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "During loading of Sass compiler error has occurred."
+		/// </summary>
+		public static string Compiler_SassCompilerNotLoaded
+		{
+			get { return GetString("Compiler_SassCompilerNotLoaded"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "In addition, you still need to install the Microsoft Visual C++ Redistributable for Visual Studio..."
+		/// </summary>
+		public static string Compiler_VcRedist2017InstallationRequired
+		{
+			get { return GetString("Compiler_VcRedist2017InstallationRequired"); }
+		}
+
+		/// <summary>
 		/// Looks up a localized string similar to "Column number"
 		/// </summary>
 		public static string ErrorDetails_ColumnNumber
 		{
 			get { return GetString("ErrorDetails_ColumnNumber"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "Description"
+		/// </summary>
+		public static string ErrorDetails_Description
+		{
+			get { return GetString("ErrorDetails_Description"); }
+		}
+
+		/// <summary>
+		/// Looks up a localized string similar to "Error code"
+		/// </summary>
+		public static string ErrorDetails_ErrorCode
+		{
+			get { return GetString("ErrorDetails_ErrorCode"); }
 		}
 
 		/// <summary>
@@ -119,22 +215,6 @@ namespace LibSassHost.Resources
 		public static string ErrorDetails_SourceFragment
 		{
 			get { return GetString("ErrorDetails_SourceFragment"); }
-		}
-
-		/// <summary>
-		/// Looks up a localized string similar to "Failed to add the '{0}' directory to the search path used to locate DLLs for the application."
-		/// </summary>
-		public static string Runtime_AddingDirectoryToDllSearchPathFailed
-		{
-			get { return GetString("Runtime_AddingDirectoryToDllSearchPathFailed"); }
-		}
-
-		/// <summary>
-		/// Looks up a localized string similar to "During loading of Sass-compiler error has occurred. Most likely it happened, because failed to load..."
-		/// </summary>
-		public static string Runtime_SassCompilerNotLoaded
-		{
-			get { return GetString("Runtime_SassCompilerNotLoaded"); }
 		}
 
 		private static string GetString(string name)

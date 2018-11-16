@@ -26,7 +26,7 @@ namespace LibSassHost.Internal
 
 			try
 			{
-				// Compile Sass-code by using context
+				// Compile Sass code by using context
 				int result = Sass_Api.sass_compile_data_context(data_ctx);
 
 				// Copy resulting fields from unmanaged object to managed
@@ -56,7 +56,7 @@ namespace LibSassHost.Internal
 
 			try
 			{
-				// Compile Sass-file by using context
+				// Compile Sass file by using context
 				int result = Sass_Api.sass_compile_file_context(file_ctx);
 
 				// Copy resulting fields from unmanaged object to managed

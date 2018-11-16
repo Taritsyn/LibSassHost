@@ -1,4 +1,11 @@
-﻿using LibSassHost.Internal.Native;
+﻿#if NET45 || NETSTANDARD
+using System.Runtime.InteropServices;
+
+#endif
+using LibSassHost.Internal.Native;
+#if NET40
+using LibSassHost.Polyfills.System.Runtime.InteropServices;
+#endif
 using LibSassHost.Utilities;
 
 namespace LibSassHost.Internal
@@ -32,7 +39,7 @@ namespace LibSassHost.Internal
 				}
 
 #endif
-				if (Utils.IsWindows())
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 				{
 					_getCurrentDirectoryDelegateUtf16 = fileManager.GetCurrentDirectory;
 					_fileExistsDelegateUtf16 = fileManager.FileExists;
@@ -82,6 +89,9 @@ namespace LibSassHost.Internal
 			}
 
 			Sass_Api.sass_file_manager_set_is_initialized(false);
+#if SUPPORT_FILE_MANAGER_ID_GENERATION
+			Sass_Api.sass_file_manager_set_id(0);
+#endif
 			Sass_Api.sass_file_manager_set_supports_conversion_to_absolute_path(false);
 			Sass_Api.sass_file_manager_unset_get_current_directory_delegate();
 			Sass_Api.sass_file_manager_unset_file_exists_delegate();
@@ -89,7 +99,7 @@ namespace LibSassHost.Internal
 			Sass_Api.sass_file_manager_unset_to_absolute_path_delegate();
 			Sass_Api.sass_file_manager_unset_read_file_delegate();
 
-			if (Utils.IsWindows())
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
 				_getCurrentDirectoryDelegateUtf16 = null;
 				_fileExistsDelegateUtf16 = null;

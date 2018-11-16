@@ -8,6 +8,29 @@ namespace LibSassHost.Utilities
 	internal static class StringExtensions
 	{
 		/// <summary>
+		/// Returns a value indicating whether the specified quoted string occurs within this string
+		/// </summary>
+		/// <param name="source">Instance of <see cref="String"/></param>
+		/// <param name="value">The string without quotes to seek</param>
+		/// <returns>true if the quoted value occurs within this string; otherwise, false</returns>
+		public static bool ContainsQuotedValue(this string source, string value)
+		{
+			if (source == null)
+			{
+				throw new ArgumentNullException(nameof(source));
+			}
+
+			if (value == null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
+			bool result = source.Contains("'" + value + "'") || source.Contains("\"" + value + "\"");
+
+			return result;
+		}
+
+		/// <summary>
 		/// Replaces a tabs by specified number of spaces
 		/// </summary>
 		/// <param name="source">String value</param>

@@ -15,14 +15,9 @@ namespace LibSassHost
 	public sealed class SassСompilationException : SassException
 	{
 		/// <summary>
-		/// Error status
+		/// Error code
 		/// </summary>
-		private int _status;
-
-		/// <summary>
-		/// Error text
-		/// </summary>
-		private string _text = string.Empty;
+		private int _errorCode;
 
 		/// <summary>
 		/// Name of file, where the error occurred
@@ -40,21 +35,42 @@ namespace LibSassHost
 		private int _columnNumber;
 
 		/// <summary>
+		/// Source fragment
+		/// </summary>
+		private string _sourceFragment = string.Empty;
+
+		/// <summary>
+		/// Gets or sets a error code
+		///		1 - normal errors like parsing or <code>eval</code> errors;
+		///		2 - bad allocation error (memory error);
+		///		3 - "untranslated" C++ exception (<code>throw std::exception</code>);
+		///		4 - legacy string exceptions (<code>throw const char*</code> or <code>std::string</code>);
+		///		5 - some other unknown exception.
+		/// </summary>
+		public int ErrorCode
+		{
+			get { return _errorCode; }
+			set { _errorCode = value; }
+		}
+
+		/// <summary>
 		/// Gets or sets a error status
 		/// </summary>
+		[Obsolete("Use a `ErrorCode` property")]
 		public int Status
 		{
-			get { return _status; }
-			set { _status = value; }
+			get { return _errorCode; }
+			set { _errorCode = value; }
 		}
 
 		/// <summary>
 		/// Gets or sets a error text
 		/// </summary>
+		[Obsolete("Use a `Description` property")]
 		public string Text
 		{
-			get { return _text; }
-			set { _text = value; }
+			get { return Description; }
+			set { Description = value; }
 		}
 
 		/// <summary>
@@ -82,6 +98,15 @@ namespace LibSassHost
 		{
 			get { return _columnNumber; }
 			set { _columnNumber = value; }
+		}
+
+		/// <summary>
+		/// Gets or sets a source fragment
+		/// </summary>
+		public string SourceFragment
+		{
+			get { return _sourceFragment; }
+			set { _sourceFragment = value; }
 		}
 
 
@@ -116,11 +141,11 @@ namespace LibSassHost
 		{
 			if (info != null)
 			{
-				_status = info.GetInt32("Status");
-				_text = info.GetString("Text");
+				_errorCode = info.GetInt32("ErrorCode");
 				_file = info.GetString("File");
 				_lineNumber = info.GetInt32("LineNumber");
 				_columnNumber = info.GetInt32("ColumnNumber");
+				_sourceFragment = info.GetString("SourceFragment");
 			}
 		}
 
@@ -141,11 +166,11 @@ namespace LibSassHost
 			}
 
 			base.GetObjectData(info, context);
-			info.AddValue("Status", _status);
-			info.AddValue("Text", _text);
+			info.AddValue("ErrorCode", _errorCode);
 			info.AddValue("File", _file);
 			info.AddValue("LineNumber", _lineNumber);
 			info.AddValue("ColumnNumber", _columnNumber);
+			info.AddValue("SourceFragment", _sourceFragment);
 		}
 
 		#endregion

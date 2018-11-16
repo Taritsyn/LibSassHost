@@ -1,18 +1,38 @@
 ﻿using System;
 #if !NETSTANDARD1_3
 using System.Runtime.Serialization;
+using System.Security.Permissions;
 #endif
+using System.Text;
+
+using LibSassHost.Helpers;
+using LibSassHost.Utilities;
 
 namespace LibSassHost
 {
 	/// <summary>
-	/// The exception that is thrown during the work of Sass-compiler
+	/// The exception that is thrown during the work of Sass compiler
 	/// </summary>
 #if !NETSTANDARD1_3
 	[Serializable]
 #endif
 	public class SassException : Exception
 	{
+		/// <summary>
+		/// Description of error
+		/// </summary>
+		private string _description = string.Empty;
+
+		/// <summary>
+		/// Gets or sets a description of error
+		/// </summary>
+		public string Description
+		{
+			get { return _description; }
+			set { _description = value; }
+		}
+
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SassException"/> class
 		/// with a specified error message
@@ -41,7 +61,75 @@ namespace LibSassHost
 		/// <param name="context">The contextual information about the source or destination</param>
 		protected SassException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
-		{ }
+		{
+			if (info != null)
+			{
+				_description = info.GetString("Description");
+			}
+		}
+
+
+		#region Exception overrides
+
+		/// <summary>
+		/// Populates a <see cref="SerializationInfo"/> with the data needed to serialize the target object
+		/// </summary>
+		/// <param name="info">The <see cref="SerializationInfo"/> to populate with data</param>
+		/// <param name="context">The destination (see <see cref="StreamingContext"/>) for this serialization</param>
+		[SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			if (info == null)
+			{
+				throw new ArgumentNullException(nameof(info));
+			}
+
+			base.GetObjectData(info, context);
+			info.AddValue("Description", _description);
+		}
+
+		#endregion
+
+		#region Object overrides
+
+		/// <summary>
+		/// Returns a string that represents the current exception
+		/// </summary>
+		/// <returns>A string that represents the current exception</returns>
+		public override string ToString()
+		{
+			StringBuilder resultBuilder = StringBuilderPool.GetBuilder();
+			resultBuilder.Append(this.GetType().FullName);
+			resultBuilder.Append(": ");
+			resultBuilder.Append(this.Message);
+
+			string errorDetails = SassErrorHelpers.GenerateErrorDetails(this, true);
+			if (errorDetails.Length > 0)
+			{
+				resultBuilder.AppendLine();
+				resultBuilder.AppendLine();
+				resultBuilder.Append(errorDetails);
+			}
+
+			if (this.InnerException != null)
+			{
+				resultBuilder.Append(" ---> ");
+				resultBuilder.Append(this.InnerException.ToString());
+			}
+
+			if (this.StackTrace != null)
+			{
+				resultBuilder.AppendLine();
+				resultBuilder.AppendLine(this.StackTrace);
+			}
+
+			string result = resultBuilder.ToString();
+			StringBuilderPool.ReleaseBuilder(resultBuilder);
+
+			return result;
+		}
+
+		#endregion
 #endif
 	}
 }

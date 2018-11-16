@@ -126,8 +126,44 @@
   <data name="Common_FileNotExist" xml:space="preserve">
     <value>File '{0}' not exist.</value>
   </data>
+  <data name="Common_SeeOriginalErrorMessage" xml:space="preserve">
+    <value>See the original error message: “{0}”.</value>
+  </data>
+  <data name="Compiler_AddingDirectoryToDllSearchPathFailed" xml:space="preserve">
+    <value>Failed to add the '{0}' directory to the search path used to locate DLLs for the application.</value>
+  </data>
+  <data name="Compiler_AssemblyNotFound" xml:space="preserve">
+    <value>Most likely it happened, because the '{0}' assembly or one of its dependencies was not found.</value>
+  </data>
+  <data name="Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture" xml:space="preserve">
+    <value>You can build the '{0}' assembly for the current processor architecture by using following instructions - {1}.</value>
+  </data>
+  <data name="Compiler_ManualInstallationUnderMonoRequired" xml:space="preserve">
+    <value>{0} packages do not support installation under Mono, but you can to install the native assembly manually ({1}).</value>
+  </data>
+  <data name="Compiler_NoNuGetPackageForProcessorArchitecture" xml:space="preserve">
+    <value>There is no {0} package for the {1} processor architecture.</value>
+  </data>
+  <data name="Compiler_NuGetPackageInstallationRequired" xml:space="preserve">
+    <value>Try to install the {0} package via NuGet.</value>
+  </data>
+  <data name="Compiler_OperatingSystemNotSupported" xml:space="preserve">
+    <value>Your operating system is not supported by the engine.</value>
+  </data>
+  <data name="Compiler_SassCompilerNotLoaded" xml:space="preserve">
+    <value>During loading of Sass compiler error has occurred.</value>
+  </data>
+  <data name="Compiler_VcRedist2017InstallationRequired" xml:space="preserve">
+    <value>In addition, you still need to install the Microsoft Visual C++ Redistributable for Visual Studio 2017 (https://www.visualstudio.com/downloads/#microsoft-visual-c-redistributable-for-visual-studio-2017).</value>
+  </data>
   <data name="ErrorDetails_ColumnNumber" xml:space="preserve">
     <value>Column number</value>
+  </data>
+  <data name="ErrorDetails_Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ErrorDetails_ErrorCode" xml:space="preserve">
+    <value>Error code</value>
   </data>
   <data name="ErrorDetails_File" xml:space="preserve">
     <value>File</value>
@@ -140,18 +176,5 @@
   </data>
   <data name="ErrorDetails_SourceFragment" xml:space="preserve">
     <value>Source fragment</value>
-  </data>
-  <data name="Runtime_AddingDirectoryToDllSearchPathFailed" xml:space="preserve">
-    <value>Failed to add the '{0}' directory to the search path used to locate DLLs for the application.</value>
-  </data>
-  <data name="Runtime_SassCompilerNotLoaded" xml:space="preserve">
-    <value>During loading of Sass-compiler error has occurred.
-
-Most likely it happened, because failed to load the native implementation of the LibSass library. Therefore, you need to choose and install the most appropriate NuGet package(s) for your platform. The following packages are available:
-
-* LibSassHost.Native.win-x86
-* LibSassHost.Native.win-x64
-* LibSassHost.Native.debian-x64
-* LibSassHost.Native.osx-x64</value>
   </data>
 </root>

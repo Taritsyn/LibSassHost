@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace LibSassHost
 {
 	/// <summary>
-	/// The exception that is thrown when a loading of Sass-compiler is failed
+	/// The exception that is thrown when a loading of Sass compiler is failed
 	/// </summary>
 #if !NETSTANDARD1_3
 	[Serializable]

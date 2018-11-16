@@ -1,30 +1,37 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+#if NET45 || NETSTANDARD
+using System.Runtime.InteropServices;
+#endif
+using System.Text;
 using System.Threading;
 
+using LibSassHost.Constants;
+using LibSassHost.Helpers;
 using LibSassHost.Internal;
-using LibSassHost.Resources;
-#if !NETSTANDARD
-using LibSassHost.Utilities;
+#if NET40
+using LibSassHost.Polyfills.System.Runtime.InteropServices;
 #endif
+using LibSassHost.Resources;
+using LibSassHost.Utilities;
 
 namespace LibSassHost
 {
 	/// <summary>
-	/// Sass-compiler
+	/// Sass compiler
 	/// </summary>
 	public static class SassCompiler
 	{
 		/// <summary>
 		/// Version of the LibSass library
 		/// </summary>
-		private static readonly string _version;
+		private static string _version;
 
 		/// <summary>
 		/// Version of Sass language
 		/// </summary>
-		private static readonly string _languageVersion;
+		private static string _languageVersion;
 
 		/// <summary>
 		/// Default compilation options
@@ -37,6 +44,16 @@ namespace LibSassHost
 		private static IFileManager _fileManager;
 
 		/// <summary>
+		/// Synchronizer of Sass compiler initialization
+		/// </summary>
+		private static readonly object _initializationSynchronizer = new object();
+
+		/// <summary>
+		/// Flag indicating whether the Sass compiler is initialized
+		/// </summary>
+		private static bool _initialized;
+
+		/// <summary>
 		/// Instance of mutex
 		/// </summary>
 		private static Mutex _mutex = new Mutex();
@@ -46,7 +63,12 @@ namespace LibSassHost
 		/// </summary>
 		public static string Version
 		{
-			get { return _version; }
+			get
+			{
+				Initialize();
+
+				return _version;
+			}
 		}
 
 		/// <summary>
@@ -54,7 +76,12 @@ namespace LibSassHost
 		/// </summary>
 		public static string LanguageVersion
 		{
-			get { return _languageVersion; }
+			get
+			{
+				Initialize();
+
+				return _languageVersion;
+			}
 		}
 
 		/// <summary>
@@ -68,32 +95,55 @@ namespace LibSassHost
 
 
 		/// <summary>
-		/// Static constructor
+		/// Initializes a Sass compiler
 		/// </summary>
-		/// <exception cref="SassCompilerLoadException">Failed to load a Sass-compiler.</exception>
-		static SassCompiler()
+		private static void Initialize()
 		{
-#if !NETSTANDARD
-			if (Utils.IsWindows())
+			if (_initialized)
 			{
-				AssemblyResolver.Initialize();
+				return;
 			}
 
+			lock (_initializationSynchronizer)
+			{
+				if (_initialized)
+				{
+					return;
+				}
+#if !NETSTANDARD
+
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				{
+					try
+					{
+						AssemblyResolver.Initialize();
+					}
+					catch (InvalidOperationException e)
+					{
+						throw SassErrorHelpers.WrapCompilerLoadException(e);
+					}
+				}
 #endif
-			try
-			{
-				_version = SassCompilerProxy.GetVersion();
-				_languageVersion = SassCompilerProxy.GetLanguageVersion();
-			}
-			catch (DllNotFoundException e)
-			{
-				throw new SassCompilerLoadException(Strings.Runtime_SassCompilerNotLoaded, e);
+				try
+				{
+					_version = SassCompilerProxy.GetVersion();
+					_languageVersion = SassCompilerProxy.GetLanguageVersion();
+				}
+				catch (DllNotFoundException e)
+				{
+					throw WrapDllNotFoundException(e);
+				}
+				catch (Exception e)
+				{
+					throw SassErrorHelpers.WrapCompilerLoadException(e, true);
+				}
+
+				_initialized = true;
 			}
 		}
 
-
 		/// <summary>
-		/// "Compiles" a Sass-code to CSS-code
+		/// "Compiles" a Sass code to CSS code
 		/// </summary>
 		/// <param name="content">Text content written on Sass</param>
 		/// <param name="options">Compilation options</param>
@@ -123,7 +173,7 @@ namespace LibSassHost
 		}
 
 		/// <summary>
-		/// "Compiles" a Sass-code to CSS-code
+		/// "Compiles" a Sass code to CSS code
 		/// </summary>
 		/// <param name="content">Text content written on Sass</param>
 		/// <param name="indentedSyntax">Flag for whether to enable Sass Indented Syntax
@@ -155,7 +205,7 @@ namespace LibSassHost
 		}
 
 		/// <summary>
-		/// "Compiles" a Sass-code to CSS-code
+		/// "Compiles" a Sass code to CSS code
 		/// </summary>
 		/// <param name="content">Text content written on Sass</param>
 		/// <param name="inputPath">Path to input file</param>
@@ -209,6 +259,8 @@ namespace LibSassHost
 		private static CompilationResult InnerCompile(string content, bool indentedSyntax, string inputPath,
 			string outputPath, string sourceMapPath, CompilationOptions options)
 		{
+			Initialize();
+
 			CompilationResult result;
 			var dataContext = new SassDataContext
 			{
@@ -237,7 +289,7 @@ namespace LibSassHost
 		}
 
 		/// <summary>
-		/// "Compiles" a Sass-file to CSS-code
+		/// "Compiles" a Sass file to CSS code
 		/// </summary>
 		/// <param name="inputPath">Path to input file</param>
 		/// <param name="outputPath">Path to output file</param>
@@ -266,20 +318,22 @@ namespace LibSassHost
 				);
 			}
 
+			Initialize();
+
 			IFileManager fileManager = _fileManager;
 			if (fileManager != null && !fileManager.FileExists(inputPath))
 			{
-				string text = string.Format("File to read not found or unreadable: {0}", inputPath);
-				string message = string.Format("Internal Error: {0}", text);
+				string description = string.Format("File to read not found or unreadable: {0}", inputPath);
+				string message = string.Format("Internal Error: {0}", description);
 
 				throw new SassСompilationException(message)
 				{
-					Status = 3,
-					Text = text,
+					ErrorCode = 3,
+					Description = description,
 					File = null,
 					LineNumber = -1,
 					ColumnNumber = -1,
-					Source = null
+					SourceFragment = null
 				};
 			}
 
@@ -363,14 +417,21 @@ namespace LibSassHost
 			}
 			else
 			{
-				throw new SassСompilationException(error.Message)
+				string message = error.Message.TrimEnd();
+				string sourceCode = error.Source;
+				int lineNumber = error.Line;
+				int columnNumber = error.Column;
+				string sourceFragment = SourceCodeNavigator.GetSourceFragment(sourceCode,
+					new SourceCodeNodeCoordinates(lineNumber, columnNumber));
+
+				throw new SassСompilationException(message)
 				{
-					Status = error.Status,
-					Text = error.Text,
+					ErrorCode = error.Status,
+					Description = error.Text,
 					File = error.File,
-					LineNumber = error.Line,
-					ColumnNumber = error.Column,
-					Source = error.Source
+					LineNumber = lineNumber,
+					ColumnNumber = columnNumber,
+					SourceFragment = sourceFragment
 				};
 			}
 
@@ -421,6 +482,138 @@ namespace LibSassHost
 			}
 
 			return lineFeed;
+		}
+
+		private static SassCompilerLoadException WrapDllNotFoundException(
+			DllNotFoundException originalDllNotFoundException)
+		{
+			string originalMessage = originalDllNotFoundException.Message;
+			string description;
+			string message;
+			bool isMonoRuntime = Utils.IsMonoRuntime();
+
+			if ((isMonoRuntime && originalMessage == DllName.Universal)
+				|| originalMessage.ContainsQuotedValue(DllName.Universal))
+			{
+				const string buildInstructionsUrl = "https://github.com/Taritsyn/LibSassHost#{0}";
+				const string manualInstallationInstructionsUrl = "https://github.com/Taritsyn/LibSassHost#{0}";
+				Architecture osArchitecture = RuntimeInformation.OSArchitecture;
+
+				StringBuilder descriptionBuilder = StringBuilderPool.GetBuilder();
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				{
+					descriptionBuilder.AppendFormat(Strings.Compiler_AssemblyNotFound, DllName.ForWindows);
+					descriptionBuilder.Append(" ");
+					if (osArchitecture == Architecture.X64 || osArchitecture == Architecture.X86)
+					{
+						descriptionBuilder.AppendFormat(Strings.Compiler_NuGetPackageInstallationRequired,
+							Utils.Is64BitProcess() ?
+								"LibSassHost.Native.win-x64"
+								:
+								"LibSassHost.Native.win-x86"
+						);
+						descriptionBuilder.Append(" ");
+						descriptionBuilder.Append(Strings.Compiler_VcRedist2017InstallationRequired);
+					}
+					else
+					{
+						descriptionBuilder.AppendFormat(Strings.Compiler_NoNuGetPackageForProcessorArchitecture,
+							"LibSassHost.Native.win-*",
+							osArchitecture.ToString().ToLowerInvariant()
+						);
+						descriptionBuilder.Append(" ");
+						descriptionBuilder.AppendFormat(Strings.Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture,
+							DllName.ForWindows,
+							string.Format(buildInstructionsUrl, "windows")
+						);
+					}
+				}
+				else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+				{
+					descriptionBuilder.AppendFormat(Strings.Compiler_AssemblyNotFound, DllName.ForLinux);
+					descriptionBuilder.Append(" ");
+					if (isMonoRuntime)
+					{
+						descriptionBuilder.AppendFormat(Strings.Compiler_ManualInstallationUnderMonoRequired,
+							"LibSassHost.Native.linux-*",
+							string.Format(manualInstallationInstructionsUrl, "linux")
+						);
+					}
+					else
+					{
+						if (osArchitecture == Architecture.X64)
+						{
+							descriptionBuilder.AppendFormat(Strings.Compiler_NuGetPackageInstallationRequired,
+								"LibSassHost.Native.linux-x64");
+						}
+						else
+						{
+							descriptionBuilder.AppendFormat(Strings.Compiler_NoNuGetPackageForProcessorArchitecture,
+								"LibSassHost.Native.linux-*",
+								osArchitecture.ToString().ToLowerInvariant()
+							);
+							descriptionBuilder.Append(" ");
+							descriptionBuilder.AppendFormat(Strings.Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture,
+								DllName.ForLinux,
+								string.Format(buildInstructionsUrl, "linux-1")
+							);
+						}
+					}
+				}
+				else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+				{
+					descriptionBuilder.AppendFormat(Strings.Compiler_AssemblyNotFound, DllName.ForOsx);
+					descriptionBuilder.Append(" ");
+					if (isMonoRuntime)
+					{
+						descriptionBuilder.AppendFormat(Strings.Compiler_ManualInstallationUnderMonoRequired,
+							"LibSassHost.Native.osx-*",
+							string.Format(manualInstallationInstructionsUrl, "os-x")
+						);
+					}
+					else
+					{
+						if (osArchitecture == Architecture.X64)
+						{
+							descriptionBuilder.AppendFormat(Strings.Compiler_NuGetPackageInstallationRequired,
+								"LibSassHost.Native.osx-x64");
+						}
+						else
+						{
+							descriptionBuilder.AppendFormat(Strings.Compiler_NoNuGetPackageForProcessorArchitecture,
+								"LibSassHost.Native.osx-*",
+								osArchitecture.ToString().ToLowerInvariant()
+							);
+							descriptionBuilder.Append(" ");
+							descriptionBuilder.AppendFormat(Strings.Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture,
+								DllName.ForOsx,
+								string.Format(buildInstructionsUrl, "os-x-1")
+							);
+						}
+					}
+				}
+				else
+				{
+					descriptionBuilder.Append(Strings.Compiler_OperatingSystemNotSupported);
+				}
+
+				description = descriptionBuilder.ToString();
+				StringBuilderPool.ReleaseBuilder(descriptionBuilder);
+
+				message = SassErrorHelpers.GenerateCompilerLoadErrorMessage(description);
+			}
+			else
+			{
+				description = originalMessage;
+				message = SassErrorHelpers.GenerateCompilerLoadErrorMessage(description, true);
+			}
+
+			var wrapperEngineLoadException = new SassCompilerLoadException(message, originalDllNotFoundException)
+			{
+				Description = description
+			};
+
+			return wrapperEngineLoadException;
 		}
 	}
 }

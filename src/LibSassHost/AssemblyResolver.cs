@@ -51,7 +51,7 @@ namespace LibSassHost
 			if (!SetDllDirectory(assemblyDirectoryPath))
 			{
 				throw new InvalidOperationException(
-					string.Format(Strings.Runtime_AddingDirectoryToDllSearchPathFailed, assemblyDirectoryPath));
+					string.Format(Strings.Compiler_AddingDirectoryToDllSearchPathFailed, assemblyDirectoryPath));
 			}
 		}
 	}

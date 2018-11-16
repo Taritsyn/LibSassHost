@@ -55,7 +55,7 @@ body {
 					options: options);
 				WriteOutput(result);
 			}
-			catch (SassСompilationException e)
+			catch (SassException e)
 			{
 				WriteError("During compilation of SCSS code an error occurred.", e);
 			}
@@ -74,7 +74,7 @@ body {
 				CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath, options: options);
 				WriteOutput(result);
 			}
-			catch (SassСompilationException e)
+			catch (SassException e)
 			{
 				WriteError("During compilation of SCSS file an error occurred.", e);
 			}
@@ -100,11 +100,21 @@ body {
 			Console.WriteLine();
 		}
 
-		private static void WriteError(string title, SassСompilationException exception)
+		private static void WriteError(string title, SassException exception)
 		{
 			Console.WriteLine("{0} See details:", title);
 			Console.WriteLine();
-			Console.WriteLine(SassErrorHelpers.Format(exception));
+			Console.Write(exception.Message);
+
+			string errorDetails = SassErrorHelpers.GenerateErrorDetails(exception, true);
+			if (errorDetails.Length > 0)
+			{
+				Console.WriteLine();
+				Console.WriteLine();
+				Console.Write(errorDetails);
+			}
+
+			Console.WriteLine();
 			Console.WriteLine();
 		}
 	}

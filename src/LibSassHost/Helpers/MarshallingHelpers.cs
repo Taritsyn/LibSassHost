@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using LibSassHost.Utilities;
+#if NET40
+using LibSassHost.Polyfills.System.Runtime.InteropServices;
+#endif
 
 namespace LibSassHost.Helpers
 {
@@ -22,7 +24,7 @@ namespace LibSassHost.Helpers
 			string processedValue;
 			if (value.Length > 0)
 			{
-				if (Utils.IsWindows())
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 				{
 					byte[] bytes = Encoding.UTF8.GetBytes(value);
 					processedValue = Encoding.GetEncoding(0).GetString(bytes);
@@ -51,7 +53,7 @@ namespace LibSassHost.Helpers
 
 			string result;
 
-			if (Utils.IsWindows())
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
 				var bytes = new List<byte>();
 				int byteIndex = 0;

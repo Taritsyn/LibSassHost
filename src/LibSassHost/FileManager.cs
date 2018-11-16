@@ -1,7 +1,13 @@
 ﻿using System;
 using System.IO;
+#if NET45 || NETSTANDARD
+using System.Runtime.InteropServices;
+#endif
 
 using LibSassHost.Helpers;
+#if NET40
+using LibSassHost.Polyfills.System.Runtime.InteropServices;
+#endif
 using LibSassHost.Resources;
 using LibSassHost.Utilities;
 
@@ -117,7 +123,7 @@ namespace LibSassHost
 
 			if (path.Length > 0)
 			{
-				if (Utils.IsWindows() && PathStartsWithDriveLetter(path))
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && PathStartsWithDriveLetter(path))
 				{
 					return true;
 				}

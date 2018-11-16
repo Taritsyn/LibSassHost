@@ -8,7 +8,7 @@ namespace LibSassHost
 	public sealed class CompilationResult
 	{
 		/// <summary>
-		/// Gets or sets a compilated Sass-code
+		/// Gets or sets a compilated Sass code
 		/// </summary>
 		public string CompiledContent
 		{
