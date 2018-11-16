@@ -37,7 +37,8 @@
    7. In the `SassСompilationException` class the following properties have been
       deprecated: `Status` and `Text`;
    8. `Format` method of the `SassErrorHelpers` class was renamed to the
-      `GenerateErrorDetails`.
+      `GenerateErrorDetails`;
+   9. Added support of .NET Framework 4.7.1.
 
    ============
    PROJECT SITE

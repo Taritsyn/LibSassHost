@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Product>LibSass Host: Common Tests</Product>
 		<VersionPrefix>1.1.9</VersionPrefix>
-		<TargetFrameworks>net452;netcoreapp1.0;netcoreapp2.0</TargetFrameworks>
+		<TargetFrameworks>net452;net471;netcoreapp1.0;netcoreapp2.0</TargetFrameworks>
 		<RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.13</RuntimeFrameworkVersion>
 		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -22,7 +22,7 @@
 		<ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net471' ">
 		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.0.0" />
 	</ItemGroup>
 

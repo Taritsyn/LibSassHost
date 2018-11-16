@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-#if NET45 || NETSTANDARD
+#if NET45 || NET471 || NETSTANDARD
 using System.Runtime.InteropServices;
 #endif
 using System.Text;

@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Product>LibSass Host for .Net</Product>
 		<VersionPrefix>1.2.0</VersionPrefix>
-		<TargetFrameworks>net40-client;net45;netstandard1.3;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net40-client;net45;net471;netstandard1.3;netstandard2.0</TargetFrameworks>
 		<NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.0</NetStandardImplicitPackageVersion>
 		<OutputType>Library</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -36,7 +36,8 @@ This package does not contain the native implementations of LibSass. Therefore, 
 5. In the `SassException` class was added one new property - `Description`;
 6. In the `SassСompilationException` class was added two new properties: `ErrorCode` and `SourceFragment`;
 7. In the `SassСompilationException` class the following properties have been deprecated: `Status` and `Text`;
-8. `Format` method of the `SassErrorHelpers` class was renamed to the `GenerateErrorDetails`.</PackageReleaseNotes>
+8. `Format` method of the `SassErrorHelpers` class was renamed to the `GenerateErrorDetails`;
+9. Added support of .NET Framework 4.7.1.</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -46,7 +47,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
 	<Import Project="../../build/net40-client-target.props" />
 	<Import Project="../../build/nuget-common.props" />
 
-	<PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' Or '$(TargetFramework)' == 'net45' Or '$(TargetFramework)' == 'netstandard2.0' ">
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' Or '$(TargetFramework)' == 'net45' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'netstandard2.0' ">
 		<DefineConstants>$(DefineConstants);SUPPORT_FILE_MANAGER_ID_GENERATION</DefineConstants>
 	</PropertyGroup>
 
