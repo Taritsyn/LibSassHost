@@ -16,7 +16,7 @@ The following packages are available:
  * [LibSassHost.Native.linux-x64](http://nuget.org/packages/LibSassHost.Native.linux-x64/) contains the native assemblies for Linux (x64). Only compatible with .NET Core.
  * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/) contains the native assemblies for OS X (x64). Only compatible with .NET Core.
 
-<sup>* - Requires `api-ms-win-core-*.dll`, `api-ms-win-crt-*.dll`, `concrt140.dll`, `msvcp140.dll`, `ucrtbase.dll` and `vcruntime140.dll` assemblies from the [Microsoft Visual C++ 2015 Redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=53840).<sup>
+<sup>* - Requires `api-ms-win-core-*.dll`, `api-ms-win-crt-*.dll`, `concrt140.dll`, `msvcp140.dll`, `ucrtbase.dll` and `vcruntime140.dll` assemblies from the [Microsoft Visual C++ Redistributable for Visual Studio 2017](https://www.visualstudio.com/downloads/#microsoft-visual-c-redistributable-for-visual-studio-2017).<sup>
 
 If you need support for other operating systems, then you should read the [“Building LibSass”](#building-libsass) section.
 

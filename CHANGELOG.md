@@ -1,6 +1,18 @@
 Change log
 ==========
 
+## v1.2.0 - November 16, 2018
+ * Added support of the LibSass version 3.5.5
+ * Now the LibSass for Windows requires the Microsoft Visual C++ Redistributable for Visual Studio 2017
+ * From compilation options was removed the `AdditionalImportExtensions` property
+ * Fixed a error #30 “Conflict of using multiple sites in one application pool”
+ * Error messages have become more informative
+ * In the `SassException` class was added one new property - `Description`
+ * In the `SassСompilationException` class was added two new properties: `ErrorCode` and `SourceFragment`
+ * In the `SassСompilationException` class the following properties have been deprecated: `Status` and `Text`
+ * `Format` method of the `SassErrorHelpers` class was renamed to the `GenerateErrorDetails`
+ * Added support of .NET Framework 4.7.1
+
 ## v1.2.0 Beta 1 - September 7, 2018
  * Fixed a error #30 “Conflict of using multiple sites in one application pool”
 
