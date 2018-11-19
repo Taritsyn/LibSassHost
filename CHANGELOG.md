@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.2.1 - November 19, 2018
+ * Removed a generation of ID for instance of the file manager
+
 ## v1.2.0 - November 16, 2018
  * Added support of the LibSass version 3.5.5
  * Now the LibSass for Windows requires the Microsoft Visual C++ Redistributable for Visual Studio 2017
