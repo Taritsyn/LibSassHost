@@ -1,0 +1,10 @@
+{
+	"name": "libsasshost.benchmarks",
+	"private": true,
+	"version": "1.2.0",
+	"dependencies": {
+		"@angular/material": "^7.0.4",
+		"bootstrap": "^4.1.3",
+		"foundation-sites": "^6.5.1"
+	}
+}
