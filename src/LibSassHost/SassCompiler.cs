@@ -277,9 +277,7 @@ namespace LibSassHost
 			}
 			finally
 			{
-#if !SUPPORT_FILE_MANAGER_ID_GENERATION
 				FileManagerMarshaler.UnsetFileManager();
-#endif
 				_mutex.ReleaseMutex();
 			}
 
@@ -351,9 +349,7 @@ namespace LibSassHost
 			}
 			finally
 			{
-#if !SUPPORT_FILE_MANAGER_ID_GENERATION
 				FileManagerMarshaler.UnsetFileManager();
-#endif
 				_mutex.ReleaseMutex();
 			}
 
