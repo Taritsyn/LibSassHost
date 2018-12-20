@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-
 #if NET40
-using LibSassHost.Polyfills.System.Runtime.InteropServices;
+
+using PolyfillsForOldDotNet.System.Runtime.InteropServices;
 #endif
 
 namespace LibSassHost.Helpers

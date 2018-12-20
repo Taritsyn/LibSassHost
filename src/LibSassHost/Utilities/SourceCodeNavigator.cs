@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.Text;
 
+using AdvancedStringBuilder;
+
 namespace LibSassHost.Utilities
 {
 	internal static class SourceCodeNavigator
@@ -313,7 +315,8 @@ namespace LibSassHost.Utilities
 				CalculateCutPositions(currentLine, columnNumber, maxFragmentLength,
 					out fragmentStartPosition, out fragmentLength);
 
-				StringBuilder sourceFragmentBuilder = StringBuilderPool.GetBuilder();
+				var stringBuilderPool = StringBuilderPool.Shared;
+				StringBuilder sourceFragmentBuilder = stringBuilderPool.Rent();
 
 				if (currentLine.Length > 0)
 				{
@@ -337,7 +340,7 @@ namespace LibSassHost.Utilities
 				}
 
 				sourceFragment = sourceFragmentBuilder.ToString();
-				StringBuilderPool.ReleaseBuilder(sourceFragmentBuilder);
+				stringBuilderPool.Return(sourceFragmentBuilder);
 			}
 
 			return sourceFragment;

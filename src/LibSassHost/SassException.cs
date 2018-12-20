@@ -5,8 +5,9 @@ using System.Security.Permissions;
 #endif
 using System.Text;
 
+using AdvancedStringBuilder;
+
 using LibSassHost.Helpers;
-using LibSassHost.Utilities;
 
 namespace LibSassHost
 {
@@ -98,12 +99,14 @@ namespace LibSassHost
 		/// <returns>A string that represents the current exception</returns>
 		public override string ToString()
 		{
-			StringBuilder resultBuilder = StringBuilderPool.GetBuilder();
+			string errorDetails = SassErrorHelpers.GenerateErrorDetails(this, true);
+
+			var stringBuilderPool = StringBuilderPool.Shared;
+			StringBuilder resultBuilder = stringBuilderPool.Rent();
 			resultBuilder.Append(this.GetType().FullName);
 			resultBuilder.Append(": ");
 			resultBuilder.Append(this.Message);
 
-			string errorDetails = SassErrorHelpers.GenerateErrorDetails(this, true);
 			if (errorDetails.Length > 0)
 			{
 				resultBuilder.AppendLine();
@@ -124,7 +127,7 @@ namespace LibSassHost
 			}
 
 			string result = resultBuilder.ToString();
-			StringBuilderPool.ReleaseBuilder(resultBuilder);
+			stringBuilderPool.Return(resultBuilder);
 
 			return result;
 		}

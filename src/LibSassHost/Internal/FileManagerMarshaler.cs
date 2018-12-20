@@ -1,12 +1,12 @@
 ﻿#if NET45 || NET471 || NETSTANDARD
 using System.Runtime.InteropServices;
-
 #endif
-using LibSassHost.Internal.Native;
 #if NET40
-using LibSassHost.Polyfills.System.Runtime.InteropServices;
+
+using PolyfillsForOldDotNet.System.Runtime.InteropServices;
 #endif
-using LibSassHost.Utilities;
+
+using LibSassHost.Internal.Native;
 
 namespace LibSassHost.Internal
 {

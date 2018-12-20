@@ -7,12 +7,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
+using AdvancedStringBuilder;
+#if NET40
+using PolyfillsForOldDotNet.System.Runtime.InteropServices;
+#endif
+
 using LibSassHost.Constants;
 using LibSassHost.Helpers;
 using LibSassHost.Internal;
-#if NET40
-using LibSassHost.Polyfills.System.Runtime.InteropServices;
-#endif
 using LibSassHost.Resources;
 using LibSassHost.Utilities;
 
@@ -521,7 +523,8 @@ namespace LibSassHost
 				const string manualInstallationInstructionsUrl = "https://github.com/Taritsyn/LibSassHost#{0}";
 				Architecture osArchitecture = RuntimeInformation.OSArchitecture;
 
-				StringBuilder descriptionBuilder = StringBuilderPool.GetBuilder();
+				var stringBuilderPool = StringBuilderPool.Shared;
+				StringBuilder descriptionBuilder = stringBuilderPool.Rent();
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 				{
 					descriptionBuilder.AppendFormat(Strings.Compiler_AssemblyNotFound, DllName.ForWindows);
@@ -620,7 +623,7 @@ namespace LibSassHost
 				}
 
 				description = descriptionBuilder.ToString();
-				StringBuilderPool.ReleaseBuilder(descriptionBuilder);
+				stringBuilderPool.Return(descriptionBuilder);
 
 				message = SassErrorHelpers.GenerateCompilerLoadErrorMessage(description);
 			}

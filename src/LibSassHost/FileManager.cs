@@ -3,11 +3,12 @@ using System.IO;
 #if NET45 || NET471 || NETSTANDARD
 using System.Runtime.InteropServices;
 #endif
+#if NET40
+
+using PolyfillsForOldDotNet.System.Runtime.InteropServices;
+#endif
 
 using LibSassHost.Helpers;
-#if NET40
-using LibSassHost.Polyfills.System.Runtime.InteropServices;
-#endif
 using LibSassHost.Resources;
 using LibSassHost.Utilities;
 

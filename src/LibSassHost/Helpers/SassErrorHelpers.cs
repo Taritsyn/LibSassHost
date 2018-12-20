@@ -2,8 +2,9 @@
 using System.Globalization;
 using System.Text;
 
+using AdvancedStringBuilder;
+
 using LibSassHost.Resources;
-using LibSassHost.Utilities;
 
 namespace LibSassHost.Helpers
 {
@@ -27,7 +28,8 @@ namespace LibSassHost.Helpers
 
 			if (!string.IsNullOrWhiteSpace(description))
 			{
-				StringBuilder messageBuilder = StringBuilderPool.GetBuilder();
+				var stringBuilderPool = StringBuilderPool.Shared;
+				StringBuilder messageBuilder = stringBuilderPool.Rent();
 				messageBuilder.Append(compilerNotLoadedPart);
 				messageBuilder.Append(" ");
 				if (quoteDescription)
@@ -40,7 +42,7 @@ namespace LibSassHost.Helpers
 				}
 
 				message = messageBuilder.ToString();
-				StringBuilderPool.ReleaseBuilder(messageBuilder);
+				stringBuilderPool.Return(messageBuilder);
 			}
 			else
 			{
@@ -67,7 +69,8 @@ namespace LibSassHost.Helpers
 				throw new ArgumentNullException(nameof(sassException));
 			}
 
-			StringBuilder detailsBuilder = StringBuilderPool.GetBuilder();
+			var stringBuilderPool = StringBuilderPool.Shared;
+			StringBuilder detailsBuilder = stringBuilderPool.Rent();
 			WriteCommonErrorDetails(detailsBuilder, sassException, omitMessage);
 
 			var sassСompilationException = sassException as SassСompilationException;
@@ -79,7 +82,7 @@ namespace LibSassHost.Helpers
 			detailsBuilder.TrimEnd();
 
 			string errorDetails = detailsBuilder.ToString();
-			StringBuilderPool.ReleaseBuilder(detailsBuilder);
+			stringBuilderPool.Return(detailsBuilder);
 
 			return errorDetails;
 		}
@@ -98,14 +101,15 @@ namespace LibSassHost.Helpers
 				throw new ArgumentNullException(nameof(sassСompilationException));
 			}
 
-			StringBuilder detailsBuilder = StringBuilderPool.GetBuilder();
+			var stringBuilderPool = StringBuilderPool.Shared;
+			StringBuilder detailsBuilder = stringBuilderPool.Rent();
 			WriteCommonErrorDetails(detailsBuilder, sassСompilationException, omitMessage);
 			WriteCompilationErrorDetails(detailsBuilder, sassСompilationException);
 
 			detailsBuilder.TrimEnd();
 
 			string errorDetails = detailsBuilder.ToString();
-			StringBuilderPool.ReleaseBuilder(detailsBuilder);
+			stringBuilderPool.Return(detailsBuilder);
 
 			return errorDetails;
 		}
