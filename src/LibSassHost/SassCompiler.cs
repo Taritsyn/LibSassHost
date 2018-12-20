@@ -92,6 +92,27 @@ namespace LibSassHost
 			get { return _fileManager; }
 			set { _fileManager = value; }
 		}
+#if !NETSTANDARD
+
+		/// <summary>
+		/// Static constructor
+		/// </summary>
+		/// <exception cref="SassCompilerLoadException">Failed to load a Sass-compiler.</exception>
+		static SassCompiler()
+		{
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				try
+				{
+					AssemblyResolver.Initialize();
+				}
+				catch (InvalidOperationException e)
+				{
+					throw SassErrorHelpers.WrapCompilerLoadException(e);
+				}
+			}
+		}
+#endif
 
 
 		/// <summary>
@@ -110,20 +131,7 @@ namespace LibSassHost
 				{
 					return;
 				}
-#if !NETSTANDARD
 
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-				{
-					try
-					{
-						AssemblyResolver.Initialize();
-					}
-					catch (InvalidOperationException e)
-					{
-						throw SassErrorHelpers.WrapCompilerLoadException(e);
-					}
-				}
-#endif
 				try
 				{
 					_version = SassCompilerProxy.GetVersion();
@@ -132,6 +140,24 @@ namespace LibSassHost
 				catch (DllNotFoundException e)
 				{
 					throw WrapDllNotFoundException(e);
+				}
+#if NETSTANDARD1_3
+				catch (TypeLoadException e)
+#else
+				catch (EntryPointNotFoundException e)
+#endif
+				{
+					string message = e.Message;
+					if (message.ContainsQuotedValue(DllName.Universal)
+						&& (message.ContainsQuotedValue("libsass_version") || message.ContainsQuotedValue("libsass_language_version")))
+					{
+						_version = "0.0.0";
+						_languageVersion = "0.0";
+					}
+					else
+					{
+						throw SassErrorHelpers.WrapCompilerLoadException(e, true);
+					}
 				}
 				catch (Exception e)
 				{

@@ -26,7 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   Removed a generation of ID for instance of the file manager.
+   An attempt was made to fix a error #26 “"Unable to find an entry point named
+   'libsass_version' in DLL 'libsass'." on Azure Web App”.
 
    ============
    PROJECT SITE

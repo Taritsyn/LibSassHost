@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-using LibSassHost.Internal.Native;
+﻿using LibSassHost.Internal.Native;
 
 namespace LibSassHost.Internal
 {
