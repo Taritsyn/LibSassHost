@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.2.2 - December 20, 2018
+ * An attempt was made to fix a [error #26](https://github.com/Taritsyn/LibSassHost/issues/26) “"Unable to find an entry point named 'libsass_version' in DLL 'libsass'." on Azure Web App”
+ * Part of the auxiliary code was moved to external libraries: [PolyfillsForOldDotNet](https://github.com/Taritsyn/PolyfillsForOldDotNet) and [AdvancedStringBuilder](https://github.com/Taritsyn/AdvancedStringBuilder)
+
 ## v1.2.1 - November 19, 2018
  * Removed a generation of ID for instance of the file manager
 
@@ -8,7 +12,7 @@ Change log
  * Added support of the LibSass version 3.5.5
  * Now the LibSass for Windows requires the Microsoft Visual C++ Redistributable for Visual Studio 2017
  * From compilation options was removed the `AdditionalImportExtensions` property
- * Fixed a error #30 “Conflict of using multiple sites in one application pool”
+ * Fixed a [error #30](https://github.com/Taritsyn/LibSassHost/issues/30) “Conflict of using multiple sites in one application pool”
  * Error messages have become more informative
  * In the `SassException` class was added one new property - `Description`
  * In the `SassСompilationException` class was added two new properties: `ErrorCode` and `SourceFragment`
@@ -17,7 +21,7 @@ Change log
  * Added support of .NET Framework 4.7.1
 
 ## v1.2.0 Beta 1 - September 7, 2018
- * Fixed a error #30 “Conflict of using multiple sites in one application pool”
+ * Fixed a [error #30](https://github.com/Taritsyn/LibSassHost/issues/30) “Conflict of using multiple sites in one application pool”
 
 ## v1.1.9 - April 25, 2018
  * Added support of LibSass version 3.5.4
