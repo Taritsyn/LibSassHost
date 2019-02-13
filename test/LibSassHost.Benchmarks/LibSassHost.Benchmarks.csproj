@@ -12,7 +12,7 @@
 	<Import Project="../../build/common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.11.2" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
 		<PackageReference Include="LibSassHost.Native.win-x64" Version="1.2.0" />
 		<PackageReference Include="LibSassHost.Native.win-x86" Version="1.2.0" />
 
@@ -22,6 +22,29 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
 		<PackageReference Include="LibSassHost.Native.linux-x64" Version="1.2.0" />
 		<PackageReference Include="LibSassHost.Native.osx-x64" Version="1.2.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="node_modules/@angular/material/_theming.scss">
+			<Link>Files/angular-material/%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+		<None Include="node_modules/bootstrap/scss/**/*.scss">
+			<Link>Files/bootstrap/%(RecursiveDir)/%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+		<None Include="node_modules/foundation-sites/_vendor/**/*.scss">
+			<Link>Files/foundation/_vendor/%(RecursiveDir)/%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+		<None Include="node_modules/foundation-sites/scss/**/*.scss">
+			<Link>Files/foundation/scss/%(RecursiveDir)/%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

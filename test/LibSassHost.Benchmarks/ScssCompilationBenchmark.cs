@@ -10,9 +10,9 @@ namespace LibSassHost.Benchmarks
 	{
 		private static readonly Dictionary<string, Document> s_documents = new Dictionary<string, Document>
 		{
-			{ "@angular/material", new Document("@angular/material/_theming.scss") },
-			{ "bootstrap", new Document("bootstrap/scss/bootstrap.scss") },
-			{ "foundation-sites", new Document("foundation-sites/scss/foundation.scss") }
+			{ "angular-material", new Document("angular-material/_theming.scss") },
+			{ "bootstrap", new Document("bootstrap/bootstrap.scss") },
+			{ "foundation", new Document("foundation/scss/foundation.scss") }
 		};
 
 		[ParamsSource(nameof(DocumentNames))]
@@ -21,7 +21,7 @@ namespace LibSassHost.Benchmarks
 
 		static ScssCompilationBenchmark()
 		{
-			Utils.PopulateTestData("../../../node_modules", s_documents);
+			Utils.PopulateTestData("Files", s_documents);
 		}
 
 

@@ -10,7 +10,7 @@
 		<AssemblyOriginatorKeyFile>../../build/Key.snk</AssemblyOriginatorKeyFile>
 		<SignAssembly>true</SignAssembly>
 		<PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-		<NoWarn>$(NoWarn);CS1591</NoWarn>
+		<NoWarn>$(NoWarn);CS1591;NU5125</NoWarn>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Title>$(Product)</Title>
 		<Authors>Andrey Taritsyn</Authors>
