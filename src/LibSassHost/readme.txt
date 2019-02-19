@@ -26,7 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   Improved a performance of the string values marshaling.
+   1. Improved a performance of the string values marshaling;
+   2. Added support of .NET Core App 2.1.
 
    ============
    PROJECT SITE

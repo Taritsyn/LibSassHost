@@ -1,4 +1,4 @@
-﻿#if NET45 || NET471 || NETSTANDARD
+﻿#if NET45 || NET471 || NETSTANDARD || NETCOREAPP2_1
 using System.Runtime.InteropServices;
 #endif
 #if NET40
