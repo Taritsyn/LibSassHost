@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost.Native.win-x86</id>
-		<version>1.2.0</version>
+		<version>1.2.3</version>
 		<title>LibSass Host Native for Windows (x86)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
@@ -14,8 +14,6 @@
 		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.5.5 for Windows (x86).
 
 For correct working of the LibSass require the Microsoft Visual C++ Redistributable for Visual Studio 2017.</description>
-		<releaseNotes>1. Added support of the LibSass version 3.5.5;
-2. Now the LibSass for Windows requires the Microsoft Visual C++ Redistributable for Visual Studio 2017.</releaseNotes>
 		<copyright>Copyright © 2015-2019 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Windows x86</tags>

@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.2.3 - February 19, 2019
+ * Improved a performance of the string values marshaling
+ * Added support of .NET Core App 2.1
+
 ## v1.2.2 - December 20, 2018
  * An attempt was made to fix a [error #26](https://github.com/Taritsyn/LibSassHost/issues/26) “"Unable to find an entry point named 'libsass_version' in DLL 'libsass'." on Azure Web App”
  * Part of the auxiliary code was moved to external libraries: [PolyfillsForOldDotNet](https://github.com/Taritsyn/PolyfillsForOldDotNet) and [AdvancedStringBuilder](https://github.com/Taritsyn/AdvancedStringBuilder)

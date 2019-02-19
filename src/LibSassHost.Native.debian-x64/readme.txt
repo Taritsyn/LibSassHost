@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Debian x64 v1.2.0
+               README file for LibSass Host Native for Debian x64 v1.2.3
 
    --------------------------------------------------------------------------------
 
@@ -13,11 +13,6 @@
    ===========
    This package is deprecated. Instead, it is recommended to use a
    'LibSassHost.Native.linux-x64' package.
-
-   =============
-   RELEASE NOTES
-   =============
-   Added support of the LibSass version 3.5.5.
 
    ============
    PROJECT SITE

@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-              README file for LibSass Host Native for Windows x86 v1.2.0
+              README file for LibSass Host Native for Windows x86 v1.2.3
 
    --------------------------------------------------------------------------------
 
@@ -16,13 +16,6 @@
 
    For correct working of the LibSass require the Microsoft Visual C++
    Redistributable for Visual Studio 2017.
-
-   =============
-   RELEASE NOTES
-   =============
-   1. Added support of the LibSass version 3.5.5;
-   2. Now the LibSass for Windows requires the Microsoft Visual C++ Redistributable
-      for Visual Studio 2017.
 
    ====================
    POST-INSTALL ACTIONS
