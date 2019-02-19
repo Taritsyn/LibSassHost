@@ -6,7 +6,7 @@
 		<title>LibSass Host Native for Windows (x86)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
-		<licenseUrl>https://github.com/Taritsyn/LibSassHost/blob/master/LICENSE.txt</licenseUrl>
+		<license type="file">LICENSE.txt</license>
 		<projectUrl>https://github.com/Taritsyn/LibSassHost</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
@@ -16,7 +16,7 @@
 For correct working of the LibSass require the Microsoft Visual C++ Redistributable for Visual Studio 2017.</description>
 		<releaseNotes>1. Added support of the LibSass version 3.5.5;
 2. Now the LibSass for Windows requires the Microsoft Visual C++ Redistributable for Visual Studio 2017.</releaseNotes>
-		<copyright>Copyright © 2015-2018 Andrey Taritsyn</copyright>
+		<copyright>Copyright © 2015-2019 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Windows x86</tags>
 	</metadata>
@@ -26,6 +26,7 @@ For correct working of the LibSass require the Microsoft Visual C++ Redistributa
 		<file src="tools/Install.ps1" target="tools/" />
 		<file src="tools/Uninstall.ps1" target="tools/" />
 		<file src="readme.txt" />
+		<file src="../../LICENSE.txt" target="LICENSE.txt" />
 		<file src="../libsass/LICENSE.txt" target="libsass-license.txt" />
 	</files>
 </package>
