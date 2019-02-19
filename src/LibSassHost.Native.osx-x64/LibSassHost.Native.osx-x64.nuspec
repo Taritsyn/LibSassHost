@@ -6,7 +6,7 @@
 		<title>LibSass Host Native for OS X (x64)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
-		<licenseUrl>https://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</licenseUrl>
+		<licenseUrl>https://github.com/Taritsyn/LibSassHost/blob/master/LICENSE.txt</licenseUrl>
 		<projectUrl>https://github.com/Taritsyn/LibSassHost</projectUrl>
 		<iconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</iconUrl>
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />

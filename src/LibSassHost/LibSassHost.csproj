@@ -23,7 +23,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
  * LibSassHost.Native.win-x64
  * LibSassHost.Native.linux-x64
  * LibSassHost.Native.osx-x64</Description>
-		<PackageLicenseUrl>https://github.com/Taritsyn/LibSassHost/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageLicenseUrl>https://github.com/Taritsyn/LibSassHost/blob/master/LICENSE.txt</PackageLicenseUrl>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageProjectUrl>https://github.com/Taritsyn/LibSassHost</PackageProjectUrl>
 		<PackageIconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</PackageIconUrl>
