@@ -26,10 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   1. An attempt was made to fix a error #26 “"Unable to find an entry point named
-      'libsass_version' in DLL 'libsass'." on Azure Web App”;
-   2. Part of the auxiliary code was moved to external libraries:
-      PolyfillsForOldDotNet and AdvancedStringBuilder.
+   Improved a performance of the string values marshaling.
 
    ============
    PROJECT SITE

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 using LibSassHost.Constants;
 
@@ -9,6 +10,13 @@ namespace LibSassHost.Internal.Native
 	/// </summary>
 	internal static class Sass_Api
 	{
+		#region Utilities
+
+		[DllImport(DllName.Universal, CallingConvention = CallingConvention.Cdecl)]
+		internal static extern IntPtr sass_alloc_memory(size_t size);
+
+		#endregion
+
 		#region Version information
 
 		[DllImport(DllName.Universal, CallingConvention = CallingConvention.Cdecl)]
@@ -155,7 +163,10 @@ namespace LibSassHost.Internal.Native
 		internal static extern Utf8_String sass_context_get_source_map_string(Sass_Context ctx);
 
 		[DllImport(DllName.Universal, CallingConvention = CallingConvention.Cdecl)]
-		internal static extern Utf8_String_Array sass_context_get_included_files(Sass_Context ctx);
+		internal static extern IntPtr sass_context_get_included_files(Sass_Context ctx);
+
+		[DllImport(DllName.Universal, CallingConvention = CallingConvention.Cdecl)]
+		internal static extern size_t sass_context_get_included_files_size(Sass_Context ctx);
 
 		#endregion
 

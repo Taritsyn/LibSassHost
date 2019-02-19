@@ -1,4 +1,5 @@
-﻿using LibSassHost.Internal.Native;
+﻿using LibSassHost.Helpers;
+using LibSassHost.Internal.Native;
 
 namespace LibSassHost.Internal
 {
@@ -99,7 +100,10 @@ namespace LibSassHost.Internal
 		{
 			context.OutputString = Sass_Api.sass_context_get_output_string(ctx);
 			context.SourceMapString = Sass_Api.sass_context_get_source_map_string(ctx);
-			context.IncludedFiles = Sass_Api.sass_context_get_included_files(ctx);
+			context.IncludedFiles = MarshallingHelpers.PtrToStringArray(
+				Sass_Api.sass_context_get_included_files(ctx),
+				Sass_Api.sass_context_get_included_files_size(ctx)
+			);
 		}
 
 		private static void FillManagedContextError(SassContextBase context, ref Sass_Context ctx)
