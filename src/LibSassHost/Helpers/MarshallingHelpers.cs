@@ -138,7 +138,7 @@ namespace LibSassHost.Helpers
 			return result;
 		}
 
-		public static unsafe string[] PtrToStringArray(IntPtr ptr, int len)
+		public static string[] PtrToStringArray(IntPtr ptr, int len)
 		{
 			if (ptr == IntPtr.Zero)
 			{
