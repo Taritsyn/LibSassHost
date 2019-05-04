@@ -26,8 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   1. Improved a performance of the string values marshaling;
-   2. Added support of .NET Core App 2.1.
+   Removed a deprecated LibSassHost.Native.debian-x64 package.
 
    ============
    PROJECT SITE
