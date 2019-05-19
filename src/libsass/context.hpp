@@ -27,14 +27,14 @@ namespace Sass {
 
   class Context {
   public:
-    void import_url (Import_Ptr imp, std::string load_path, const std::string& ctx_path);
-    bool call_headers(const std::string& load_path, const char* ctx_path, ParserState& pstate, Import_Ptr imp)
+    void import_url (Import* imp, std::string load_path, const std::string& ctx_path);
+    bool call_headers(const std::string& load_path, const char* ctx_path, ParserState& pstate, Import* imp)
     { return call_loader(load_path, ctx_path, pstate, imp, c_headers, false); };
-    bool call_importers(const std::string& load_path, const char* ctx_path, ParserState& pstate, Import_Ptr imp)
+    bool call_importers(const std::string& load_path, const char* ctx_path, ParserState& pstate, Import* imp)
     { return call_loader(load_path, ctx_path, pstate, imp, c_importers, true); };
 
   private:
-    bool call_loader(const std::string& load_path, const char* ctx_path, ParserState& pstate, Import_Ptr imp, std::vector<Sass_Importer_Entry> importers, bool only_one = true);
+    bool call_loader(const std::string& load_path, const char* ctx_path, ParserState& pstate, Import* imp, std::vector<Sass_Importer_Entry> importers, bool only_one = true);
 
   public:
     const std::string CWD;
@@ -46,14 +46,14 @@ namespace Sass {
 
     // generic ast node garbage container
     // used to avoid possible circular refs
-    std::vector<AST_Node_Obj> ast_gc;
+    CallStack ast_gc;
     // resources add under our control
     // these are guaranteed to be freed
     std::vector<char*> strings;
     std::vector<Resource> resources;
     std::map<const std::string, StyleSheet> sheets;
     Subset_Map subset_map;
-    std::vector<Sass_Import_Entry> import_stack;
+    ImporterStack import_stack;
     std::vector<Sass_Callee> callee_stack;
     std::vector<Backtrace> traces;
 

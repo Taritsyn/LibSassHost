@@ -1,12 +1,12 @@
 OS ?= $(shell uname -s)
-CC ?= gcc
-CXX ?= g++
+CC ?= cc
+CXX ?= c++
 RM ?= rm -rf
 MKDIR_P ?= mkdir -p
 CFLAGS ?= -Wall
 CXXFLAGS ?= -Wall
 LDFLAGS ?= -Wall
-ifeq "x$(COVERAGE)" "x"
+ifndef COVERAGE
 	CFLAGS += -O2
 	CXXFLAGS += -O2
 	LDFLAGS += -O2
@@ -17,21 +17,15 @@ else
 endif
 LDFLAGS += -Wl,-undefined,error
 
-CXXFLAGS += -std=c++0x
-LDFLAGS += -std=c++0x
+CXXFLAGS += -std=c++11
+LDFLAGS += -std=c++11
 
 CFLAGS += -I include
 CXXFLAGS += -I include
 
-ifneq ($(EXTRA_CFLAGS),)
-	CFLAGS += $(EXTRA_CFLAGS)
-endif
-ifneq ($(EXTRA_CXXFLAGS),)
-	CXXFLAGS += $(EXTRA_CXXFLAGS)
-endif
-ifneq ($(EXTRA_LDFLAGS),)
-	LDFLAGS += $(EXTRA_LDFLAGS)
-endif
+CFLAGS += $(EXTRA_CFLAGS)
+CXXFLAGS += $(EXTRA_CXXFLAGS)
+LDFLAGS += $(EXTRA_LDFLAGS)
 
 LDLIBS = -lm
 

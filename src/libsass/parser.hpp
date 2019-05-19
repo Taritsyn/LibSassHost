@@ -1,6 +1,8 @@
 #ifndef SASS_PARSER_H
 #define SASS_PARSER_H
 
+#include "sass.hpp"
+
 #include <string>
 #include <vector>
 
@@ -38,7 +40,7 @@ namespace Sass {
     Context& ctx;
     std::vector<Block_Obj> block_stack;
     std::vector<Scope> stack;
-    Media_Block_Ptr last_media_block;
+    Media_Block* last_media_block;
     const char* source;
     const char* position;
     const char* end;
@@ -48,23 +50,24 @@ namespace Sass {
     Backtraces traces;
     size_t indentation;
     size_t nestings;
+    bool allow_parent;
 
     Token lexed;
 
-    Parser(Context& ctx, const ParserState& pstate, Backtraces traces)
+    Parser(Context& ctx, const ParserState& pstate, Backtraces traces, bool allow_parent = true)
     : ParserState(pstate), ctx(ctx), block_stack(), stack(0), last_media_block(),
       source(0), position(0), end(0), before_token(pstate), after_token(pstate),
-      pstate(pstate), traces(traces), indentation(0), nestings(0)
-    { 
+      pstate(pstate), traces(traces), indentation(0), nestings(0), allow_parent(allow_parent)
+    {
       stack.push_back(Scope::Root);
     }
 
     // static Parser from_string(const std::string& src, Context& ctx, ParserState pstate = ParserState("[STRING]"));
-    static Parser from_c_str(const char* src, Context& ctx, Backtraces, ParserState pstate = ParserState("[CSTRING]"), const char* source = 0);
-    static Parser from_c_str(const char* beg, const char* end, Context& ctx, Backtraces, ParserState pstate = ParserState("[CSTRING]"), const char* source = 0);
-    static Parser from_token(Token t, Context& ctx, Backtraces, ParserState pstate = ParserState("[TOKEN]"), const char* source = 0);
+    static Parser from_c_str(const char* src, Context& ctx, Backtraces, ParserState pstate = ParserState("[CSTRING]"), const char* source = nullptr, bool allow_parent = true);
+    static Parser from_c_str(const char* beg, const char* end, Context& ctx, Backtraces, ParserState pstate = ParserState("[CSTRING]"), const char* source = nullptr, bool allow_parent = true);
+    static Parser from_token(Token t, Context& ctx, Backtraces, ParserState pstate = ParserState("[TOKEN]"), const char* source = nullptr);
     // special static parsers to convert strings into certain selectors
-    static Selector_List_Obj parse_selector(const char* src, Context& ctx, Backtraces, ParserState pstate = ParserState("[SELECTOR]"), const char* source = 0);
+    static Selector_List_Obj parse_selector(const char* src, Context& ctx, Backtraces, ParserState pstate = ParserState("[SELECTOR]"), const char* source = nullptr, bool allow_parent = true);
 
 #ifdef __clang__
 
@@ -285,14 +288,13 @@ namespace Sass {
     Expression_Obj parse_value();
     Function_Call_Obj parse_calc_function();
     Function_Call_Obj parse_function_call();
-    Function_Call_Schema_Obj parse_function_call_schema();
+    Function_Call_Obj parse_function_call_schema();
     String_Obj parse_url_function_string();
     String_Obj parse_url_function_argument();
     String_Obj parse_interpolated_chunk(Token, bool constant = false, bool css = true);
     String_Obj parse_string();
     Value_Obj parse_static_value();
-    String_Schema_Obj parse_css_variable_value(bool top_level = true);
-    String_Schema_Obj parse_css_variable_value_token(bool top_level = true);
+    String_Schema_Obj parse_css_variable_value();
     String_Obj parse_ie_property();
     String_Obj parse_ie_keyword_arg();
     String_Schema_Obj parse_value_schema(const char* stop);
@@ -309,12 +311,12 @@ namespace Sass {
     Media_Query_Obj parse_media_query();
     Media_Query_Expression_Obj parse_media_expression();
     Supports_Block_Obj parse_supports_directive();
-    Supports_Condition_Obj parse_supports_condition();
+    Supports_Condition_Obj parse_supports_condition(bool top_level);
     Supports_Condition_Obj parse_supports_negation();
-    Supports_Condition_Obj parse_supports_operator();
+    Supports_Condition_Obj parse_supports_operator(bool top_level);
     Supports_Condition_Obj parse_supports_interpolation();
     Supports_Condition_Obj parse_supports_declaration();
-    Supports_Condition_Obj parse_supports_condition_in_parens();
+    Supports_Condition_Obj parse_supports_condition_in_parens(bool parens_required);
     At_Root_Block_Obj parse_at_root_block();
     At_Root_Query_Obj parse_at_root_query();
     String_Schema_Obj parse_almost_any_value();
@@ -325,7 +327,7 @@ namespace Sass {
     Error_Obj parse_error();
     Debug_Obj parse_debug();
 
-    Value_Ptr color_or_string(const std::string& lexed) const;
+    Value* color_or_string(const std::string& lexed) const;
 
     // be more like ruby sass
     Expression_Obj lex_almost_any_value_token();
@@ -375,19 +377,19 @@ namespace Sass {
           return SASS_MEMORY_NEW(String_Constant, pstate, lexed);
         }
       }
-      return 0;
+      return {};
     }
 
   public:
-    static Number_Ptr lexed_number(const ParserState& pstate, const std::string& parsed);
-    static Number_Ptr lexed_dimension(const ParserState& pstate, const std::string& parsed);
-    static Number_Ptr lexed_percentage(const ParserState& pstate, const std::string& parsed);
-    static Value_Ptr lexed_hex_color(const ParserState& pstate, const std::string& parsed);
+    static Number* lexed_number(const ParserState& pstate, const std::string& parsed);
+    static Number* lexed_dimension(const ParserState& pstate, const std::string& parsed);
+    static Number* lexed_percentage(const ParserState& pstate, const std::string& parsed);
+    static Value* lexed_hex_color(const ParserState& pstate, const std::string& parsed);
   private:
-    Number_Ptr lexed_number(const std::string& parsed) { return lexed_number(pstate, parsed); };
-    Number_Ptr lexed_dimension(const std::string& parsed) { return lexed_dimension(pstate, parsed); };
-    Number_Ptr lexed_percentage(const std::string& parsed) { return lexed_percentage(pstate, parsed); };
-    Value_Ptr lexed_hex_color(const std::string& parsed) { return lexed_hex_color(pstate, parsed); };
+    Number* lexed_number(const std::string& parsed) { return lexed_number(pstate, parsed); };
+    Number* lexed_dimension(const std::string& parsed) { return lexed_dimension(pstate, parsed); };
+    Number* lexed_percentage(const std::string& parsed) { return lexed_percentage(pstate, parsed); };
+    Value* lexed_hex_color(const std::string& parsed) { return lexed_hex_color(pstate, parsed); };
 
     static const char* re_attr_sensitive_close(const char* src);
     static const char* re_attr_insensitive_close(const char* src);

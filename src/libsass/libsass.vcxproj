@@ -5,15 +5,7 @@
     <LIBSASS_HEADERS_DIR>.\</LIBSASS_HEADERS_DIR>
     <LIBSASS_INCLUDES_DIR>.\include</LIBSASS_INCLUDES_DIR>
   </PropertyGroup>
-  <Target Name="VersionMacros">
-    <ItemGroup>
-      <ClCompile>
-        <PreprocessorDefinitions>%(PreprocessorDefinitions);</PreprocessorDefinitions>
-      </ClCompile>
-    </ItemGroup>
-  </Target>
   <Target Name="Main">
-    <CallTarget Targets="VersionMacros" />
     <CallTarget Targets="Build" />
   </Target>
   <ItemGroup Label="ProjectConfigurations">

@@ -1,4 +1,7 @@
+// sass.hpp must go before all system headers to get the
+// __EXTENSIONS__ fix on Solaris.
 #include "sass.hpp"
+
 #include <vector>
 
 #include "node.hpp"
@@ -17,8 +20,8 @@ namespace Sass {
   Node Node::createSelector(const Complex_Selector& pSelector) {
     NodeDequePtr null;
 
-    Complex_Selector_Ptr pStripped = SASS_MEMORY_COPY(&pSelector);
-    pStripped->tail(NULL);
+    Complex_Selector* pStripped = SASS_MEMORY_COPY(&pSelector);
+    pStripped->tail({});
     pStripped->combinator(Complex_Selector::ANCESTOR_OF);
 
     Node n(SELECTOR, Complex_Selector::ANCESTOR_OF, pStripped, null /*pCollection*/);
@@ -45,7 +48,7 @@ namespace Sass {
   }
 
 
-  Node::Node(const TYPE& type, Complex_Selector::Combinator combinator, Complex_Selector_Ptr pSelector, NodeDequePtr& pCollection)
+  Node::Node(const TYPE& type, Complex_Selector::Combinator combinator, Complex_Selector* pSelector, NodeDequePtr& pCollection)
   : got_line_feed(false), mType(type), mCombinator(combinator), mpSelector(pSelector), mpCollection(pCollection)
   { if (pSelector) got_line_feed = pSelector->has_line_feed(); }
 
@@ -172,7 +175,7 @@ namespace Sass {
 #endif
 
 
-  Node complexSelectorToNode(Complex_Selector_Ptr pToConvert) {
+  Node complexSelectorToNode(Complex_Selector* pToConvert) {
     if (pToConvert == NULL) {
       return Node::createNil();
     }
@@ -220,21 +223,21 @@ namespace Sass {
   }
 
 
-  Complex_Selector_Ptr nodeToComplexSelector(const Node& toConvert) {
+  Complex_Selector* nodeToComplexSelector(const Node& toConvert) {
     if (toConvert.isNil()) {
       return NULL;
     }
 
 
     if (!toConvert.isCollection()) {
-      throw "The node to convert to a Complex_Selector_Ptr must be a collection type or nil.";
+      throw "The node to convert to a Complex_Selector* must be a collection type or nil.";
     }
 
 
     NodeDeque& childNodes = *toConvert.collection();
 
     std::string noPath("");
-    Complex_Selector_Obj pFirst = SASS_MEMORY_NEW(Complex_Selector, ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, NULL, NULL);
+    Complex_Selector_Obj pFirst = SASS_MEMORY_NEW(Complex_Selector, ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, {}, {});
 
     Complex_Selector_Obj pCurrent = pFirst;
 
@@ -259,7 +262,7 @@ namespace Sass {
         if (childIter+1 != childIterEnd) {
           Node& nextNode = *(childIter+1);
           if (nextNode.isCombinator()) {
-            pCurrent->tail(SASS_MEMORY_NEW(Complex_Selector, ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, NULL, NULL));
+            pCurrent->tail(SASS_MEMORY_NEW(Complex_Selector, ParserState("[NODE]"), Complex_Selector::ANCESTOR_OF, {}, {}));
             if (nextNode.got_line_feed) pCurrent->tail()->has_line_feed(nextNode.got_line_feed);
             pCurrent = pCurrent->tail();
           }
@@ -270,8 +273,8 @@ namespace Sass {
     }
 
     // Put the dummy Compound_Selector in the first position, for consistency with the rest of libsass
-    Compound_Selector_Ptr fakeHead = SASS_MEMORY_NEW(Compound_Selector, ParserState("[NODE]"), 1);
-    Parent_Selector_Ptr selectorRef = SASS_MEMORY_NEW(Parent_Selector, ParserState("[NODE]"));
+    Compound_Selector* fakeHead = SASS_MEMORY_NEW(Compound_Selector, ParserState("[NODE]"), 1);
+    Parent_Selector* selectorRef = SASS_MEMORY_NEW(Parent_Selector, ParserState("[NODE]"));
     fakeHead->elements().push_back(selectorRef);
     if (toConvert.got_line_feed) pFirst->has_line_feed(toConvert.got_line_feed);
     // pFirst->has_line_feed(pFirst->has_line_feed() || pFirst->tail()->has_line_feed() || toConvert.got_line_feed);

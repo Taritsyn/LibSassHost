@@ -1,4 +1,7 @@
+// sass.hpp must go before all system headers to get the
+// __EXTENSIONS__ fix on Solaris.
 #include "sass.hpp"
+
 #include <iostream>
 #include <typeinfo>
 
@@ -16,7 +19,7 @@ namespace Sass {
   // simple endless recursion protection
   const size_t maxRecursion = 500;
 
-  Expand::Expand(Context& ctx, Env* env, std::vector<Selector_List_Obj>* stack)
+  Expand::Expand(Context& ctx, Env* env, SelectorStack* stack)
   : ctx(ctx),
     traces(ctx.traces),
     eval(Eval(*this)),
@@ -24,19 +27,19 @@ namespace Sass {
     in_keyframes(false),
     at_root_without_rule(false),
     old_at_root_without_rule(false),
-    env_stack(std::vector<Env*>()),
-    block_stack(std::vector<Block_Ptr>()),
-    call_stack(std::vector<AST_Node_Obj>()),
-    selector_stack(std::vector<Selector_List_Obj>()),
-    media_block_stack(std::vector<Media_Block_Ptr>())
+    env_stack(EnvStack()),
+    block_stack(BlockStack()),
+    call_stack(CallStack()),
+    selector_stack(SelectorStack()),
+    media_stack(MediaStack())
   {
-    env_stack.push_back(0);
+    env_stack.push_back(nullptr);
     env_stack.push_back(env);
-    block_stack.push_back(0);
-    call_stack.push_back(0);
-    if (stack == NULL) { selector_stack.push_back(0); }
+    block_stack.push_back(nullptr);
+    call_stack.push_back({});
+    if (stack == NULL) { selector_stack.push_back({}); }
     else { selector_stack.insert(selector_stack.end(), stack->begin(), stack->end()); }
-    media_block_stack.push_back(0);
+    media_stack.push_back(nullptr);
   }
 
   Env* Expand::environment()
@@ -50,11 +53,11 @@ namespace Sass {
   {
     if (selector_stack.size() > 0)
       return selector_stack.back();
-    return 0;
+    return {};
   }
 
   // blocks create new variable scopes
-  Block_Ptr Expand::operator()(Block_Ptr b)
+  Block* Expand::operator()(Block* b)
   {
     // create new local environment
     // set the current env as parent
@@ -77,16 +80,16 @@ namespace Sass {
     return bb.detach();
   }
 
-  Statement_Ptr Expand::operator()(Ruleset_Ptr r)
+  Statement* Expand::operator()(Ruleset* r)
   {
     LOCAL_FLAG(old_at_root_without_rule, at_root_without_rule);
 
     if (in_keyframes) {
-      Block_Ptr bb = operator()(r->block());
+      Block* bb = operator()(r->block());
       Keyframe_Rule_Obj k = SASS_MEMORY_NEW(Keyframe_Rule, r->pstate(), bb);
       if (r->selector()) {
-        if (Selector_List_Ptr s = r->selector()) {
-          selector_stack.push_back(0);
+        if (Selector_List* s = r->selector()) {
+          selector_stack.push_back({});
           k->name(s->eval(eval));
           selector_stack.pop_back();
         }
@@ -109,12 +112,12 @@ namespace Sass {
 
     // check for parent selectors in base level rules
     if (r->is_root() || (block_stack.back() && block_stack.back()->is_root())) {
-      if (Selector_List_Ptr selector_list = Cast<Selector_List>(r->selector())) {
+      if (Selector_List* selector_list = Cast<Selector_List>(r->selector())) {
         for (Complex_Selector_Obj complex_selector : selector_list->elements()) {
-          Complex_Selector_Ptr tail = complex_selector;
+          Complex_Selector* tail = complex_selector;
           while (tail) {
             if (tail->head()) for (Simple_Selector_Obj header : tail->head()->elements()) {
-              Parent_Selector_Ptr ptr = Cast<Parent_Selector>(header);
+              Parent_Selector* ptr = Cast<Parent_Selector>(header);
               if (ptr == NULL || (!ptr->real() || has_parent_selector)) continue;
               std::string sel_str(complex_selector->to_string(ctx.c_options));
               error("Base-level rules cannot contain the parent-selector-referencing character '&'.", header->pstate(), traces);
@@ -139,10 +142,10 @@ namespace Sass {
     if (block_stack.back()->is_root()) {
       env_stack.push_back(&env);
     }
-    sel->set_media_block(media_block_stack.back());
-    Block_Obj blk = 0;
+    sel->set_media_block(media_stack.back());
+    Block_Obj blk;
     if (r->block()) blk = operator()(r->block());
-    Ruleset_Ptr rr = SASS_MEMORY_NEW(Ruleset,
+    Ruleset* rr = SASS_MEMORY_NEW(Ruleset,
                                   r->pstate(),
                                   sel,
                                   blk);
@@ -157,7 +160,7 @@ namespace Sass {
     return rr;
   }
 
-  Statement_Ptr Expand::operator()(Supports_Block_Ptr f)
+  Statement* Expand::operator()(Supports_Block* f)
   {
     Expression_Obj condition = f->condition()->perform(&eval);
     Supports_Block_Obj ff = SASS_MEMORY_NEW(Supports_Block,
@@ -167,7 +170,7 @@ namespace Sass {
     return ff.detach();
   }
 
-  Statement_Ptr Expand::operator()(Media_Block_Ptr m)
+  Statement* Expand::operator()(Media_Block* m)
   {
     Media_Block_Obj cpy = SASS_MEMORY_COPY(m);
     // Media_Blocks are prone to have circular references
@@ -175,7 +178,7 @@ namespace Sass {
     // Looks like we are able to reset block reference for copy
     // Good as it will ensure a low memory overhead for this fix
     // So this is a cheap solution with a minimal price
-    ctx.ast_gc.push_back(cpy); cpy->block(0);
+    ctx.ast_gc.push_back(cpy); cpy->block({});
     Expression_Obj mq = eval(m->media_queries());
     std::string str_mq(mq->to_string(ctx.c_options));
     char* str = sass_copy_c_string(str_mq.c_str());
@@ -183,18 +186,18 @@ namespace Sass {
     Parser p(Parser::from_c_str(str, ctx, traces, mq->pstate()));
     mq = p.parse_media_queries(); // re-assign now
     cpy->media_queries(mq);
-    media_block_stack.push_back(cpy);
+    media_stack.push_back(cpy);
     Block_Obj blk = operator()(m->block());
-    Media_Block_Ptr mm = SASS_MEMORY_NEW(Media_Block,
+    Media_Block* mm = SASS_MEMORY_NEW(Media_Block,
                                       m->pstate(),
                                       mq,
                                       blk);
-    media_block_stack.pop_back();
+    media_stack.pop_back();
     mm->tabs(m->tabs());
     return mm;
   }
 
-  Statement_Ptr Expand::operator()(At_Root_Block_Ptr a)
+  Statement* Expand::operator()(At_Root_Block* a)
   {
     Block_Obj ab = a->block();
     Expression_Obj ae = a->expression();
@@ -202,7 +205,7 @@ namespace Sass {
     if (ae) ae = ae->perform(&eval);
     else ae = SASS_MEMORY_NEW(At_Root_Query, a->pstate());
 
-    LOCAL_FLAG(at_root_without_rule, true);
+    LOCAL_FLAG(at_root_without_rule, Cast<At_Root_Query>(ae)->exclude("rule"));
     LOCAL_FLAG(in_keyframes, false);
 
                                        ;
@@ -215,18 +218,18 @@ namespace Sass {
     return aa.detach();
   }
 
-  Statement_Ptr Expand::operator()(Directive_Ptr a)
+  Statement* Expand::operator()(Directive* a)
   {
     LOCAL_FLAG(in_keyframes, a->is_keyframes());
-    Block_Ptr ab = a->block();
-    Selector_List_Ptr as = a->selector();
-    Expression_Ptr av = a->value();
-    selector_stack.push_back(0);
+    Block* ab = a->block();
+    Selector_List* as = a->selector();
+    Expression* av = a->value();
+    selector_stack.push_back({});
     if (av) av = av->perform(&eval);
     if (as) as = eval(as);
     selector_stack.pop_back();
-    Block_Ptr bb = ab ? operator()(ab) : NULL;
-    Directive_Ptr aa = SASS_MEMORY_NEW(Directive,
+    Block* bb = ab ? operator()(ab) : NULL;
+    Directive* aa = SASS_MEMORY_NEW(Directive,
                                   a->pstate(),
                                   a->keyword(),
                                   as,
@@ -235,7 +238,7 @@ namespace Sass {
     return aa;
   }
 
-  Statement_Ptr Expand::operator()(Declaration_Ptr d)
+  Statement* Expand::operator()(Declaration* d)
   {
     Block_Obj ab = d->block();
     String_Obj old_p = d->property();
@@ -250,9 +253,15 @@ namespace Sass {
     if (value) value = value->perform(&eval);
     Block_Obj bb = ab ? operator()(ab) : NULL;
     if (!bb) {
-      if (!value || (value->is_invisible() && !d->is_important())) return 0;
+      if (!value || (value->is_invisible() && !d->is_important())) {
+        if (d->is_custom_property()) {
+          error("Custom property values may not be empty.", d->value()->pstate(), traces);
+        } else {
+          return nullptr;
+        }
+      }
     }
-    Declaration_Ptr decl = SASS_MEMORY_NEW(Declaration,
+    Declaration* decl = SASS_MEMORY_NEW(Declaration,
                                         d->pstate(),
                                         new_p,
                                         value,
@@ -263,7 +272,7 @@ namespace Sass {
     return decl;
   }
 
-  Statement_Ptr Expand::operator()(Assignment_Ptr a)
+  Statement* Expand::operator()(Assignment* a)
   {
     Env* env = environment();
     const std::string& var(a->variable());
@@ -324,7 +333,7 @@ namespace Sass {
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Import_Ptr imp)
+  Statement* Expand::operator()(Import* imp)
   {
     Import_Obj result = SASS_MEMORY_NEW(Import, imp->pstate());
     if (imp->import_queries() && imp->import_queries()->size()) {
@@ -339,7 +348,7 @@ namespace Sass {
     return result.detach();
   }
 
-  Statement_Ptr Expand::operator()(Import_Stub_Ptr i)
+  Statement* Expand::operator()(Import_Stub* i)
   {
     traces.push_back(Backtrace(i->pstate()));
     // get parent node from call stack
@@ -369,28 +378,28 @@ namespace Sass {
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Warning_Ptr w)
+  Statement* Expand::operator()(Warning* w)
   {
     // eval handles this too, because warnings may occur in functions
     w->perform(&eval);
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Error_Ptr e)
+  Statement* Expand::operator()(Error* e)
   {
     // eval handles this too, because errors may occur in functions
     e->perform(&eval);
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Debug_Ptr d)
+  Statement* Expand::operator()(Debug* d)
   {
     // eval handles this too, because warnings may occur in functions
     d->perform(&eval);
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Comment_Ptr c)
+  Statement* Expand::operator()(Comment* c)
   {
     if (ctx.output_style() == COMPRESSED) {
       // comments should not be evaluated in compact
@@ -398,13 +407,13 @@ namespace Sass {
       if (!c->is_important()) return NULL;
     }
     eval.is_in_comment = true;
-    Comment_Ptr rv = SASS_MEMORY_NEW(Comment, c->pstate(), Cast<String>(c->text()->perform(&eval)), c->is_important());
+    Comment* rv = SASS_MEMORY_NEW(Comment, c->pstate(), Cast<String>(c->text()->perform(&eval)), c->is_important());
     eval.is_in_comment = false;
     // TODO: eval the text, once we're parsing/storing it as a String_Schema
     return rv;
   }
 
-  Statement_Ptr Expand::operator()(If_Ptr i)
+  Statement* Expand::operator()(If* i)
   {
     Env env(environment(), true);
     env_stack.push_back(&env);
@@ -414,7 +423,7 @@ namespace Sass {
       append_block(i->block());
     }
     else {
-      Block_Ptr alt = i->alternative();
+      Block* alt = i->alternative();
       if (alt) append_block(alt);
     }
     call_stack.pop_back();
@@ -424,7 +433,7 @@ namespace Sass {
 
   // For does not create a new env scope
   // But iteration vars are reset afterwards
-  Statement_Ptr Expand::operator()(For_Ptr f)
+  Statement* Expand::operator()(For* f)
   {
     std::string variable(f->variable());
     Expression_Obj low = f->lower_bound()->perform(&eval);
@@ -452,7 +461,7 @@ namespace Sass {
     Env env(environment(), true);
     env_stack.push_back(&env);
     call_stack.push_back(f);
-    Block_Ptr body = f->block();
+    Block* body = f->block();
     if (start < end) {
       if (f->is_inclusive()) ++end;
       for (double i = start;
@@ -479,16 +488,16 @@ namespace Sass {
 
   // Eval does not create a new env scope
   // But iteration vars are reset afterwards
-  Statement_Ptr Expand::operator()(Each_Ptr e)
+  Statement* Expand::operator()(Each* e)
   {
     std::vector<std::string> variables(e->variables());
     Expression_Obj expr = e->list()->perform(&eval);
-    List_Obj list = 0;
+    List_Obj list;
     Map_Obj map;
     if (expr->concrete_type() == Expression::MAP) {
       map = Cast<Map>(expr);
     }
-    else if (Selector_List_Ptr ls = Cast<Selector_List>(expr)) {
+    else if (Selector_List* ls = Cast<Selector_List>(expr)) {
       Listize listize;
       Expression_Obj rv = ls->perform(&listize);
       list = Cast<List>(rv);
@@ -504,7 +513,7 @@ namespace Sass {
     Env env(environment(), true);
     env_stack.push_back(&env);
     call_stack.push_back(e);
-    Block_Ptr body = e->block();
+    Block* body = e->block();
 
     if (map) {
       for (auto key : map->keys()) {
@@ -563,10 +572,10 @@ namespace Sass {
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(While_Ptr w)
+  Statement* Expand::operator()(While* w)
   {
     Expression_Obj pred = w->predicate();
-    Block_Ptr body = w->block();
+    Block* body = w->block();
     Env env(environment(), true);
     env_stack.push_back(&env);
     call_stack.push_back(w);
@@ -580,7 +589,7 @@ namespace Sass {
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Return_Ptr r)
+  Statement* Expand::operator()(Return* r)
   {
     error("@return may only be used within a function", r->pstate(), traces);
     return 0;
@@ -638,13 +647,13 @@ namespace Sass {
 
   }
 
-  Statement* Expand::operator()(Extension_Ptr e)
+  Statement* Expand::operator()(Extension* e)
   {
-    if (Selector_List_Ptr extender = selector()) {
-      Selector_List_Ptr sl = e->selector();
+    if (Selector_List_Obj extender = selector()) {
+      Selector_List* sl = e->selector();
       // abort on invalid selector
       if (sl == NULL) return NULL;
-      if (Selector_Schema_Ptr schema = sl->schema()) {
+      if (Selector_Schema* schema = sl->schema()) {
         if (schema->has_real_parent_ref()) {
           // put root block on stack again (ignore parents)
           // selector schema must not connect in eval!
@@ -652,24 +661,24 @@ namespace Sass {
           sl = eval(sl->schema());
           block_stack.pop_back();
         } else {
-          selector_stack.push_back(0);
+          selector_stack.push_back({});
           sl = eval(sl->schema());
           selector_stack.pop_back();
         }
       }
       for (Complex_Selector_Obj cs : sl->elements()) {
         if (!cs.isNull() && !cs->head().isNull()) {
-          cs->head()->media_block(media_block_stack.back());
+          cs->head()->media_block(media_stack.back());
         }
       }
-      selector_stack.push_back(0);
+      selector_stack.push_back({});
       expand_selector_list(sl, extender);
       selector_stack.pop_back();
     }
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Definition_Ptr d)
+  Statement* Expand::operator()(Definition* d)
   {
     Env* env = environment();
     Definition_Obj dd = SASS_MEMORY_COPY(d);
@@ -694,7 +703,7 @@ namespace Sass {
     return 0;
   }
 
-  Statement_Ptr Expand::operator()(Mixin_Call_Ptr c)
+  Statement* Expand::operator()(Mixin_Call* c)
   {
     if (recursions > maxRecursion) {
       throw Exception::StackError(traces, *c);
@@ -730,29 +739,31 @@ namespace Sass {
     Env new_env(def->environment());
     env_stack.push_back(&new_env);
     if (c->block()) {
+      Parameters_Obj params = c->block_parameters();
+      if (!params) params = SASS_MEMORY_NEW(Parameters, c->pstate());
       // represent mixin content blocks as thunks/closures
       Definition_Obj thunk = SASS_MEMORY_NEW(Definition,
                                           c->pstate(),
                                           "@content",
-                                          SASS_MEMORY_NEW(Parameters, c->pstate()),
+                                          params,
                                           c->block(),
                                           Definition::MIXIN);
       thunk->environment(env);
       new_env.local_frame()["@content[m]"] = thunk;
     }
 
-    bind(std::string("Mixin"), c->name(), params, args, &ctx, &new_env, &eval);
+    bind(std::string("Mixin"), c->name(), params, args, &new_env, &eval, traces);
 
     Block_Obj trace_block = SASS_MEMORY_NEW(Block, c->pstate());
     Trace_Obj trace = SASS_MEMORY_NEW(Trace, c->pstate(), c->name(), trace_block);
 
     env->set_global("is_in_mixin", bool_true);
-    if (Block_Ptr pr = block_stack.back()) {
+    if (Block* pr = block_stack.back()) {
       trace_block->is_root(pr->is_root());
     }
     block_stack.push_back(trace_block);
     for (auto bb : body->elements()) {
-      if (Ruleset_Ptr r = Cast<Ruleset>(bb)) {
+      if (Ruleset* r = Cast<Ruleset>(bb)) {
         r->is_root(trace_block->is_root());
       }
       Statement_Obj ith = bb->perform(this);
@@ -769,20 +780,23 @@ namespace Sass {
     return trace.detach();
   }
 
-  Statement_Ptr Expand::operator()(Content_Ptr c)
+  Statement* Expand::operator()(Content* c)
   {
     Env* env = environment();
     // convert @content directives into mixin calls to the underlying thunk
     if (!env->has("@content[m]")) return 0;
 
     if (block_stack.back()->is_root()) {
-      selector_stack.push_back(0);
+      selector_stack.push_back({});
     }
+
+    Arguments_Obj args = c->arguments();
+    if (!args) args = SASS_MEMORY_NEW(Arguments, c->pstate());
 
     Mixin_Call_Obj call = SASS_MEMORY_NEW(Mixin_Call,
                                        c->pstate(),
                                        "@content",
-                                       SASS_MEMORY_NEW(Arguments, c->pstate()));
+                                       args);
 
     Trace_Obj trace = Cast<Trace>(call->perform(this));
 
@@ -793,21 +807,12 @@ namespace Sass {
     return trace.detach();
   }
 
-  // produce an error if something is not implemented
-  inline Statement_Ptr Expand::fallback_impl(AST_Node_Ptr n)
-  {
-    std::string err =std:: string("`Expand` doesn't handle ") + typeid(*n).name();
-    String_Quoted_Obj msg = SASS_MEMORY_NEW(String_Quoted, ParserState("[WARN]"), err);
-    error("unknown internal error; please contact the LibSass maintainers", n->pstate(), traces);
-    return SASS_MEMORY_NEW(Warning, ParserState("[WARN]"), msg);
-  }
-
   // process and add to last block on stack
-  inline void Expand::append_block(Block_Ptr b)
+  inline void Expand::append_block(Block* b)
   {
     if (b->is_root()) call_stack.push_back(b);
     for (size_t i = 0, L = b->length(); i < L; ++i) {
-      Statement_Ptr stm = b->at(i);
+      Statement* stm = b->at(i);
       Statement_Obj ith = stm->perform(this);
       if (ith) block_stack.back()->append(ith);
     }

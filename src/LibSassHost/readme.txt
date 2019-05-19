@@ -26,7 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   Removed a deprecated LibSassHost.Native.debian-x64 package.
+   1. Added support of the LibSass version 3.6.0;
+   2. Removed a deprecated LibSassHost.Native.debian-x64 package.
 
    ============
    PROJECT SITE

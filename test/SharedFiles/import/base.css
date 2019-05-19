@@ -1,5 +1,4 @@
-﻿@import url(http://fonts.googleapis.com/css?family=Limelight&subset=latin,latin-ext);
-body {
+﻿body {
   font: 100% Helvetica, sans-serif;
   background-color: #efefef; }
 
@@ -9,5 +8,7 @@ ul,
 ol {
   margin: 0;
   padding: 0; }
+
+/*@import url(http://fonts.googleapis.com/css?family=Limelight&subset=latin,latin-ext)*/
 
 /*# sourceMappingURL=base.css.map */
