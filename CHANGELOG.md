@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.2.4 - May 19, 2019
+ * Added support of the LibSass version 3.6.0
+ * Removed a deprecated LibSassHost.Native.debian-x64 package
+
 ## v1.2.3 - February 19, 2019
  * Improved a performance of the string values marshaling
  * Added support of .NET Core App 2.1
