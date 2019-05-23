@@ -8,6 +8,7 @@ setlocal
 :process-args
 
 set _CONFIGURATION=Release
+set _EMBED_MSVC_RUNTIME=false
 set _IS_64_BIT_OS=true
 set _LOG_FILE_NAME=build-libsass.log
 set _VERBOSE=false
@@ -19,6 +20,7 @@ if "%1"=="-h" goto print-usage
 if "%1"=="--help" goto print-usage
 if /i "%1"=="-d" goto set-debug-configuration
 if /i "%1"=="--debug" goto set-debug-configuration
+if /i "%1"=="--embed-msvc-runtime" goto set-msvc-runtime-embedding
 if /i "%1"=="-v" goto set-verbose-output
 if /i "%1"=="--verbose" goto set-verbose-output
 
@@ -28,9 +30,10 @@ echo.
 echo build-libsass.cmd [options]
 echo.
 echo options:
-echo   -d, --debug          Debug build (by default Release build)
-echo   -h, --help           Show help
-echo   -v, --verbose        Display verbose output
+echo   -d, --debug             Debug build (by default Release build)
+echo   --embed-msvc-runtime    Link a assembly with MSVC libraries statically
+echo   -h, --help              Show help
+echo   -v, --verbose           Display verbose output
 echo.
 echo example:
 echo   build-libsass.cmd
@@ -41,6 +44,10 @@ goto exit
 
 :set-debug-configuration
 set _CONFIGURATION=Debug
+goto next-arg
+
+:set-msvc-runtime-embedding
+set _EMBED_MSVC_RUNTIME=true
 goto next-arg
 
 :set-verbose-output
@@ -79,7 +86,7 @@ goto exit
 
 :build
 
-set _MSBUILD_ARGS=libsass.sln /p:Configuration=%_CONFIGURATION%
+set _MSBUILD_ARGS=libsass.sln /p:Configuration=%_CONFIGURATION% /p:EmbedMsvcRuntime=%_EMBED_MSVC_RUNTIME%
 
 :build-32-bit
 echo Building 32-bit LibSass ...
