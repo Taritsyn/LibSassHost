@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.2.5 - June 17, 2019
+ * Added support of the LibSass version 3.6.1
+
 ## v1.2.4 - May 19, 2019
  * Added support of the LibSass version 3.6.0
  * Removed a deprecated LibSassHost.Native.debian-x64 package
