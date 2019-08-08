@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Linux x64 v1.2.5
+               README file for LibSass Host Native for Linux x64 v1.2.6
 
    --------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of the LibSass version 3.6.1.
+   In the sass2scss library was fixed a error #36 “Regression in URL parsing”.
 
    ============
    PROJECT SITE

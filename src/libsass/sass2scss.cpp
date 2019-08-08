@@ -169,6 +169,12 @@ namespace Sass
 		return sass[pos] == 'u' && sass[pos+1] == 'r' && sass[pos+2] == 'l' && sass[pos+3] == '(';
 	}
 
+	static bool endsWithMediaQueries (std::string& sass, size_t pos) //LSH+
+	{ //LSH+
+		size_t local_pos = findFirstCharacter(sass, pos); //LSH+
+		return local_pos != std::string::npos && sass[local_pos] != ','; //LSH+
+	} //LSH+
+
 	// check if there is some char data
 	// will ignore everything in comments
 	static bool hasCharData (std::string& sass)
@@ -635,16 +641,64 @@ namespace Sass
 						is_escaped = true;
 					}
 					else if (sass[pos] == '"') {
-						if (!in_sqstr) in_dqstr = ! in_dqstr;
+						/*LSH- if (!in_sqstr) in_dqstr = ! in_dqstr;*/
+						if (!in_sqstr) { //LSH+
+							if (in_dqstr && endsWithMediaQueries(sass, pos + 1)) { //LSH+
+								// refuse to process of media queries
+								break; //LSH+
+							} //LSH+
+
+							in_dqstr = !in_dqstr; //LSH+
+						} //LSH+
 					}
 					else if (sass[pos] == '\'') {
-						if (!in_dqstr) in_sqstr = ! in_sqstr;
+						/*LSH- if (!in_dqstr) in_sqstr = ! in_sqstr;*/
+						if (!in_dqstr) { //LSH+
+							if (in_sqstr && endsWithMediaQueries(sass, pos + 1)) { //LSH+
+								// refuse to process of media queries
+								break; //LSH+
+							} //LSH+
+
+							in_sqstr = !in_sqstr; //LSH+
+						} //LSH+
 					}
 					else if (in_dqstr || in_sqstr) {
 						// skip over quoted stuff
 					}
+					else if (isUrl(sass, pos) && pos == start) { //LSH+
+						size_t local_pos = findFirstCharacter(sass, pos + 4); //LSH+
+						if (local_pos == std::string::npos) break; //LSH+
+
+						if (sass[local_pos] == '"' || sass[local_pos] == '\'') { //LSH+
+							local_pos = sass.find(sass[local_pos], local_pos + 1); //LSH+
+							if (local_pos == std::string::npos) break; //LSH+
+
+							local_pos = findFirstCharacter(sass, local_pos + 1); //LSH+
+							if (local_pos == std::string::npos || sass[local_pos] != ')') break; //LSH+
+						} //LSH+
+						else { //LSH+
+							local_pos = sass.find(')', local_pos + 1); //LSH+
+							if (local_pos == std::string::npos) break; //LSH+
+						} //LSH+
+
+						if (endsWithMediaQueries(sass, local_pos + 1)) { //LSH+
+							// refuse to process of media queries
+							break; //LSH+
+						} //LSH+
+
+						// skip whitespace and commas
+						do { //LSH+
+							local_pos = findFirstCharacter(sass, local_pos + 1); //LSH+
+						} //LSH+
+						while (local_pos != std::string::npos && sass[local_pos] == ','); //LSH+
+
+						if (local_pos == std::string::npos) break; //LSH+
+
+						start = local_pos; //LSH+
+						pos = local_pos - 1; //LSH+
+					} //LSH+
 					else if (sass[pos] == ',' || sass[pos] == 0) {
-						if (sass[start] != '"' && sass[start] != '\'' && !isUrl(sass, start)) {
+						if (sass[start] != '"' && sass[start] != '\''/*LSH-  && !isUrl(sass, start)*/) {
 							size_t end = findLastCharacter(sass, pos - 1) + 1;
 							sass = sass.replace(end, 0, "\"");
 							sass = sass.replace(start, 0, "\"");

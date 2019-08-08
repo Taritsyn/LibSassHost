@@ -153,9 +153,6 @@
   <data name="Compiler_SassCompilerNotLoaded" xml:space="preserve">
     <value>During loading of Sass compiler error has occurred.</value>
   </data>
-  <data name="Compiler_VcRedist2017InstallationRequired" xml:space="preserve">
-    <value>In addition, you still need to install the Microsoft Visual C++ Redistributable for Visual Studio 2017 (https://www.visualstudio.com/downloads/#microsoft-visual-c-redistributable-for-visual-studio-2017).</value>
-  </data>
   <data name="ErrorDetails_ColumnNumber" xml:space="preserve">
     <value>Column number</value>
   </data>

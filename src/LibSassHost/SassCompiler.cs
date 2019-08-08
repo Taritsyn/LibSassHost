@@ -537,8 +537,6 @@ namespace LibSassHost
 								:
 								"LibSassHost.Native.win-x86"
 						);
-						descriptionBuilder.Append(" ");
-						descriptionBuilder.Append(Strings.Compiler_VcRedist2017InstallationRequired);
 					}
 					else
 					{

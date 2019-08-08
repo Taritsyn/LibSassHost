@@ -154,14 +154,6 @@ namespace LibSassHost.Resources
 		}
 
 		/// <summary>
-		/// Looks up a localized string similar to "In addition, you still need to install the Microsoft Visual C++ Redistributable for Visual Studio..."
-		/// </summary>
-		public static string Compiler_VcRedist2017InstallationRequired
-		{
-			get { return GetString("Compiler_VcRedist2017InstallationRequired"); }
-		}
-
-		/// <summary>
 		/// Looks up a localized string similar to "Column number"
 		/// </summary>
 		public static string ErrorDetails_ColumnNumber

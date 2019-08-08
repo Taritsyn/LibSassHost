@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   Added support of the LibSass version 3.6.1.
+   In the sass2scss library was fixed a error #36 “Regression in URL parsing”.
 
    ============
    PROJECT SITE
