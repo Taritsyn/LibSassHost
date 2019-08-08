@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<Product>LibSass Host: Benchmarks</Product>
-		<VersionPrefix>1.2.5</VersionPrefix>
+		<VersionPrefix>1.2.6</VersionPrefix>
 		<TargetFrameworks>net461;netcoreapp2.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
