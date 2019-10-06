@@ -29,8 +29,11 @@ This package does not contain the native implementations of LibSass. Therefore, 
 		<PackageIcon>icon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/Taritsyn/LibSassHost</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageTags>LibSass;Sass;SCSS;CSS</PackageTags>
-		<PackageReleaseNotes>In the sass2scss library was fixed a error #36 “Regression in URL parsing”.</PackageReleaseNotes>
+		<PackageReleaseNotes>Enabled a SourceLink.</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -41,8 +44,9 @@ This package does not contain the native implementations of LibSass. Therefore, 
 	<Import Project="../../build/nuget-common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="ResxToCs.MSBuild" Version="1.0.0-alpha6" PrivateAssets="All" />
 		<PackageReference Include="AdvancedStringBuilder" Version="0.1.0" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
+		<PackageReference Include="ResxToCs.MSBuild" Version="1.0.0-alpha6" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net40-client' ">

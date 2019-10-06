@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   In the sass2scss library was fixed a error #36 “Regression in URL parsing”.
+   Enabled a SourceLink.
 
    ============
    PROJECT SITE
