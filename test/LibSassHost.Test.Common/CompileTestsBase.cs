@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-#if NET452 || NET471 || NETCOREAPP
+#if NETCOREAPP1_0
 
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
@@ -30,13 +30,16 @@ namespace LibSassHost.Test.Common
 			TestsInitializer.Initialize();
 
 #endif
-#if NET452 || NET471 || NETCOREAPP
+#if NETCOREAPP1_0
 			var appEnv = PlatformServices.Default.Application;
-			string baseDirectoryPath = Path.Combine(appEnv.ApplicationBasePath, "../../../");
-#elif NET40
-			string baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../");
+			string appDirectoryPath = appEnv.ApplicationBasePath;
 #else
-#error No implementation for this target
+			string appDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
+#endif
+#if NET40
+			string baseDirectoryPath = Path.Combine(appDirectoryPath, "../../");
+#else
+			string baseDirectoryPath = Path.Combine(appDirectoryPath, "../../../");
 #endif
 			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "../SharedFiles"));
 			_syntaxType = syntaxType;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-#if NET451 || NETSTANDARD
+#if NETSTANDARD1_3
 
 using Microsoft.Extensions.PlatformAbstractions;
 #endif
@@ -19,15 +19,13 @@ namespace LibSassHost.Sample.Logic
 		/// </summary>
 		static CompilationExampleBase()
 		{
-#if NET451 || NETSTANDARD
+#if NETSTANDARD1_3
 			var appEnv = PlatformServices.Default.Application;
-			string baseDirectoryPath = appEnv.ApplicationBasePath;
-#elif NET40
-			string baseDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
+			string appDirectoryPath = appEnv.ApplicationBasePath;
 #else
-#error No implementation for this target
+			string appDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
 #endif
-			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "Files"));
+			_filesDirectoryPath = Path.GetFullPath(Path.Combine(appDirectoryPath, "Files"));
 		}
 
 
