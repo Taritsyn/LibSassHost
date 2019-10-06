@@ -121,7 +121,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore1Full.ConsoleApp", "samples\LibSassHost.Sample.NetCore1Full.ConsoleApp\LibSassHost.Sample.NetCore1Full.ConsoleApp.csproj", "{13274B8F-1033-48B7-A000-CC27C71E0F1A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore2.ConsoleApp", "samples\LibSassHost.Sample.NetCore2.ConsoleApp\LibSassHost.Sample.NetCore2.ConsoleApp.csproj", "{7E10904A-E9B8-4E47-A606-F399AE7F4F7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore21.ConsoleApp", "samples\LibSassHost.Sample.NetCore21.ConsoleApp\LibSassHost.Sample.NetCore21.ConsoleApp.csproj", "{7E10904A-E9B8-4E47-A606-F399AE7F4F7F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore3.ConsoleApp", "samples\LibSassHost.Sample.NetCore3.ConsoleApp\LibSassHost.Sample.NetCore3.ConsoleApp.csproj", "{CCB60CC0-8211-4E42-AD96-3005497E1085}"
 EndProject
