@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.2.7 - October 8, 2019
+ * Added support of the LibSass version 3.6.2
+ * Enabled a SourceLink in the LibSassHost package
+
 ## v1.2.6 - August 8, 2019
  * In the sass2scss library was fixed a [error #36](https://github.com/mgreter/sass2scss/issues/36) “Regression in URL parsing”
  * MSVC runtime was embedded into the native assemblies for Windows. Now you do not need to install the [Microsoft Visual C++ Redistributable for Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/#microsoft-visual-c-redistributable-for-visual-studio-2017).

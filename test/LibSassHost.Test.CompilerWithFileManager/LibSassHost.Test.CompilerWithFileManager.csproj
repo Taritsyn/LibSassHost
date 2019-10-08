@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<Product>LibSass Host: Tests for Compiler with File Manager</Product>
-		<VersionPrefix>1.2.6</VersionPrefix>
+		<VersionPrefix>1.2.7</VersionPrefix>
 		<TargetFrameworks>net452;net471;netcoreapp1.0;netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
 		<RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.0.16</RuntimeFrameworkVersion>
 		<OutputType>Library</OutputType>
