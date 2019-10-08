@@ -8,11 +8,11 @@
 #include "sass/base.h"
 #include "ast_fwd_decl.hpp"
 
+#include <cmath>
 #include <cstring>
 #include <vector>
 #include <string>
 #include <assert.h>
-#include <math.h>
 
 #define SASS_ASSERT(cond, msg) assert(cond && msg)
 
@@ -93,13 +93,12 @@ namespace Sass {
 
     bool isPrintable(Ruleset* r, Sass_Output_Style style = NESTED);
     bool isPrintable(Supports_Block* r, Sass_Output_Style style = NESTED);
-    bool isPrintable(Media_Block* r, Sass_Output_Style style = NESTED);
+    bool isPrintable(CssMediaRule* r, Sass_Output_Style style = NESTED);
     bool isPrintable(Comment* b, Sass_Output_Style style = NESTED);
     bool isPrintable(Block_Obj b, Sass_Output_Style style = NESTED);
     bool isPrintable(String_Constant* s, Sass_Output_Style style = NESTED);
     bool isPrintable(String_Quoted* s, Sass_Output_Style style = NESTED);
     bool isPrintable(Declaration* d, Sass_Output_Style style = NESTED);
-    bool isAscii(const char chr);
 
   }
 }

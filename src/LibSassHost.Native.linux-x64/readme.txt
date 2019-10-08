@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Linux x64 v1.2.6
+               README file for LibSass Host Native for Linux x64 v1.2.7
 
    --------------------------------------------------------------------------------
 
@@ -12,14 +12,14 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of LibSass version 3.6.1 for Linux (x64).
+   implementation of LibSass version 3.6.2 for Linux (x64).
 
    This package is only compatible with .NET Core.
 
    =============
    RELEASE NOTES
    =============
-   In the sass2scss library was fixed a error #36 “Regression in URL parsing”.
+   Added support of the LibSass version 3.6.2.
 
    ============
    PROJECT SITE

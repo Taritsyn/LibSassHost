@@ -2,6 +2,7 @@
 #include "sass.h"
 #include "ast.hpp"
 #include "util.hpp"
+#include "util_string.hpp"
 #include "lexer.hpp"
 #include "prelexer.hpp"
 #include "constants.hpp"
@@ -26,8 +27,8 @@ namespace Sass {
     #endif
 
     // https://github.com/sass/sass/commit/4e3e1d5684cc29073a507578fc977434ff488c93
-    if (fmod(val, 1) - 0.5 > - std::pow(0.1, precision + 1)) return std::ceil(val);
-    else if (fmod(val, 1) - 0.5 > std::pow(0.1, precision)) return std::floor(val);
+    if (std::fmod(val, 1) - 0.5 > - std::pow(0.1, precision + 1)) return std::ceil(val);
+    else if (std::fmod(val, 1) - 0.5 > std::pow(0.1, precision)) return std::floor(val);
     // work around some compiler issue
     // cygwin has it not defined in std
     using namespace std;
@@ -289,7 +290,7 @@ namespace Sass {
 
         // parse as many sequence chars as possible
         // ToDo: Check if ruby aborts after possible max
-        while (i + len < L && s[i + len] && isxdigit(s[i + len])) ++ len;
+        while (i + len < L && s[i + len] && Util::ascii_isxdigit(static_cast<unsigned char>(s[i + len]))) ++ len;
 
         if (len > 1) {
 
@@ -375,7 +376,7 @@ namespace Sass {
 
         // parse as many sequence chars as possible
         // ToDo: Check if ruby aborts after possible max
-        while (i + len < L && s[i + len] && isxdigit(s[i + len])) ++ len;
+        while (i + len < L && s[i + len] && Util::ascii_isxdigit(static_cast<unsigned char>(s[i + len]))) ++ len;
 
         // hex string?
         if (keep_utf8_sequences) {
@@ -535,7 +536,7 @@ namespace Sass {
 
       Block_Obj b = r->block();
 
-      Selector_List* sl = Cast<Selector_List>(r->selector());
+      SelectorList* sl = r->selector();
       bool hasSelectors = sl ? sl->length() > 0 : false;
 
       if (!hasSelectors) {
@@ -625,11 +626,12 @@ namespace Sass {
       return false;
     }
 
-    bool isPrintable(Media_Block* m, Sass_Output_Style style)
+    bool isPrintable(CssMediaRule* m, Sass_Output_Style style)
     {
       if (m == nullptr) return false;
       Block_Obj b = m->block();
       if (b == nullptr) return false;
+      if (m->empty()) return false;
       for (size_t i = 0, L = b->length(); i < L; ++i) {
         Statement_Obj stm = b->at(i);
         if (Cast<Directive>(stm)) return true;
@@ -649,7 +651,7 @@ namespace Sass {
             return true;
           }
         }
-        else if (Media_Block* mb = Cast<Media_Block>(stm)) {
+        else if (CssMediaRule* mb = Cast<CssMediaRule>(stm)) {
           if (isPrintable(mb, style)) {
             return true;
           }
@@ -702,7 +704,7 @@ namespace Sass {
             return true;
           }
         }
-        else if (Media_Block* m = Cast<Media_Block>(stm)) {
+        else if (CssMediaRule * m = Cast<CssMediaRule>(stm)) {
           if (isPrintable(m, style)) {
             return true;
           }
@@ -715,10 +717,6 @@ namespace Sass {
       }
 
       return false;
-    }
-
-    bool isAscii(const char chr) {
-      return unsigned(chr) < 128;
     }
 
   }

@@ -1,45 +1,23 @@
 // sass.hpp must go before all system headers to get the
 // __EXTENSIONS__ fix on Solaris.
 #include "sass.hpp"
-
-#include <string>
-#include <cstdlib>
-#include <cstring>
-#include <iomanip>
-#include <sstream>
-#include <iostream>
-
 #include "ast.hpp"
-#include "util.hpp"
-#include "sass.h"
-#include "context.hpp"
-#include "plugins.hpp"
-#include "constants.hpp"
-#include "parser.hpp"
-#include "file.hpp"
-#include "file_manager.hpp" //LSH+
-#include "inspect.hpp"
-#include "output.hpp"
-#include "expand.hpp"
-#include "eval.hpp"
-#include "check_nesting.hpp"
-#include "cssize.hpp"
-#include "listize.hpp"
-#include "extend.hpp"
+
 #include "remove_placeholders.hpp"
 #include "sass_functions.hpp"
-#include "backtrace.hpp"
-#include "sass2scss.h"
-#include "prelexer.hpp"
-#include "emitter.hpp"
-#include "fn_utils.hpp"
-#include "fn_miscs.hpp"
-#include "fn_maps.hpp"
-#include "fn_lists.hpp"
-#include "fn_colors.hpp"
-#include "fn_numbers.hpp"
-#include "fn_strings.hpp"
+#include "check_nesting.hpp"
+#include "file_manager.hpp" //LSH+
 #include "fn_selectors.hpp"
+#include "fn_strings.hpp"
+#include "fn_numbers.hpp"
+#include "fn_colors.hpp"
+#include "fn_miscs.hpp"
+#include "fn_lists.hpp"
+#include "fn_maps.hpp"
+#include "context.hpp"
+#include "expand.hpp"
+#include "parser.hpp"
+#include "cssize.hpp"
 
 namespace Sass {
   using namespace Constants;
@@ -51,23 +29,17 @@ namespace Sass {
 
   static std::string safe_input(const char* in_path)
   {
-    // enforce some safe defaults
-    // used to create relative file links
-    std::string safe_path(in_path ? in_path : "");
-    return safe_path == "" ? "stdin" : safe_path;
+    if (in_path == nullptr || in_path[0] == '\0') return "stdin";
+    return in_path;
   }
 
-  static std::string safe_output(const char* out_path, const std::string& input_path = "")
+  static std::string safe_output(const char* out_path, std::string input_path)
   {
-    std::string safe_path(out_path ? out_path : "");
-    // maybe we can extract an output path from input path
-    if (safe_path == "" && input_path != "") {
-      int lastindex = static_cast<int>(input_path.find_last_of("."));
-      return (lastindex > -1 ? input_path.substr(0, lastindex) : input_path) + ".css";
+    if (out_path == nullptr || out_path[0] == '\0') {
+      if (input_path.empty()) return "stdout";
+      return input_path.substr(0, input_path.find_last_of(".")) + ".css";
     }
-    // enforce some safe defaults
-    // used to create relative file links
-    return safe_path == "" ? "stdout" : safe_path;
+    return out_path;
   }
 
   Context::Context(struct Sass_Context& c_ctx)
@@ -82,10 +54,10 @@ namespace Sass {
     strings(),
     resources(),
     sheets(),
-    subset_map(),
     import_stack(),
     callee_stack(),
     traces(),
+    extender(Extender::NORMAL, traces),
     c_compiler(NULL),
 
     c_headers               (std::vector<Sass_Importer_Entry>()),
@@ -161,7 +133,7 @@ namespace Sass {
     }
     // clear inner structures (vectors) and input source
     resources.clear(); import_stack.clear();
-    subset_map.clear(), sheets.clear();
+    sheets.clear();
   }
 
   Data_Context::~Data_Context()
@@ -406,7 +378,7 @@ namespace Sass {
       // if (protocol.compare("file") && true) { }
     }
 
-    // add urls (protocol other than file) and urls without procotol to `urls` member
+    // add urls (protocol other than file) and urls without protocol to `urls` member
     // ToDo: if ctx_path is already a file resource, we should not add it here?
     if (imp->import_queries() || protocol != "file" || imp_path.substr(0, 2) == "//") {
       std::string processed_load_path = load_path; //LSH+
@@ -546,7 +518,7 @@ namespace Sass {
     OutputBuffer emitted = emitter.get_buffer();
     // should we append a source map url?
     if (!c_options.omit_source_map_url) {
-      // generate an embeded source map
+      // generate an embedded source map
       if (c_options.source_map_embed) {
         emitted.buffer += linefeed;
         emitted.buffer += format_embedded_source_map();
@@ -666,8 +638,6 @@ namespace Sass {
     return compile();
   }
 
-
-
   // parse root block from includes
   Block_Obj Context::compile()
   {
@@ -695,23 +665,23 @@ namespace Sass {
     }
     // expand and eval the tree
     root = expand(root);
+
+    Extension unsatisfied;
+    // check that all extends were used
+    if (extender.checkForUnsatisfiedExtends(unsatisfied)) {
+      throw Exception::UnsatisfiedExtend(traces, unsatisfied);
+    }
+
     // check nesting
     check_nesting(root);
     // merge and bubble certain rules
     root = cssize(root);
-    // should we extend something?
-    if (!subset_map.empty()) {
-      // create crtp visitor object
-      Extend extend(subset_map);
-      extend.setEval(expand.eval);
-      // extend tree nodes
-      extend(root);
-    }
 
     // clean up by removing empty placeholders
     // ToDo: maybe we can do this somewhere else?
     Remove_Placeholders remove_placeholders;
     root->perform(&remove_placeholders);
+
     // return processed tree
     return root;
   }

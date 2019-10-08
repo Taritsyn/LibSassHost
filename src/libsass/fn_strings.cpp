@@ -2,11 +2,11 @@
 // __EXTENSIONS__ fix on Solaris.
 #include "sass.hpp"
 
-#include <cctype>
 #include "utf8.h"
 #include "ast.hpp"
 #include "fn_utils.hpp"
 #include "fn_strings.hpp"
+#include "util_string.hpp"
 
 namespace Sass {
 
@@ -99,6 +99,9 @@ namespace Sass {
         String_Constant* i = ARG("$insert", String_Constant);
         std::string ins = i->value();
         double index = ARGVAL("$index");
+        if (index != (int)index) {
+          error("$index: " + std::to_string(index) + " is not an int", pstate, traces);
+        }
         size_t len = UTF_8::code_point_count(str, 0, str.size());
 
         if (index > 0 && index <= len) {
@@ -163,6 +166,11 @@ namespace Sass {
         String_Constant* s = ARG("$string", String_Constant);
         double start_at = ARGVAL("$start-at");
         double end_at = ARGVAL("$end-at");
+
+        if (start_at != (int)start_at) {
+          error("$start-at: " + std::to_string(start_at) + " is not an int", pstate, traces);
+        }
+
         String_Quoted* ss = Cast<String_Quoted>(s);
 
         std::string str(s->value());
@@ -171,6 +179,10 @@ namespace Sass {
 
         if (!Cast<Number>(env["$end-at"])) {
           end_at = -1;
+        }
+
+        if (end_at != (int)end_at) {
+          error("$end-at: " + std::to_string(end_at) + " is not an int", pstate, traces);
         }
 
         if (end_at == 0 || (end_at + size) < 0) {
@@ -185,7 +197,7 @@ namespace Sass {
         if (end_at > size) { end_at = (double)size; }
         if (start_at < 0) {
           start_at += size + 1;
-          if (start_at < 0)  start_at = 0;
+          if (start_at <= 0) start_at = 1;
         }
         else if (start_at == 0) { ++ start_at; }
 
@@ -212,12 +224,7 @@ namespace Sass {
     {
       String_Constant* s = ARG("$string", String_Constant);
       std::string str = s->value();
-
-      for (size_t i = 0, L = str.length(); i < L; ++i) {
-        if (Sass::Util::isAscii(str[i])) {
-          str[i] = std::toupper(str[i]);
-        }
-      }
+      Util::ascii_str_toupper(&str);
 
       if (String_Quoted* ss = Cast<String_Quoted>(s)) {
         String_Quoted* cpy = SASS_MEMORY_COPY(ss);
@@ -233,12 +240,7 @@ namespace Sass {
     {
       String_Constant* s = ARG("$string", String_Constant);
       std::string str = s->value();
-
-      for (size_t i = 0, L = str.length(); i < L; ++i) {
-        if (Sass::Util::isAscii(str[i])) {
-          str[i] = std::tolower(str[i]);
-        }
-      }
+      Util::ascii_str_tolower(&str);
 
       if (String_Quoted* ss = Cast<String_Quoted>(s)) {
         String_Quoted* cpy = SASS_MEMORY_COPY(ss);

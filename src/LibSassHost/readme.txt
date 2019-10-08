@@ -26,7 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   Enabled a SourceLink.
+   1. Added support of the LibSass version 3.6.2;
+   2. Enabled a SourceLink in NuGet package.
 
    ============
    PROJECT SITE

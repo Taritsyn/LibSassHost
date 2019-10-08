@@ -13,7 +13,6 @@
 #else
 # include <unistd.h>
 #endif
-#include <cctype>
 #include <cstdio>
 #include <vector>
 #include <algorithm>
@@ -26,6 +25,7 @@
 #include "sass_functions.hpp"
 #include "error_handling.hpp"
 #include "util.hpp"
+#include "util_string.hpp"
 #include "sass2scss.h"
 
 #ifdef _WIN32
@@ -127,20 +127,20 @@ namespace Sass {
       } //LSH+
       else { //LSH+
         #ifdef _WIN32
-          if (path.length() >= 2 && isalpha(path[0]) && path[1] == ':') return true;
+          if (path.length() >= 2 && Util::ascii_isalpha(path[0]) && path[1] == ':') return true;
         #endif
         size_t i = 0;
         // check if we have a protocol
-        if (path[i] && Prelexer::is_alpha(path[i])) {
+        if (path[i] && Util::ascii_isalpha(static_cast<unsigned char>(path[i]))) {
           // skip over all alphanumeric characters
-          while (path[i] && Prelexer::is_alnum(path[i])) ++i;
+          while (path[i] && Util::ascii_isalnum(static_cast<unsigned char>(path[i]))) ++i;
           i = i && path[i] == ':' ? i + 1 : 0;
         }
         return path[i] == '/';
       } //LSH+
     }
 
-    // helper function to find the last directory seperator
+    // helper function to find the last directory separator
     inline size_t find_last_folder_separator(const std::string& path, size_t limit = std::string::npos)
     {
       size_t pos;
@@ -195,15 +195,15 @@ namespace Sass {
       while((pos = path.find("/./", pos)) != std::string::npos) path.erase(pos, 2);
 
       // remove all leading and trailing self references
-      while(path.length() > 1 && path.substr(0, 2) == "./") path.erase(0, 2);
-      while((pos = path.length()) > 1 && path.substr(pos - 2) == "/.") path.erase(pos - 2);
+      while(path.size() >= 2 && path[0] == '.' && path[1] == '/') path.erase(0, 2);
+      while((pos = path.length()) > 1 && path[pos - 2] == '/' && path[pos - 1] == '.') path.erase(pos - 2);
 
 
       size_t proto = 0;
       // check if we have a protocol
-      if (path[proto] && Prelexer::is_alpha(path[proto])) {
+      if (path[proto] && Util::ascii_isalpha(static_cast<unsigned char>(path[proto]))) {
         // skip over all alphanumeric characters
-        while (path[proto] && Prelexer::is_alnum(path[proto++])) {}
+        while (path[proto] && Util::ascii_isalnum(static_cast<unsigned char>(path[proto++]))) {}
         // then skip over the mandatory colon
         if (proto && path[proto] == ':') ++ proto;
       }
@@ -294,9 +294,9 @@ namespace Sass {
 
       size_t proto = 0;
       // check if we have a protocol
-      if (path[proto] && Prelexer::is_alpha(path[proto])) {
+      if (path[proto] && Util::ascii_isalpha(static_cast<unsigned char>(path[proto]))) {
         // skip over all alphanumeric characters
-        while (path[proto] && Prelexer::is_alnum(path[proto++])) {}
+        while (path[proto] && Util::ascii_isalnum(static_cast<unsigned char>(path[proto++]))) {}
         // then skip over the mandatory colon
         if (proto && path[proto] == ':') ++ proto;
       }
@@ -322,7 +322,8 @@ namespace Sass {
         #else
           // compare the charactes in a case insensitive manner
           // windows fs is only case insensitive in ascii ranges
-          if (tolower(abs_path[i]) != tolower(abs_base[i])) break;
+          if (Util::ascii_tolower(static_cast<unsigned char>(abs_path[i])) !=
+              Util::ascii_tolower(static_cast<unsigned char>(abs_base[i]))) break;
         #endif
         if (abs_path[i] == '/') index = i + 1;
       }
@@ -515,6 +516,7 @@ namespace Sass {
           /*LSH- char* */contents = static_cast<char*>(malloc(st.st_size + 2 * sizeof(char)));
           if (std::fread(static_cast<void*>(contents), 1, size, fd) != size) {
             free(contents);
+            std::fclose(fd);
             return nullptr;
           }
           if (std::fclose(fd) != 0) {
@@ -530,8 +532,7 @@ namespace Sass {
       if (path.length() > 5) {
         extension = path.substr(path.length() - 5, 5);
       }
-      for(size_t i=0; i<extension.size();++i)
-        extension[i] = tolower(extension[i]);
+      Util::ascii_str_tolower(&extension);
       if (extension == ".sass" && contents != 0) {
         char * converted = sass2scss(contents, SASS2SCSS_PRETTIFY_1 | SASS2SCSS_KEEP_COMMENT);
         free(contents); // free the indented contents
