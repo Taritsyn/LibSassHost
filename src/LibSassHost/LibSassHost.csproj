@@ -33,8 +33,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageTags>LibSass;Sass;SCSS;CSS</PackageTags>
-		<PackageReleaseNotes>1. Added support of the LibSass version 3.6.2;
-2. Enabled a SourceLink in NuGet package.</PackageReleaseNotes>
+		<PackageReleaseNotes>An attempt was made to prevent occurrence of the access violation exception in the `PtrToString` method.</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>

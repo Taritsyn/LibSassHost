@@ -121,8 +121,7 @@ namespace LibSassHost.Helpers
 			result = Encoding.UTF8.GetString(pBuffer, bufferLength);
 #else
 			var byteArrayPool = ArrayPool<byte>.Shared;
-			byte[] buffer = byteArrayPool.Rent(bufferLength + 1);
-			buffer[bufferLength] = 0;
+			byte[] buffer = byteArrayPool.Rent(bufferLength);
 
 			try
 			{

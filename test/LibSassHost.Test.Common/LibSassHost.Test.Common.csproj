@@ -22,10 +22,6 @@
 		<ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net471' ">
-		<PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.0.0" />
-	</ItemGroup>
-
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' Or '$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp3.0' ">
 		<PackageReference Include="LibSassHost.Native.linux-x64" Version="1.2.7" />
 		<PackageReference Include="LibSassHost.Native.osx-x64" Version="1.2.7" />

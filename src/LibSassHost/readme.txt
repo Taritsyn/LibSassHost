@@ -26,8 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   1. Added support of the LibSass version 3.6.2;
-   2. Enabled a SourceLink in NuGet package.
+   An attempt was made to prevent occurrence of the access violation exception in
+   the `PtrToString` method.
 
    ============
    PROJECT SITE
