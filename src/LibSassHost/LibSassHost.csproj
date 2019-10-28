@@ -33,7 +33,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageTags>LibSass;Sass;SCSS;CSS</PackageTags>
-		<PackageReleaseNotes>An attempt was made to prevent occurrence of the access violation exception in the `PtrToString` method.</PackageReleaseNotes>
+		<PackageReleaseNotes>Fixed a error #31 “Unhandled exceptions”.</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>

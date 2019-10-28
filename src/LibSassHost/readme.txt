@@ -26,8 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   An attempt was made to prevent occurrence of the access violation exception in
-   the `PtrToString` method.
+   Fixed a error #31 “Unhandled exceptions”.
 
    ============
    PROJECT SITE
