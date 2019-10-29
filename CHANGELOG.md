@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.2.9 - October 29, 2019
+ * Improved a fix for [error #31](https://github.com/Taritsyn/LibSassHost/issues/31) “Unhandled exceptions”
+
 ## v1.2.8 - October 28, 2019
  * Fixed a [error #31](https://github.com/Taritsyn/LibSassHost/issues/31) “Unhandled exceptions”
 
