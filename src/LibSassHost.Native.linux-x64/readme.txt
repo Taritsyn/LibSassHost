@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Linux x64 v1.2.8
+               README file for LibSass Host Native for Linux x64 v1.2.9
 
    --------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a error #31 “Unhandled exceptions”.
+   Improved a fix for error #31 “Unhandled exceptions”.
 
    ============
    PROJECT SITE

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost.Native.win-x64</id>
-		<version>1.2.8</version>
+		<version>1.2.9</version>
 		<title>LibSass Host Native for Windows (x64)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
@@ -12,7 +12,7 @@
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.2 for Windows (x64).</description>
-		<releaseNotes>Fixed a error #31 “Unhandled exceptions”.</releaseNotes>
+		<releaseNotes>Improved a fix for error #31 “Unhandled exceptions”.</releaseNotes>
 		<copyright>Copyright © 2015-2019 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Windows x64</tags>

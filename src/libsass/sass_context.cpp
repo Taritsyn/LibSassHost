@@ -122,7 +122,7 @@ namespace Sass {
       c_ctx->error_file = sass_copy_c_string(e.pstate.path);
       c_ctx->error_line = e.pstate.line + 1;
       c_ctx->error_column = e.pstate.column + 1;
-      c_ctx->error_src = sass_copy_string((char*)/*LSH+*/e.pstate.src)/*LSH+*/;
+      c_ctx->error_src = sass_copy_c_string(/*LSH+*/e.pstate.src)/*LSH+*/;
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
       json_delete(json_err);
@@ -542,7 +542,7 @@ extern "C" {
     if (ctx->error_text)        free(ctx->error_text);
     if (ctx->error_json)        free(ctx->error_json);
     if (ctx->error_file)        free(ctx->error_file);
-    if (ctx->error_src)         free((char*)ctx->error_src); //LSH+
+    if (ctx->error_src)         free(ctx->error_src); //LSH+
     free_string_array(ctx->included_files);
     // play safe and reset properties
     ctx->output_string = 0;
