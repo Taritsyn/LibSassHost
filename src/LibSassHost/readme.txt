@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   Improved a fix for error #31 “Unhandled exceptions”.
+   Added support of the LibSass version 3.6.3.
 
    ============
    PROJECT SITE

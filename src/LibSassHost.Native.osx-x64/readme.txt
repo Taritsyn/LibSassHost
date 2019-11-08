@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-                README file for LibSass Host Native for OS X x64 v1.2.9
+                README file for LibSass Host Native for OS X x64 v1.2.10
 
    --------------------------------------------------------------------------------
 
@@ -12,14 +12,14 @@
    DESCRIPTION
    ===========
    This package complements the LibSassHost package and contains the native
-   implementation of LibSass version 3.6.2 for OS X (x64).
+   implementation of LibSass version 3.6.3 for OS X (x64).
 
    This package is only compatible with .NET Core.
 
    =============
    RELEASE NOTES
    =============
-   Improved a fix for error #31 “Unhandled exceptions”.
+   Added support of the LibSass version 3.6.3.
 
    ============
    PROJECT SITE

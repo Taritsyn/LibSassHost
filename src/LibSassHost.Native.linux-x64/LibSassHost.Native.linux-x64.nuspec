@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>LibSassHost.Native.linux-x64</id>
-		<version>1.2.9</version>
+		<version>1.2.10</version>
 		<title>LibSass Host Native for Linux (x64)</title>
 		<authors>Andrey Taritsyn</authors>
 		<owners>Andrey Taritsyn</owners>
@@ -11,10 +11,10 @@
 		<icon>icon.png</icon>
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.2 for Linux (x64).
+		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.3 for Linux (x64).
 
 This package is only compatible with .NET Core.</description>
-		<releaseNotes>Improved a fix for error #31 “Unhandled exceptions”.</releaseNotes>
+		<releaseNotes>Added support of the LibSass version 3.6.3.</releaseNotes>
 		<copyright>Copyright © 2015-2019 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Linux x64</tags>
