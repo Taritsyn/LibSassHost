@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.2.10 - November 8, 2019
+ * Added support of the LibSass version 3.6.3
+
 ## v1.2.9 - October 29, 2019
  * Improved a fix for [error #31](https://github.com/Taritsyn/LibSassHost/issues/31) “Unhandled exceptions”
 
