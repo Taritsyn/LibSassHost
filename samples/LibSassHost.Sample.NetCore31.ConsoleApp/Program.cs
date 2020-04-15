@@ -2,7 +2,7 @@
 
 using LibSassHost.Sample.Logic;
 
-namespace LibSassHost.Sample.NetCore3.ConsoleApp
+namespace LibSassHost.Sample.NetCore31.ConsoleApp
 {
 	class Program : CompilationExampleBase
 	{
