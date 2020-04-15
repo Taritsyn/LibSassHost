@@ -5,7 +5,7 @@
 
    --------------------------------------------------------------------------------
 
-           Copyright (c) 2015-2019 Andrey Taritsyn - http://www.taritsyn.ru
+           Copyright (c) 2015-2020 Andrey Taritsyn - http://www.taritsyn.ru
 
 
    ===========
@@ -26,7 +26,9 @@
    =============
    RELEASE NOTES
    =============
-   Added support of the LibSass version 3.6.3.
+   1. Fixed a error #38 “SassСompilationException contains cyrillic character”;
+   2. In your project code, you must replace all occurrences of the
+      `SassСompilationException` class with the `SassCompilationException` class.
 
    ============
    PROJECT SITE

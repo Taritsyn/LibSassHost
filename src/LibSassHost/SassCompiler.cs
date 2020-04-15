@@ -178,7 +178,7 @@ namespace LibSassHost
 		/// <returns>Compilation result</returns>
 		/// <exception cref="ArgumentException"/>
 		/// <exception cref="ArgumentNullException" />
-		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
+		/// <exception cref="SassCompilationException">Sass compilation error.</exception>
 		public static CompilationResult Compile(string content, CompilationOptions options = null)
 		{
 			if (content == null)
@@ -210,7 +210,7 @@ namespace LibSassHost
 		/// <returns>Compilation result</returns>
 		/// <exception cref="ArgumentException"/>
 		/// <exception cref="ArgumentNullException" />
-		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
+		/// <exception cref="SassCompilationException">Sass compilation error.</exception>
 		public static CompilationResult Compile(string content, bool indentedSyntax, CompilationOptions options = null)
 		{
 			if (content == null)
@@ -243,7 +243,7 @@ namespace LibSassHost
 		/// <returns>Compilation result</returns>
 		/// <exception cref="ArgumentException"/>
 		/// <exception cref="ArgumentNullException" />
-		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
+		/// <exception cref="SassCompilationException">Sass compilation error.</exception>
 		public static CompilationResult Compile(string content, string inputPath, string outputPath = null,
 			string sourceMapPath = null, CompilationOptions options = null)
 		{
@@ -324,7 +324,7 @@ namespace LibSassHost
 		/// <returns>Compilation result</returns>
 		/// <exception cref="ArgumentException"/>
 		/// <exception cref="ArgumentNullException" />
-		/// <exception cref="SassСompilationException">Sass compilation error.</exception>
+		/// <exception cref="SassCompilationException">Sass compilation error.</exception>
 		public static CompilationResult CompileFile(string inputPath, string outputPath = null,
 			string sourceMapPath = null, CompilationOptions options = null)
 		{
@@ -352,7 +352,7 @@ namespace LibSassHost
 				string description = string.Format("File to read not found or unreadable: {0}", inputPath);
 				string message = string.Format("Internal Error: {0}", description);
 
-				throw new SassСompilationException(message)
+				throw new SassCompilationException(message)
 				{
 					ErrorCode = 3,
 					Description = description,
@@ -448,7 +448,7 @@ namespace LibSassHost
 				string sourceFragment = SourceCodeNavigator.GetSourceFragment(sourceCode,
 					new SourceCodeNodeCoordinates(lineNumber, columnNumber));
 
-				throw new SassСompilationException(message)
+				throw new SassCompilationException(message)
 				{
 					ErrorCode = error.Status,
 					Description = error.Text,

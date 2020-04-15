@@ -73,7 +73,7 @@ namespace LibSassHost.Helpers
 			StringBuilder detailsBuilder = stringBuilderPool.Rent();
 			WriteCommonErrorDetails(detailsBuilder, sassException, omitMessage);
 
-			var sassСompilationException = sassException as SassСompilationException;
+			var sassСompilationException = sassException as SassCompilationException;
 			if (sassСompilationException != null)
 			{
 				WriteCompilationErrorDetails(detailsBuilder, sassСompilationException);
@@ -93,7 +93,7 @@ namespace LibSassHost.Helpers
 		/// <param name="sassСompilationException">Sass compilation exception</param>
 		/// <param name="omitMessage">Flag for whether to omit message</param>
 		/// <returns>Detailed error message</returns>
-		public static string GenerateErrorDetails(SassСompilationException sassСompilationException,
+		public static string GenerateErrorDetails(SassCompilationException sassСompilationException,
 			bool omitMessage = false)
 		{
 			if (sassСompilationException == null)
@@ -136,7 +136,7 @@ namespace LibSassHost.Helpers
 		/// <param name="buffer">Instance of <see cref="StringBuilder"/></param>
 		/// <param name="sassСompilationException">Sass compilation exception</param>
 		private static void WriteCompilationErrorDetails(StringBuilder buffer,
-			SassСompilationException sassСompilationException)
+			SassCompilationException sassСompilationException)
 		{
 			if (sassСompilationException.ErrorCode > 0)
 			{
@@ -204,7 +204,7 @@ namespace LibSassHost.Helpers
 		/// <param name="sassСompilationException">Sass compilation exception</param>
 		/// <returns>Detailed error message</returns>
 		[Obsolete("Use a `GenerateErrorDetails` method")]
-		public static string Format(SassСompilationException sassСompilationException)
+		public static string Format(SassCompilationException sassСompilationException)
 		{
 			return GenerateErrorDetails(sassСompilationException);
 		}

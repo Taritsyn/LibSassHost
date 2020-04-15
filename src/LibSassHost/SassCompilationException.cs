@@ -7,16 +7,12 @@ using System.Security.Permissions;
 namespace LibSassHost
 {
 	/// <summary>
-	/// DEPRECATED EXCEPTION CLASS. WILL BE REMOVED IN THE NEXT MAJOR VERSION.
+	/// The exception that is thrown during a Sass compilation
 	/// </summary>
-	/// <remarks>
-	/// <para>The name of this class contains a Cyrillic character, so you should use a <see cref="SassCompilationException"/> class instead.</para>
-	/// </remarks>
 #if !NETSTANDARD1_3
 	[Serializable]
 #endif
-	[Obsolete("The name of this class contains a Cyrillic character, so you should use a `SassCompilationException` class instead.")]
-	public sealed class SassСompilationException : SassException
+	public sealed class SassCompilationException : SassException
 	{
 		/// <summary>
 		/// Error code
@@ -115,32 +111,32 @@ namespace LibSassHost
 
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SassСompilationException"/> class
+		/// Initializes a new instance of the <see cref="SassCompilationException"/> class
 		/// with a specified error message
 		/// </summary>
 		/// <param name="message">The message that describes the error</param>
-		public SassСompilationException(string message)
+		public SassCompilationException(string message)
 			: base(message)
 		{ }
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SassСompilationException"/> class
+		/// Initializes a new instance of the <see cref="SassCompilationException"/> class
 		/// with a specified error message and a reference to the inner exception
 		/// that is the cause of this exception
 		/// </summary>
 		/// <param name="message">The error message that explains the reason for the exception</param>
 		/// <param name="innerException">The exception that is the cause of the current exception</param>
-		public SassСompilationException(string message, Exception innerException)
+		public SassCompilationException(string message, Exception innerException)
 			: base(message, innerException)
 		{ }
 #if !NETSTANDARD1_3
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SassСompilationException"/> class with serialized data
+		/// Initializes a new instance of the <see cref="SassCompilationException"/> class with serialized data
 		/// </summary>
 		/// <param name="info">The object that holds the serialized data</param>
 		/// <param name="context">The contextual information about the source or destination</param>
-		private SassСompilationException(SerializationInfo info, StreamingContext context)
+		private SassCompilationException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
 			if (info != null)

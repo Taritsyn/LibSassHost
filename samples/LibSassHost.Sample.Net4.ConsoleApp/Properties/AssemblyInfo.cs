@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LibSass Host: Sample .NET 4.0 Console Application")]
-[assembly: AssemblyCopyright("Copyright © 2015-2019 Andrey Taritsyn")]
+[assembly: AssemblyCopyright("Copyright © 2015-2020 Andrey Taritsyn")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

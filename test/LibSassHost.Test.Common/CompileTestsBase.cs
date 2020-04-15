@@ -230,14 +230,14 @@ namespace LibSassHost.Test.Common
 				SourceMap = true
 			};
 
-			SassСompilationException exception = null;
+			SassCompilationException exception = null;
 
 			// Act
 			try
 			{
 				CompilationResult result = SassCompiler.Compile(inputCode, inputFilePath, options: options);
 			}
-			catch (SassСompilationException e)
+			catch (SassCompilationException e)
 			{
 				exception = e;
 			}
@@ -262,14 +262,14 @@ namespace LibSassHost.Test.Common
 				SourceMap = true
 			};
 
-			SassСompilationException exception = null;
+			SassCompilationException exception = null;
 
 			// Act
 			try
 			{
 				CompilationResult result = SassCompiler.Compile(inputCode, inputFilePath, options: options);
 			}
-			catch (SassСompilationException e)
+			catch (SassCompilationException e)
 			{
 				exception = e;
 			}
@@ -289,14 +289,14 @@ namespace LibSassHost.Test.Common
 			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("non-existing-files/{0}/style{1}", _subfolderName, _fileExtension));
 
-			SassСompilationException exception = null;
+			SassCompilationException exception = null;
 
 			// Act
 			try
 			{
 				CompilationResult result = SassCompiler.CompileFile(inputFilePath);
 			}
-			catch (SassСompilationException e)
+			catch (SassCompilationException e)
 			{
 				exception = e;
 			}
@@ -316,14 +316,14 @@ namespace LibSassHost.Test.Common
 			string inputFilePath = Path.Combine(_filesDirectoryPath,
 				string.Format("invalid-syntax/{0}/style{1}", _subfolderName, _fileExtension));
 
-			SassСompilationException exception = null;
+			SassCompilationException exception = null;
 
 			// Act
 			try
 			{
 				CompilationResult result = SassCompiler.CompileFile(inputFilePath);
 			}
-			catch (SassСompilationException e)
+			catch (SassCompilationException e)
 			{
 				exception = e;
 			}
