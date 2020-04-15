@@ -136,7 +136,7 @@ body {
 				Console.WriteLine("Included file paths: {0}",
 					string.Join(", ", result.IncludedFilePaths));
 			}
-			catch (SassСompilationException e)
+			catch (SassCompilationException e)
 			{
 				Console.WriteLine("During compilation of SCSS code an error occurred. See details:");
 				Console.WriteLine();
@@ -155,7 +155,7 @@ First we call the `Compile` method of <code title="LibSassHost.SassCompiler">Sas
  1. `sourceMapPath` (optional) - path to source map file. If path to source map file is not specified, but specified a path to output file, then value of this parameter is obtained by replacing extension in the output file path by `.css.map` extension.
  1. `options` (optional) - compilation options (instance of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class)
 
-Then output result of compilation to the console. In addition, we provide handling of the <code title="LibSassHost.SassСompilationException">SassСompilationException</code> exception.
+Then output result of compilation to the console. In addition, we provide handling of the <code title="LibSassHost.SassCompilationException">SassCompilationException</code> exception.
 
 And now let's consider in detail properties of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class:
 
@@ -307,7 +307,7 @@ namespace LibSassHost.Example.ConsoleApplication
 				Console.WriteLine("Included file paths: {0}",
 					string.Join(", ", result.IncludedFilePaths));
 			}
-			catch (SassСompilationException e)
+			catch (SassCompilationException e)
 			{
 				Console.WriteLine("During compilation of SCSS file an error occurred. See details:");
 				Console.WriteLine();

@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.3.0 - April 15, 2020
+ * Fixed a [error #38](https://github.com/Taritsyn/LibSassHost/issues/38) “SassСompilationException contains cyrillic character”
+ * In your project code, you must replace all occurrences of the `SassСompilationException` class with the `SassCompilationException` class
+
 ## v1.2.10 - November 8, 2019
  * Added support of the LibSass version 3.6.3
 
