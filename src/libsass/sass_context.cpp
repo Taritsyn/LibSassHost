@@ -10,17 +10,17 @@
 
 // C++ helper
 namespace Sass {
-  // see sass_copy_c_string(std::string str)
-  static inline JsonNode* json_mkstream(const std::stringstream& stream)
+  // see sass_copy_c_string(sass::string str)
+  static inline JsonNode* json_mkstream(const sass::ostream& stream)
   {
     // hold on to string on stack!
-    std::string str(stream.str());
+    sass::string str(stream.str());
     return json_mkstring(str.c_str());
   }
 
-  static void handle_string_error(Sass_Context* c_ctx, const std::string& msg, int severety)
+  static void handle_string_error(Sass_Context* c_ctx, const sass::string& msg, int severety)
   {
-    std::stringstream msg_stream;
+    sass::ostream msg_stream;
     JsonNode* json_err = json_mkobject();
     msg_stream << "Internal Error: " << msg << std::endl;
     json_append_member(json_err, "status", json_mknumber(severety));
@@ -41,9 +41,9 @@ namespace Sass {
       throw;
     }
     catch (Exception::Base& e) {
-      std::stringstream msg_stream;
-      std::string cwd(Sass::File::get_cwd());
-      std::string msg_prefix(e.errtype());
+      sass::ostream msg_stream;
+      sass::string cwd(Sass::File::get_cwd());
+      sass::string msg_prefix(e.errtype());
       bool got_newline = false;
       msg_stream << msg_prefix << ": ";
       const char* msg = e.what();
@@ -55,7 +55,7 @@ namespace Sass {
           got_newline = true;
         }
         else if (got_newline) {
-          msg_stream << std::string(msg_prefix.size() + 2, ' ');
+          msg_stream << sass::string(msg_prefix.size() + 2, ' ');
           got_newline = false;
         }
         msg_stream << *msg;
@@ -65,24 +65,25 @@ namespace Sass {
 
       if (e.traces.empty()) {
         // we normally should have some traces, still here as a fallback
-        std::string rel_path(Sass::File::abs2rel(e.pstate.path, cwd, cwd));
-        msg_stream << std::string(msg_prefix.size() + 2, ' ');
-        msg_stream << " on line " << e.pstate.line + 1 << " of " << rel_path << "\n";
+        sass::string rel_path(Sass::File::abs2rel(e.pstate.getPath(), cwd, cwd));
+        msg_stream << sass::string(msg_prefix.size() + 2, ' ');
+        msg_stream << " on line " << e.pstate.getLine() << " of " << rel_path << "\n";
       }
       else {
-        std::string rel_path(Sass::File::abs2rel(e.pstate.path, cwd, cwd));
+        sass::string rel_path(Sass::File::abs2rel(e.pstate.getPath(), cwd, cwd));
         msg_stream << traces_to_string(e.traces, "        ");
       }
 
       // now create the code trace (ToDo: maybe have util functions?)
-      if (e.pstate.line != std::string::npos &&
-          e.pstate.column != std::string::npos &&
-          e.pstate.src != nullptr) {
-        size_t lines = e.pstate.line;
+      if (e.pstate.position.line != sass::string::npos &&
+          e.pstate.position.column != sass::string::npos &&
+          e.pstate.source != nullptr) {
+        Offset offset(e.pstate.position);
+        size_t lines = offset.line;
         // scan through src until target line
         // move line_beg pointer to line start
         const char* line_beg;
-        for (line_beg = e.pstate.src; *line_beg != '\0'; ++line_beg) {
+        for (line_beg = e.pstate.getRawData(); *line_beg != '\0'; ++line_beg) {
           if (lines == 0) break;
           if (*line_beg == '\n') --lines;
         }
@@ -96,12 +97,12 @@ namespace Sass {
         size_t move_in = 0; size_t shorten = 0;
         size_t left_chars = 42; size_t max_chars = 76;
         // reported excerpt should not exceed `max_chars` chars
-        if (e.pstate.column > line_len) left_chars = e.pstate.column;
-        if (e.pstate.column > left_chars) move_in = e.pstate.column - left_chars;
+        if (offset.column > line_len) left_chars = offset.column;
+        if (offset.column > left_chars) move_in = offset.column - left_chars;
         if (line_len > max_chars + move_in) shorten = line_len - move_in - max_chars;
         utf8::advance(line_beg, move_in, line_end);
         utf8::retreat(line_end, shorten, line_beg);
-        std::string sanitized; std::string marker(e.pstate.column - move_in, '-');
+        sass::string sanitized; sass::string marker(offset.column - move_in, '-');
         utf8::replace_invalid(line_beg, line_end, std::back_inserter(sanitized));
         msg_stream << ">> " << sanitized << "\n";
         msg_stream << "   " << marker << "^\n";
@@ -109,9 +110,9 @@ namespace Sass {
 
       JsonNode* json_err = json_mkobject();
       json_append_member(json_err, "status", json_mknumber(1));
-      json_append_member(json_err, "file", json_mkstring(e.pstate.path));
-      json_append_member(json_err, "line", json_mknumber((double)(e.pstate.line + 1)));
-      json_append_member(json_err, "column", json_mknumber((double)(e.pstate.column + 1)));
+      json_append_member(json_err, "file", json_mkstring(e.pstate.getPath()));
+      json_append_member(json_err, "line", json_mknumber((double)(e.pstate.getLine())));
+      json_append_member(json_err, "column", json_mknumber((double)(e.pstate.getColumn())));
       json_append_member(json_err, "message", json_mkstring(e.what()));
       json_append_member(json_err, "formatted", json_mkstream(msg_stream));
       try { c_ctx->error_json = json_stringify(json_err, "  "); }
@@ -119,23 +120,23 @@ namespace Sass {
       c_ctx->error_message = sass_copy_string(msg_stream.str());
       c_ctx->error_text = sass_copy_c_string(e.what());
       c_ctx->error_status = 1;
-      c_ctx->error_file = sass_copy_c_string(e.pstate.path);
-      c_ctx->error_line = e.pstate.line + 1;
-      c_ctx->error_column = e.pstate.column + 1;
-      c_ctx->error_src = sass_copy_c_string(e.pstate.src);
+      c_ctx->error_file = sass_copy_c_string(e.pstate.getPath());
+      c_ctx->error_line = e.pstate.getLine();
+      c_ctx->error_column = e.pstate.getColumn();
+      c_ctx->error_src = sass_copy_c_string(e.pstate.getRawData());
       c_ctx->output_string = 0;
       c_ctx->source_map_string = 0;
       json_delete(json_err);
     }
     catch (std::bad_alloc& ba) {
-      std::stringstream msg_stream;
+      sass::ostream msg_stream;
       msg_stream << "Unable to allocate memory: " << ba.what();
       handle_string_error(c_ctx, msg_stream.str(), 2);
     }
     catch (std::exception& e) {
       handle_string_error(c_ctx, e.what(), 3);
     }
-    catch (std::string& e) {
+    catch (sass::string& e) {
       handle_string_error(c_ctx, e, 4);
     }
     catch (const char* e) {
@@ -169,8 +170,8 @@ namespace Sass {
     try {
 
       // get input/output path from options
-      std::string input_path = safe_str(c_ctx->input_path);
-      std::string output_path = safe_str(c_ctx->output_path);
+      sass::string input_path = safe_str(c_ctx->input_path);
+      sass::string output_path = safe_str(c_ctx->output_path);
 
       // maybe skip some entries of included files
       // we do not include stdin for data contexts
@@ -279,8 +280,8 @@ extern "C" {
       // reset error position
       c_ctx->error_file = 0;
       c_ctx->error_src = 0;
-      c_ctx->error_line = std::string::npos;
-      c_ctx->error_column = std::string::npos;
+      c_ctx->error_line = sass::string::npos;
+      c_ctx->error_column = sass::string::npos;
 
       // allocate a new compiler instance
       void* ctxmem = calloc(1, sizeof(struct Sass_Compiler));
@@ -698,6 +699,23 @@ extern "C" {
   const char* ADDCALL sass_option_get_include_path(struct Sass_Options* options, size_t i)
   {
     struct string_list* cur = options->include_paths;
+    while (i) { i--; cur = cur->next; }
+    return cur->string;
+  }
+
+  // Push function for plugin paths (no manipulation support for now)
+  size_t ADDCALL sass_option_get_plugin_path_size(struct Sass_Options* options)
+  {
+    size_t len = 0;
+    struct string_list* cur = options->plugin_paths;
+    while (cur) { len++; cur = cur->next; }
+    return len;
+  }
+
+  // Push function for plugin paths (no manipulation support for now)
+  const char* ADDCALL sass_option_get_plugin_path(struct Sass_Options* options, size_t i)
+  {
+    struct string_list* cur = options->plugin_paths;
     while (i) { i--; cur = cur->next; }
     return cur->string;
   }

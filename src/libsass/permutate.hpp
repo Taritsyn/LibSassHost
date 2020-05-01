@@ -7,37 +7,42 @@ namespace Sass {
 
   // Returns a list of all possible paths through the given lists.
   //
-  // For example, given `[[1, 2], [3, 4], [5]]`, this returns:
+  // For example, given `[[1, 2], [3, 4], [5, 6]]`, this returns:
   //
   // ```
   // [[1, 3, 5],
   //  [2, 3, 5],
   //  [1, 4, 5],
-  //  [2, 4, 5]]
+  //  [2, 4, 5],
+  //  [1, 3, 6],
+  //  [2, 3, 6],
+  //  [1, 4, 6],
+  //  [2, 4, 6]]
   // ```
   // 
   // Note: called `paths` in dart-sass
   template <class T>
-  std::vector<std::vector<T>> permutate(
-    const std::vector<std::vector<T>>& in)
+  sass::vector<sass::vector<T>> permutate(
+    const sass::vector<sass::vector<T>>& in)
   {
 
     size_t L = in.size(), n = 0;
 
+    if (L == 0) return {};
     // Exit early if any entry is empty
     for (size_t i = 0; i < L; i += 1) {
       if (in[i].size() == 0) return {};
     }
 
     size_t* state = new size_t[L + 1];
-    std::vector<std::vector<T>> out;
+    sass::vector<sass::vector<T>> out;
 
     // First initialize all states for every permutation group
     for (size_t i = 0; i < L; i += 1) {
       state[i] = in[i].size() - 1;
     }
     while (true) {
-      std::vector<T> perm;
+      sass::vector<T> perm;
       // Create one permutation for state
       for (size_t i = 0; i < L; i += 1) {
         perm.push_back(in.at(i).at(in[i].size() - state[i] - 1));
@@ -73,19 +78,40 @@ namespace Sass {
   }
   // EO permutate
 
-  // ToDo: this variant is used in resolve_parent_refs
+  // ToDo: this variant is used in resolveParentSelectors
+  // Returns a list of all possible paths through the given lists.
+  //
+  // For example, given `[[1, 2], [3, 4], [5, 6]]`, this returns:
+  //
+  // ```
+  // [[1, 3, 5],
+  //  [1, 3, 6],
+  //  [1, 4, 5],
+  //  [1, 4, 6],
+  //  [2, 3, 5],
+  //  [2, 3, 6],
+  //  [2, 4, 5],
+  //  [2, 4, 6]]
+  // ```
+  // 
   template <class T>
-  std::vector<std::vector<T>>
-    permutateAlt(const std::vector<std::vector<T>>& in) {
+  sass::vector<sass::vector<T>>
+    permutateAlt(const sass::vector<sass::vector<T>>& in) {
 
     size_t L = in.size();
     size_t n = in.size() - 1;
+
+    if (L == 0) return {};
+    // Exit early if any entry is empty
+    for (size_t i = 0; i < L; i += 1) {
+      if (in[i].size() == 0) return {};
+    }
+
     size_t* state = new size_t[L];
-    std::vector< std::vector<T>> out;
+    sass::vector<sass::vector<T>> out;
 
     // First initialize all states for every permutation group
     for (size_t i = 0; i < L; i += 1) {
-      if (in[i].size() == 0) return {};
       state[i] = in[i].size() - 1;
     }
 
@@ -96,7 +122,7 @@ namespace Sass {
       { // std::cerr << state[p] << " "; }
       // std::cerr << "\n";
       */
-      std::vector<T> perm;
+      sass::vector<T> perm;
       // Create one permutation for state
       for (size_t i = 0; i < L; i += 1) {
         perm.push_back(in.at(i).at(in[i].size() - state[i] - 1));
@@ -104,10 +130,8 @@ namespace Sass {
       // Current group finished
       if (state[n] == 0) {
         // Find position of next decrement
-        while (n > 0 && state[--n] == 0)
-        {
+        while (n > 0 && state[--n] == 0) {}
 
-        }
         // Check for end condition
         if (state[n] != 0) {
           // Decrease next on the left side

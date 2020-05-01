@@ -11,7 +11,7 @@
 #pragma warning(disable : 4005)
 #endif
 
-// aplies to MSVC and MinGW
+// applies to MSVC and MinGW
 #ifdef _WIN32
 // we do not want the ERROR macro
 # ifndef NOGDI
@@ -48,13 +48,17 @@
 #endif
 
 
-// include C-API header
+// Include C-API header
 #include "sass/base.h"
+
+// Include allocator
+#include "memory.hpp"
 
 // For C++ helper
 #include <string>
+#include <vector>
 
-// output behaviours
+// output behavior
 namespace Sass {
 
   // create some C++ aliases for the most used options
@@ -69,11 +73,11 @@ namespace Sass {
 
   // helper to aid dreaded MSVC debug mode
   // see implementation for more details
-  char* sass_copy_string(std::string str);
+  char* sass_copy_string(sass::string str);
 
 }
 
-// input behaviours
+// input behaviors
 enum Sass_Input_Style {
   SASS_CONTEXT_NULL,
   SASS_CONTEXT_FILE,

@@ -1,3 +1,7 @@
+// sass.hpp must go before all system headers to get the
+// __EXTENSIONS__ fix on Solaris.
+#include "sass.hpp"
+
 #include "file_manager.hpp"
 #include "utf8_string.hpp"
 #include "util.hpp"
@@ -22,7 +26,7 @@ namespace Sass
     return _instance;
   }
 
-  std::string File_Manager::get_current_directory()
+  sass::string File_Manager::get_current_directory()
   {
     if (get_current_directory_delegate == NULL)
     {
@@ -31,15 +35,15 @@ namespace Sass
 
 #ifdef _WIN32
     const wchar_t* wcurrent_directory_name = get_current_directory_delegate();
-    std::string current_directory_name = UTF_8::convert_from_utf16(wcurrent_directory_name);
+    sass::string current_directory_name = UTF_8::convert_from_utf16(wcurrent_directory_name);
 #else
-    std::string current_directory_name = get_current_directory_delegate();
+    sass::string current_directory_name = get_current_directory_delegate();
 #endif
 
     return current_directory_name;
   }
 
-  bool File_Manager::file_exists(const std::string& path)
+  bool File_Manager::file_exists(const sass::string& path)
   {
     if (file_exists_delegate == NULL)
     {
@@ -56,7 +60,7 @@ namespace Sass
     return result;
   }
 
-  bool File_Manager::is_absolute_path(const std::string& path)
+  bool File_Manager::is_absolute_path(const sass::string& path)
   {
     if (is_absolute_path_delegate == NULL)
     {
@@ -73,7 +77,7 @@ namespace Sass
     return result;
   }
 
-  std::string File_Manager::to_absolute_path(const std::string& path)
+  sass::string File_Manager::to_absolute_path(const sass::string& path)
   {
     if (to_absolute_path_delegate == NULL)
     {
@@ -82,15 +86,15 @@ namespace Sass
 
 #ifdef _WIN32
     std::wstring wpath = UTF_8::convert_to_utf16(path);
-    std::string absolute_path = UTF_8::convert_from_utf16(to_absolute_path_delegate(wpath.c_str()));
+    sass::string absolute_path = UTF_8::convert_from_utf16(to_absolute_path_delegate(wpath.c_str()));
 #else
-    std::string absolute_path = to_absolute_path_delegate(path.c_str());
+    sass::string absolute_path = to_absolute_path_delegate(path.c_str());
 #endif
 
     return absolute_path;
   }
 
-  char* File_Manager::read_file(const std::string& path)
+  char* File_Manager::read_file(const sass::string& path)
   {
     if (read_file_delegate == NULL)
     {
@@ -100,9 +104,9 @@ namespace Sass
 #ifdef _WIN32
     std::wstring wpath = UTF_8::convert_to_utf16(path);
     const wchar_t* wcontent = read_file_delegate(wpath.c_str());
-    std::string content = UTF_8::convert_from_utf16(std::wstring(wcontent));
+    sass::string content = UTF_8::convert_from_utf16(std::wstring(wcontent));
 #else
-    std::string content = read_file_delegate(path.c_str());
+    sass::string content = read_file_delegate(path.c_str());
 #endif
 
     return sass_copy_c_string(content.c_str());

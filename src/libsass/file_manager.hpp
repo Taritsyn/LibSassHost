@@ -1,6 +1,10 @@
 #ifndef SASS_FILE_MANAGER_H
 #define SASS_FILE_MANAGER_H
 
+// sass.hpp must go before all system headers to get the
+// __EXTENSIONS__ fix on Solaris.
+#include "sass.hpp"
+
 #include <string>
 #include "file_manager.h"
 
@@ -24,11 +28,11 @@ namespace Sass
 
       static File_Manager& get_instance();
 
-      std::string get_current_directory();
-      bool file_exists(const std::string& path);
-      bool is_absolute_path(const std::string& path);
-      std::string to_absolute_path(const std::string& path);
-      char* read_file(const std::string& path);
+      sass::string get_current_directory();
+      bool file_exists(const sass::string& path);
+      bool is_absolute_path(const sass::string& path);
+      sass::string to_absolute_path(const sass::string& path);
+      char* read_file(const sass::string& path);
   };
 }
 

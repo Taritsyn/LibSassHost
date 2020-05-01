@@ -139,16 +139,16 @@ namespace Sass {
       {
         // parent selector only allowed at start
         // upcoming Sass may allow also trailing
-        ParserState state(pstate);
-        std::string found("&");
+        SourceSpan state(pstate);
+        sass::string found("&");
         if (lex < identifier >()) {
-          found += std::string(lexed);
+          found += sass::string(lexed);
         }
-        std::string sel(seq->hasRealParent() ? "&" : "");
+        sass::string sel(seq->hasRealParent() ? "&" : "");
         if (!seq->empty()) { sel = seq->last()->to_string({ NESTED, 5 }); }
         // ToDo: parser should throw parser exceptions
         error("Invalid CSS after \"" + sel + "\": expected \"{\", was \"" + found + "\"\n\n"
-          "\"" + found + "\" may only be used at the beginning of a compound selector.", state);
+          "\"" + found + "\" may only be used at the beginning of a compound selector.");
       }
       // parse functional
       else if (match < re_functional >())
@@ -159,7 +159,7 @@ namespace Sass {
       // parse type selector
       else if (lex< re_type_selector >(false))
       {
-        seq->append(SASS_MEMORY_NEW(Type_Selector, pstate, lexed));
+        seq->append(SASS_MEMORY_NEW(TypeSelector, pstate, lexed));
       }
       // peek for abort conditions
       else if (peek< spaces >()) break;
