@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.3.1 - May 1, 2020
+ * Added support of the LibSass version 3.6.4
+ * Fixed a [error #35](https://github.com/Taritsyn/LibSassHost/issues/35) “Unable to load DLL 'libsass' on Windows Server 2008 R2”. Special thanks to [Herman Kan](https://github.com/hermankan)
+
 ## v1.3.0 - April 15, 2020
  * Fixed a [error #38](https://github.com/Taritsyn/LibSassHost/issues/38) “SassСompilationException contains cyrillic character”
  * In your project code, you must replace all occurrences of the `SassСompilationException` class with the `SassCompilationException` class
