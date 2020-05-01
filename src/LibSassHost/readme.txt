@@ -26,9 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   1. Fixed a error #38 “SassСompilationException contains cyrillic character”;
-   2. In your project code, you must replace all occurrences of the
-      `SassСompilationException` class with the `SassCompilationException` class.
+   Fixed a error #35 “Unable to load DLL 'libsass' on Windows Server 2008 R2”.
+   Special thanks to Herman Kan.
 
    ============
    PROJECT SITE

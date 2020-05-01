@@ -9,6 +9,7 @@ setlocal
 
 set _CONFIGURATION=Release
 set _EMBED_MSVC_RUNTIME=false
+set _EMBED_MFC_LIBRARY=false
 set _IS_64_BIT_OS=true
 set _LOG_FILE_NAME=build-libsass.log
 set _VERBOSE=false
@@ -21,6 +22,7 @@ if "%1"=="--help" goto print-usage
 if /i "%1"=="-d" goto set-debug-configuration
 if /i "%1"=="--debug" goto set-debug-configuration
 if /i "%1"=="--embed-msvc-runtime" goto set-msvc-runtime-embedding
+if /i "%1"=="--embed-mfc-library" goto set-mfc-library-embedding
 if /i "%1"=="-v" goto set-verbose-output
 if /i "%1"=="--verbose" goto set-verbose-output
 
@@ -32,6 +34,7 @@ echo.
 echo options:
 echo   -d, --debug             Debug build (by default Release build)
 echo   --embed-msvc-runtime    Link a assembly with MSVC libraries statically
+echo   --embed-mfc-library     Link a assembly with MFC DLL statically
 echo   -h, --help              Show help
 echo   -v, --verbose           Display verbose output
 echo.
@@ -48,6 +51,10 @@ goto next-arg
 
 :set-msvc-runtime-embedding
 set _EMBED_MSVC_RUNTIME=true
+goto next-arg
+
+:set-mfc-library-embedding
+set _EMBED_MFC_LIBRARY=true
 goto next-arg
 
 :set-verbose-output
@@ -86,7 +93,7 @@ goto exit
 
 :build
 
-set _MSBUILD_ARGS=libsass.sln /p:Configuration=%_CONFIGURATION% /p:EmbedMsvcRuntime=%_EMBED_MSVC_RUNTIME%
+set _MSBUILD_ARGS=libsass.sln /p:Configuration=%_CONFIGURATION% /p:EmbedMsvcRuntime=%_EMBED_MSVC_RUNTIME% /p:EmbedMfcLibrary=%_EMBED_MFC_LIBRARY%
 
 :build-32-bit
 echo Building 32-bit LibSass ...

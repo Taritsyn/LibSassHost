@@ -33,8 +33,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<PackageTags>LibSass;Sass;SCSS;CSS</PackageTags>
-		<PackageReleaseNotes>1. Fixed a error #38 “SassСompilationException contains cyrillic character”;
-2. In your project code, you must replace all occurrences of the `SassСompilationException` class with the `SassCompilationException` class.</PackageReleaseNotes>
+		<PackageReleaseNotes>Fixed a error #35 “Unable to load DLL 'libsass' on Windows Server 2008 R2”. Special thanks to Herman Kan.</PackageReleaseNotes>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
 		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>

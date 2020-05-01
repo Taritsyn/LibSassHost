@@ -12,7 +12,7 @@
 		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.3 for Windows (x86).</description>
-		<releaseNotes>Added support of the LibSass version 3.6.3.</releaseNotes>
+		<releaseNotes>Fixed a error #35 “Unable to load DLL 'libsass' on Windows Server 2008 R2”. Special thanks to Herman Kan.</releaseNotes>
 		<copyright>Copyright © 2015-2020 Andrey Taritsyn</copyright>
 		<language>en-US</language>
 		<tags>LibSass Sass SCSS CSS Windows x86</tags>
