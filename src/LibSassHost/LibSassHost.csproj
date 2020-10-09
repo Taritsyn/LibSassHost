@@ -13,6 +13,7 @@
 		<PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DisableDefaultResxToCsConversionTarget>true</DisableDefaultResxToCsConversionTarget>
 		<Title>$(Product)</Title>
 		<Authors>Andrey Taritsyn</Authors>
 		<Description>.NET wrapper around the LibSass (http://sass-lang.com/libsass) with the ability to support a virtual file system.

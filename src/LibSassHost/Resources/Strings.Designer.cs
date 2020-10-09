@@ -16,7 +16,7 @@ namespace LibSassHost.Resources
 	/// <summary>
 	/// A strongly-typed resource class, for looking up localized strings, etc.
 	/// </summary>
-	public class Strings
+	internal class Strings
 	{
 		private static Lazy<ResourceManager> _resourceManager =
 			new Lazy<ResourceManager>(() => new ResourceManager(
@@ -33,7 +33,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Returns a cached ResourceManager instance used by this class
 		/// </summary>
-		public static ResourceManager ResourceManager
+		internal static ResourceManager ResourceManager
 		{
 			get
 			{
@@ -45,7 +45,7 @@ namespace LibSassHost.Resources
 		/// Overrides a current thread's CurrentUICulture property for all
 		/// resource lookups using this strongly typed resource class
 		/// </summary>
-		public static CultureInfo Culture
+		internal static CultureInfo Culture
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "The parameter `{0}` must be a non-empty string."
 		/// </summary>
-		public static string Common_ArgumentIsEmpty
+		internal static string Common_ArgumentIsEmpty
 		{
 			get { return GetString("Common_ArgumentIsEmpty"); }
 		}
@@ -68,7 +68,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "The parameter '{0}' must be a non-nullable."
 		/// </summary>
-		public static string Common_ArgumentIsNull
+		internal static string Common_ArgumentIsNull
 		{
 			get { return GetString("Common_ArgumentIsNull"); }
 		}
@@ -76,7 +76,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "File '{0}' not exist."
 		/// </summary>
-		public static string Common_FileNotExist
+		internal static string Common_FileNotExist
 		{
 			get { return GetString("Common_FileNotExist"); }
 		}
@@ -84,7 +84,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "See the original error message: “{0}”."
 		/// </summary>
-		public static string Common_SeeOriginalErrorMessage
+		internal static string Common_SeeOriginalErrorMessage
 		{
 			get { return GetString("Common_SeeOriginalErrorMessage"); }
 		}
@@ -92,7 +92,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Failed to add the '{0}' directory to the search path used to locate DLLs for the application."
 		/// </summary>
-		public static string Compiler_AddingDirectoryToDllSearchPathFailed
+		internal static string Compiler_AddingDirectoryToDllSearchPathFailed
 		{
 			get { return GetString("Compiler_AddingDirectoryToDllSearchPathFailed"); }
 		}
@@ -100,7 +100,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Most likely it happened, because the '{0}' assembly or one of its dependencies was not found."
 		/// </summary>
-		public static string Compiler_AssemblyNotFound
+		internal static string Compiler_AssemblyNotFound
 		{
 			get { return GetString("Compiler_AssemblyNotFound"); }
 		}
@@ -108,7 +108,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "You can build the '{0}' assembly for the current processor architecture by using following..."
 		/// </summary>
-		public static string Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture
+		internal static string Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture
 		{
 			get { return GetString("Compiler_BuildNativeAssemblyForCurrentProcessorArchitecture"); }
 		}
@@ -116,7 +116,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "{0} packages do not support installation under Mono, but you can to install the native assembly..."
 		/// </summary>
-		public static string Compiler_ManualInstallationUnderMonoRequired
+		internal static string Compiler_ManualInstallationUnderMonoRequired
 		{
 			get { return GetString("Compiler_ManualInstallationUnderMonoRequired"); }
 		}
@@ -124,7 +124,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "There is no {0} package for the {1} processor architecture."
 		/// </summary>
-		public static string Compiler_NoNuGetPackageForProcessorArchitecture
+		internal static string Compiler_NoNuGetPackageForProcessorArchitecture
 		{
 			get { return GetString("Compiler_NoNuGetPackageForProcessorArchitecture"); }
 		}
@@ -132,7 +132,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Try to install the {0} package via NuGet."
 		/// </summary>
-		public static string Compiler_NuGetPackageInstallationRequired
+		internal static string Compiler_NuGetPackageInstallationRequired
 		{
 			get { return GetString("Compiler_NuGetPackageInstallationRequired"); }
 		}
@@ -140,7 +140,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Your operating system is not supported by the engine."
 		/// </summary>
-		public static string Compiler_OperatingSystemNotSupported
+		internal static string Compiler_OperatingSystemNotSupported
 		{
 			get { return GetString("Compiler_OperatingSystemNotSupported"); }
 		}
@@ -148,7 +148,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "During loading of Sass compiler error has occurred."
 		/// </summary>
-		public static string Compiler_SassCompilerNotLoaded
+		internal static string Compiler_SassCompilerNotLoaded
 		{
 			get { return GetString("Compiler_SassCompilerNotLoaded"); }
 		}
@@ -156,7 +156,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Column number"
 		/// </summary>
-		public static string ErrorDetails_ColumnNumber
+		internal static string ErrorDetails_ColumnNumber
 		{
 			get { return GetString("ErrorDetails_ColumnNumber"); }
 		}
@@ -164,7 +164,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Description"
 		/// </summary>
-		public static string ErrorDetails_Description
+		internal static string ErrorDetails_Description
 		{
 			get { return GetString("ErrorDetails_Description"); }
 		}
@@ -172,7 +172,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Error code"
 		/// </summary>
-		public static string ErrorDetails_ErrorCode
+		internal static string ErrorDetails_ErrorCode
 		{
 			get { return GetString("ErrorDetails_ErrorCode"); }
 		}
@@ -180,7 +180,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "File"
 		/// </summary>
-		public static string ErrorDetails_File
+		internal static string ErrorDetails_File
 		{
 			get { return GetString("ErrorDetails_File"); }
 		}
@@ -188,7 +188,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Line number"
 		/// </summary>
-		public static string ErrorDetails_LineNumber
+		internal static string ErrorDetails_LineNumber
 		{
 			get { return GetString("ErrorDetails_LineNumber"); }
 		}
@@ -196,7 +196,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Message"
 		/// </summary>
-		public static string ErrorDetails_Message
+		internal static string ErrorDetails_Message
 		{
 			get { return GetString("ErrorDetails_Message"); }
 		}
@@ -204,7 +204,7 @@ namespace LibSassHost.Resources
 		/// <summary>
 		/// Looks up a localized string similar to "Source fragment"
 		/// </summary>
-		public static string ErrorDetails_SourceFragment
+		internal static string ErrorDetails_SourceFragment
 		{
 			get { return GetString("ErrorDetails_SourceFragment"); }
 		}
