@@ -1,6 +1,9 @@
 Change log
 ==========
 
+## v1.3.2 - October 9, 2020
+ * Fixed a [error #43](https://github.com/Taritsyn/LibSassHost/issues/43) “application o virtual directory”
+
 ## v1.3.1 - May 1, 2020
  * Added support of the LibSass version 3.6.4
  * Fixed a [error #35](https://github.com/Taritsyn/LibSassHost/issues/35) “Unable to load DLL 'libsass' on Windows Server 2008 R2”. Special thanks to [Herman Kan](https://github.com/hermankan)

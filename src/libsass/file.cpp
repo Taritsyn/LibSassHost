@@ -287,7 +287,7 @@ namespace Sass {
       // In that case we should prepend the directory from the root
       if (rv[0] == '/' && rv[1] != '/') {
         File_Manager& file_manager = File_Manager::get_instance(); //LSH+
-        if (file_manager.is_initialized && !file_manager.supports_conversion_to_absolute_path) { //LSH+
+        if (!(file_manager.is_initialized && file_manager.supports_conversion_to_absolute_path)) { //LSH+
           rv.insert(0, cwd, 0, 2);
         } //LSH+
       }
