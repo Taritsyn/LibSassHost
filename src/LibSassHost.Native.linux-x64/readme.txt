@@ -1,7 +1,7 @@
 ﻿
 
    --------------------------------------------------------------------------------
-               README file for LibSass Host Native for Linux x64 v1.3.1
+               README file for LibSass Host Native for Linux x64 v1.3.2
 
    --------------------------------------------------------------------------------
 
@@ -15,11 +15,6 @@
    implementation of LibSass version 3.6.4 for Linux (x64).
 
    This package is only compatible with .NET Core.
-
-   =============
-   RELEASE NOTES
-   =============
-   Added support of the LibSass version 3.6.4.
 
    ============
    PROJECT SITE

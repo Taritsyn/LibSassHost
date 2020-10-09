@@ -26,9 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   1. Added support of the LibSass version 3.6.4;
-   2. Fixed a error #35 “Unable to load DLL 'libsass' on Windows Server 2008 R2”.
-      Special thanks to Herman Kan.
+   Fixed a error #43 “application o virtual directory”.
 
    ============
    PROJECT SITE
