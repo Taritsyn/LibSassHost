@@ -71,7 +71,7 @@ SassCompiler.FileManager = FileManager.Instance;
 
 But in this case, will increase memory consumption (approximately 3 times).
 
-A good example of implementing a custom file manager, which provides access to the virtual file system, is the <a href="https://bundletransformer.codeplex.com/SourceControl/latest#BundleTransformer.SassAndScss/Internal/VirtualFileManager.cs" target="_blank"><code title="BundleTransformer.SassAndScss.Internal.VirtualFileManager">VirtualFileManager</code></a> class from the <a href="http://nuget.org/packages/BundleTransformer.SassAndScss" target="_blank">BundleTransformer.SassAndScss</a> package.
+A good example of implementing a custom file manager, which provides access to the virtual file system, is the <a href="https://github.com/Taritsyn/BundleTransformer/blob/master/src/BundleTransformer.SassAndScss/Internal/VirtualFileManager.cs" target="_blank"><code title="BundleTransformer.SassAndScss.Internal.VirtualFileManager">VirtualFileManager</code></a> class from the <a href="https://github.com/Taritsyn/BundleTransformer/wiki/Sass-and-SCSS" target="_blank">BundleTransformer.SassAndScss</a> package.
 
 It should also be noted, that this library does not write the result of compilation to disk. `Compile` and `CompileFile` methods of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class return the result of compilation in the form of an instance of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class. Consider in detail properties of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class:
 
