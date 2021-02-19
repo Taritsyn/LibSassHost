@@ -14,8 +14,13 @@
 		<NoWarn>$(NoWarn);CS1591</NoWarn>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<DisableDefaultResxToCsConversionTarget>true</DisableDefaultResxToCsConversionTarget>
-		<Title>$(Product)</Title>
-		<Authors>Andrey Taritsyn</Authors>
+	</PropertyGroup>
+
+	<Import Project="../../build/common.props" />
+	<Import Project="../../build/net40-client-target.props" />
+	<Import Project="../../build/nuget-for-dotnet-lib.props" />
+
+	<PropertyGroup>
 		<Description>.NET wrapper around the LibSass (http://sass-lang.com/libsass) with the ability to support a virtual file system.
 
 This package does not contain the native implementations of LibSass. Therefore, you need to choose and install the most appropriate package(s) for your platform. The following packages are available:
@@ -24,29 +29,12 @@ This package does not contain the native implementations of LibSass. Therefore, 
  * LibSassHost.Native.win-x64
  * LibSassHost.Native.linux-x64
  * LibSassHost.Native.osx-x64</Description>
-		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<PackageProjectUrl>https://github.com/Taritsyn/LibSassHost</PackageProjectUrl>
-		<PackageIcon>icon.png</PackageIcon>
-		<RepositoryUrl>https://github.com/Taritsyn/LibSassHost</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<PackageTags>LibSass;Sass;SCSS;CSS</PackageTags>
+		<PackageTags>$(PackageCommonTags)</PackageTags>
 		<PackageReleaseNotes>Fixed a error #43 “application o virtual directory”.</PackageReleaseNotes>
-		<NeutralLanguage>en-US</NeutralLanguage>
-		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
 	</PropertyGroup>
-
-	<Import Project="../../build/common.props" />
-	<Import Project="../../build/net40-client-target.props" />
-	<Import Project="../../build/nuget-common.props" />
 
 	<ItemGroup>
 		<PackageReference Include="AdvancedStringBuilder" Version="0.1.0" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="ResxToCs.MSBuild" Version="1.0.0-alpha6" PrivateAssets="All" />
 	</ItemGroup>
 
@@ -68,16 +56,6 @@ This package does not contain the native implementations of LibSass. Therefore, 
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="../../images/LibSassHost_Logo_128x128.png">
-			<PackagePath>$(PackageIcon)</PackagePath>
-			<Pack>true</Pack>
-			<Visible>false</Visible>
-		</None>
-		<None Include="../../LICENSE.txt">
-			<PackagePath>$(PackageLicenseFile)</PackagePath>
-			<Pack>true</Pack>
-			<Visible>false</Visible>
-		</None>
 		<None Include="../libsass/LICENSE.txt">
 			<PackagePath>libsass-license.txt</PackagePath>
 			<Pack>true</Pack>

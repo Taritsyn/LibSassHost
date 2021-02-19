@@ -1,6 +1,8 @@
 <Project>
 	<PropertyGroup>
 		<Copyright>Copyright © 2015-2020 Andrey Taritsyn</Copyright>
+		<GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+		<GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'net40-client' Or '$(TargetFramework)' == 'net45' Or '$(TargetFramework)' == 'net451' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net471' ">

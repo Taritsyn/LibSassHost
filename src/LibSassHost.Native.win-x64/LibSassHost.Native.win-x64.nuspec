@@ -1,29 +1,14 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
-		<id>LibSassHost.Native.win-x64</id>
-		<version>1.3.2</version>
-		<title>LibSass Host Native for Windows (x64)</title>
-		<authors>Andrey Taritsyn</authors>
-		<owners>Andrey Taritsyn</owners>
-		<license type="file">LICENSE.txt</license>
-		<projectUrl>https://github.com/Taritsyn/LibSassHost</projectUrl>
-		<icon>icon.png</icon>
-		<repository type="git" url="https://github.com/Taritsyn/LibSassHost" />
-		<requireLicenseAcceptance>false</requireLicenseAcceptance>
-		<description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.4 for Windows (x64).</description>
-		<releaseNotes>Fixed a error #43 “application o virtual directory”.</releaseNotes>
-		<copyright>Copyright © 2015-2020 Andrey Taritsyn</copyright>
-		<language>en-US</language>
-		<tags>LibSass Sass SCSS CSS Windows x64</tags>
+		$CommonMetadataElements$
 	</metadata>
 	<files>
+		$CommonFileElements$
 		<file src="../../lib/win-x64/libsass.dll" target="runtimes/win-x64/native/" />
 		<file src="build/LibSassHost.Native.win-x64.props" target="build/" />
 		<file src="tools/Install.ps1" target="tools/" />
 		<file src="tools/Uninstall.ps1" target="tools/" />
-		<file src="../../images/LibSassHost_Logo_128x128.png" target="icon.png" />
-		<file src="../../LICENSE.txt" target="LICENSE.txt" />
 		<file src="../libsass/LICENSE.txt" target="libsass-license.txt" />
 		<file src="readme.txt" />
 	</files>

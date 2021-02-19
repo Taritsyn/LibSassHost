@@ -1,11 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<Product>LibSass Host Native for OS X (x64)</Product>
+		<VersionPrefix>1.3.2</VersionPrefix>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<IncludeBuildOutput>false</IncludeBuildOutput>
-		<NuspecFile>$(MSBuildProjectName).nuspec</NuspecFile>
 	</PropertyGroup>
 
-	<Import Project="../../build/nuget-common.props" />
+	<Import Project="../../build/common.props" />
+	<Import Project="../../build/nuget-for-native-lib.props" />
+	<Import Project="../../build/initialize-standard-nuspec-properties.targets" />
+
+	<PropertyGroup>
+		<Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.4 for OS X (x64).
+
+This package is only compatible with .NET Core.</Description>
+		<PackageTags>$(PackageCommonTags);macOS;OSX;x64</PackageTags>
+	</PropertyGroup>
 
 </Project>
