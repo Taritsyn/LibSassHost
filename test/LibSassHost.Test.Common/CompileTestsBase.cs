@@ -1,9 +1,5 @@
 ﻿using System;
 using System.IO;
-#if NETCOREAPP1_0
-
-using Microsoft.Extensions.PlatformAbstractions;
-#endif
 
 using Xunit;
 
@@ -30,12 +26,7 @@ namespace LibSassHost.Test.Common
 			TestsInitializer.Initialize();
 
 #endif
-#if NETCOREAPP1_0
-			var appEnv = PlatformServices.Default.Application;
-			string appDirectoryPath = appEnv.ApplicationBasePath;
-#else
 			string appDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
-#endif
 #if NET40
 			string baseDirectoryPath = Path.Combine(appDirectoryPath, "../../");
 #else
