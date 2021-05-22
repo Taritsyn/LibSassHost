@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.3.3 - May 22, 2021
+ * Added support of the LibSass version 3.6.5
+ * Added support of .NET Standard 2.1
+
 ## v1.3.2 - October 9, 2020
  * Fixed a [error #43](https://github.com/Taritsyn/LibSassHost/issues/43) “application o virtual directory”
 
