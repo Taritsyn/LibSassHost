@@ -1,14 +1,10 @@
 param($installPath, $toolsPath, $package, $project)
 
-if ($project.Type -eq "Web Site") {
-	$projectDirectoryPath = $project.Properties.Item("FullPath").Value
-	$binDirectoryPath = Join-Path $projectDirectoryPath "bin"
-	$assemblyFileName = "libsass.dll"
+if ($project.Type -eq 'Web Site') {
+	$projectDir = $project.Properties.Item('FullPath').Value
 
-	$assembly32DirectoryPath = Join-Path $binDirectoryPath "x86"
-	$assembly32FilePath = Join-Path $assembly32DirectoryPath $assemblyFileName
-
-	if (Test-Path $assembly32FilePath) {
-		Remove-Item $assembly32FilePath -Force
+	$assemblyFile = Join-Path $projectDir 'bin/x86/libsass.dll'
+	if (Test-Path $assemblyFile) {
+		Remove-Item $assemblyFile -Force
 	}
 }

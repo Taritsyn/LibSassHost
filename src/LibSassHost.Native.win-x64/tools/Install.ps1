@@ -1,16 +1,13 @@
 param($installPath, $toolsPath, $package, $project)
 
-if ($project.Type -eq "Web Site") {
-	$runtimesDirectoryPath = Join-Path $installPath "runtimes"
-	$projectDirectoryPath = $project.Properties.Item("FullPath").Value
-	$binDirectoryPath = Join-Path $projectDirectoryPath "bin"
-	$assemblyFileName = "libsass.dll"
+if ($project.Type -eq 'Web Site') {
+	$projectDir = $project.Properties.Item('FullPath').Value
 
-	$assembly64DestDirectoryPath = Join-Path $binDirectoryPath "x64"
-	if (!(Test-Path $assembly64DestDirectoryPath)) {
-		New-Item -ItemType Directory -Force -Path $assembly64DestDirectoryPath
+	$assemblyDestDir = Join-Path $projectDir 'bin/x64'
+	if (!(Test-Path $assemblyDestDir)) {
+		New-Item -ItemType Directory -Force -Path $assemblyDestDir
 	}
 
-	$assembly64SourceFilePath = Join-Path $runtimesDirectoryPath ("win-x64/native/" + $assemblyFileName)
-	Copy-Item $assembly64SourceFilePath $assembly64DestDirectoryPath -Force
+	$assemblySourceFile = Join-Path $installPath 'runtimes/win-x64/native/libsass.dll'
+	Copy-Item $assemblySourceFile $assemblyDestDir -Force
 }
