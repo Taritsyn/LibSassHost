@@ -26,7 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   Added support of the LibSass version 3.6.5.
+   1. Added support of the LibSass version 3.6.5.
+   2. Added support of .NET Standard 2.1.
 
    ============
    PROJECT SITE
