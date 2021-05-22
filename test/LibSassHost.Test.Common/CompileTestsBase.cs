@@ -22,10 +22,6 @@ namespace LibSassHost.Test.Common
 
 		protected CompileTestsBase(SyntaxType syntaxType)
 		{
-#if NETCOREAPP
-			TestsInitializer.Initialize();
-
-#endif
 			string appDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
 #if NET40
 			string baseDirectoryPath = Path.Combine(appDirectoryPath, "../../");

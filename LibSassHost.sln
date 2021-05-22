@@ -130,6 +130,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibSassHost.Sample.NetCore31.ConsoleApp", "samples\LibSassHost.Sample.NetCore31.ConsoleApp\LibSassHost.Sample.NetCore31.ConsoleApp.csproj", "{CCB60CC0-8211-4E42-AD96-3005497E1085}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSassHost.Sample.Net5.ConsoleApp", "samples\LibSassHost.Sample.Net5.ConsoleApp\LibSassHost.Sample.Net5.ConsoleApp.csproj", "{41F518BD-CFBE-4087-B7BE-EDF553BEFF89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -196,6 +198,10 @@ Global
 		{CCB60CC0-8211-4E42-AD96-3005497E1085}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCB60CC0-8211-4E42-AD96-3005497E1085}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCB60CC0-8211-4E42-AD96-3005497E1085}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41F518BD-CFBE-4087-B7BE-EDF553BEFF89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41F518BD-CFBE-4087-B7BE-EDF553BEFF89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41F518BD-CFBE-4087-B7BE-EDF553BEFF89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41F518BD-CFBE-4087-B7BE-EDF553BEFF89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -230,6 +236,7 @@ Global
 		{13274B8F-1033-48B7-A000-CC27C71E0F1A} = {474BA2D5-A05E-450E-BBEE-4D52F1FF34EF}
 		{7E10904A-E9B8-4E47-A606-F399AE7F4F7F} = {474BA2D5-A05E-450E-BBEE-4D52F1FF34EF}
 		{CCB60CC0-8211-4E42-AD96-3005497E1085} = {474BA2D5-A05E-450E-BBEE-4D52F1FF34EF}
+		{41F518BD-CFBE-4087-B7BE-EDF553BEFF89} = {474BA2D5-A05E-450E-BBEE-4D52F1FF34EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9323ED38-1B6C-4405-9DA0-96B3B345CC95}
