@@ -30,7 +30,7 @@ This package does not contain the native implementations of LibSass. Therefore, 
  * LibSassHost.Native.linux-x64
  * LibSassHost.Native.osx-x64</Description>
 		<PackageTags>$(PackageCommonTags)</PackageTags>
-		<PackageReleaseNotes>Fixed a error #43 “application o virtual directory”.</PackageReleaseNotes>
+		<PackageReleaseNotes>Added support of the LibSass version 3.6.5.</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>

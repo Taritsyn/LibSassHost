@@ -18,8 +18,9 @@ else
 endif
 LDFLAGS += -Wl,-undefined,error
 
-CXXFLAGS += -std=c++11
-LDFLAGS += -std=c++11
+LIBSASS_CPPSTD ?= c++11
+CXXFLAGS += -std=$(LIBSASS_CPPSTD)
+LDFLAGS  += -std=$(LIBSASS_CPPSTD)
 
 CFLAGS += -I include
 CXXFLAGS += -I include

@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<Product>LibSass Host Native for Windows (x64)</Product>
-		<VersionPrefix>1.3.2</VersionPrefix>
+		<VersionPrefix>1.3.3</VersionPrefix>
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 
@@ -11,9 +11,9 @@
 	<Import Project="../../build/initialize-standard-nuspec-properties.targets" />
 
 	<PropertyGroup>
-		<Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.4 for Windows (x64).</Description>
+		<Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.5 for Windows (x64).</Description>
 		<PackageTags>$(PackageCommonTags);Windows;x64</PackageTags>
-		<PackageReleaseNotes>Fixed a error #43 “application o virtual directory”.</PackageReleaseNotes>
+		<PackageReleaseNotes>Added support of the LibSass version 3.6.5.</PackageReleaseNotes>
 	</PropertyGroup>
 
 </Project>

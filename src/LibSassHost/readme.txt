@@ -5,7 +5,7 @@
 
    --------------------------------------------------------------------------------
 
-           Copyright (c) 2015-2020 Andrey Taritsyn - http://www.taritsyn.ru
+           Copyright (c) 2015-2021 Andrey Taritsyn - http://www.taritsyn.ru
 
 
    ===========
@@ -26,7 +26,7 @@
    =============
    RELEASE NOTES
    =============
-   Fixed a error #43 “application o virtual directory”.
+   Added support of the LibSass version 3.6.5.
 
    ============
    PROJECT SITE
