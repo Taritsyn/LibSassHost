@@ -1,18 +1,18 @@
 <Project>
-	<PropertyGroup>
-		<Title>$(Product)</Title>
-		<Authors>Andrey Taritsyn</Authors>
-		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-		<PackageCommonTags>LibSass;Sass;SCSS;CSS</PackageCommonTags>
-		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<PackageLicenseFullPath>../../LICENSE.txt</PackageLicenseFullPath>
-		<PackageIcon>icon.png</PackageIcon>
-		<PackageIconFullPath>../../images/LibSassHost_Logo_128x128.png</PackageIconFullPath>
-		<PackageProjectUrl>https://github.com/Taritsyn/LibSassHost</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/Taritsyn/LibSassHost</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<NeutralLanguage>en-US</NeutralLanguage>
-		<PackageOutputPath>../../nuget</PackageOutputPath>
-		<GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
-	</PropertyGroup>
+  <PropertyGroup>
+    <Title>$(Product)</Title>
+    <Authors>Andrey Taritsyn</Authors>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageCommonTags>LibSass;Sass;SCSS;CSS</PackageCommonTags>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFullPath>../../LICENSE.txt</PackageLicenseFullPath>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageIconFullPath>../../images/LibSassHost_Logo_128x128.png</PackageIconFullPath>
+    <PackageProjectUrl>https://github.com/Taritsyn/LibSassHost</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Taritsyn/LibSassHost</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <PackageOutputPath>../../nuget</PackageOutputPath>
+    <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
+  </PropertyGroup>
 </Project>

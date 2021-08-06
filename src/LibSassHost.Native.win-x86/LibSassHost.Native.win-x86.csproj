@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<Product>LibSass Host Native for Windows (x86)</Product>
-		<VersionPrefix>1.3.3</VersionPrefix>
-		<TargetFramework>netstandard2.0</TargetFramework>
-	</PropertyGroup>
+  <PropertyGroup>
+    <Product>LibSass Host Native for Windows (x86)</Product>
+    <VersionPrefix>1.3.3</VersionPrefix>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
 
-	<Import Project="../../build/common.props" />
-	<Import Project="../../build/nuget-for-native-lib.props" />
-	<Import Project="../../build/initialize-standard-nuspec-properties.targets" />
+  <Import Project="../../build/common.props" />
+  <Import Project="../../build/nuget-for-native-lib.props" />
+  <Import Project="../../build/initialize-standard-nuspec-properties.targets" />
 
-	<PropertyGroup>
-		<Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.5 for Windows (x86).</Description>
-		<PackageTags>$(PackageCommonTags);Windows;x86</PackageTags>
-		<PackageReleaseNotes>Added support of the LibSass version 3.6.5.</PackageReleaseNotes>
-	</PropertyGroup>
+  <PropertyGroup>
+    <Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.5 for Windows (x86).</Description>
+    <PackageTags>$(PackageCommonTags);Windows;x86</PackageTags>
+    <PackageReleaseNotes>Added support of the LibSass version 3.6.5.</PackageReleaseNotes>
+  </PropertyGroup>
 
 </Project>

@@ -76,30 +76,30 @@ A good example of implementing a custom file manager, which provides access to t
 It should also be noted, that this library does not write the result of compilation to disk. `Compile` and `CompileFile` methods of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class return the result of compilation in the form of an instance of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class. Consider in detail properties of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class:
 
 <table border="1" style="font-size: 0.7em">
-	<thead>
-		<tr valign="top">
-			<th>Property name</th>
-			<th>Data&nbsp;type</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr valign="top">
-			<td><code>CompiledContent</code></td>
-			<td><code title="System.String">String</code></td>
-			<td>CSS code.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>IncludedFilePaths</code></td>
-			<td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
-			<td>List of included files.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>SourceMap</code></td>
-			<td><code title="System.String">String</code></td>
-			<td>Source map.</td>
-		</tr>
-	</tbody>
+    <thead>
+        <tr valign="top">
+            <th>Property name</th>
+            <th>Data&nbsp;type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr valign="top">
+            <td><code>CompiledContent</code></td>
+            <td><code title="System.String">String</code></td>
+            <td>CSS code.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>IncludedFilePaths</code></td>
+            <td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
+            <td>List of included files.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>SourceMap</code></td>
+            <td><code title="System.String">String</code></td>
+            <td>Source map.</td>
+        </tr>
+    </tbody>
 </table>
 
 Consider a simple example of usage of the `Compile` method:
@@ -112,11 +112,11 @@ using LibSassHost.Helpers;
 
 namespace LibSassHost.Example.ConsoleApplication
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-			const string inputContent = @"$font-stack:    Helvetica, sans-serif;
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            const string inputContent = @"$font-stack:    Helvetica, sans-serif;
 $primary-color: #333;
 
 body {
@@ -124,26 +124,26 @@ body {
   color: $primary-color;
 }";
 
-			try
-			{
-				var options = new CompilationOptions { SourceMap = true };
-				CompilationResult result = SassCompiler.Compile(inputContent, "input.scss", "output.css",
-					"output.css.map", options);
+            try
+            {
+                var options = new CompilationOptions { SourceMap = true };
+                CompilationResult result = SassCompiler.Compile(inputContent, "input.scss", "output.css",
+                    "output.css.map", options);
 
-				Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
-					Environment.NewLine);
-				Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
-				Console.WriteLine("Included file paths: {0}",
-					string.Join(", ", result.IncludedFilePaths));
-			}
-			catch (SassCompilationException e)
-			{
-				Console.WriteLine("During compilation of SCSS code an error occurred. See details:");
-				Console.WriteLine();
-				Console.WriteLine(SassErrorHelpers.Format(e));
-			}
-		}
-	}
+                Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
+                    Environment.NewLine);
+                Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
+                Console.WriteLine("Included file paths: {0}",
+                    string.Join(", ", result.IncludedFilePaths));
+            }
+            catch (SassCompilationException e)
+            {
+                Console.WriteLine("During compilation of SCSS code an error occurred. See details:");
+                Console.WriteLine();
+                Console.WriteLine(SassErrorHelpers.Format(e));
+            }
+        }
+    }
 }
 ```
 
@@ -160,119 +160,119 @@ Then output result of compilation to the console. In addition, we provide handli
 And now let's consider in detail properties of the <code title="LibSassHost.CompilationOptions">CompilationOptions</code> class:
 
 <table border="1" style="font-size: 0.7em">
-	<thead>
-		<tr valign="top">
-			<th>Property name</th>
-			<th>Data&nbsp;type</th>
-			<th>Default value</th>
-			<th>Description</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr valign="top">
-			<td><code>AdditionalImportExtensions</code></td>
-			<td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
-			<td><code>.css</code></td>
-			<td>List of additional <code>@import</code> file extensions.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>IncludePaths</code></td>
-			<td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
-			<td>Empty list</td>
-			<td>List of include paths.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>IndentType</code></td>
-			<td><code title="LibSassHost.IndentType">IndentType</code> enumeration</td>
-			<td><code>Space</code></td>
-			<td>Indent type. Can take the following values:
-				<ul>
-					<li><code>Space</code> - space character</li>
-					<li><code>Tab</code> - tab character</li>
-				</ul>
-			</td>
-		</tr>
-		<tr valign="top">
-			<td><code>IndentWidth</code></td>
-			<td><code title="System.Int32">Int32</code></td>
-			<td><code>2</code></td>
-			<td>Number of spaces or tabs to be used for indentation.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>InlineSourceMap</code></td>
-			<td><code title="System.Boolean">Boolean</code></td>
-			<td><code>false</code></td>
-			<td>Flag for whether to embed <code>sourceMappingUrl</code> as data uri.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>LineFeedType</code></td>
-			<td><code title="LibSassHost.LineFeedType">LineFeedType</code> enumeration</td>
-			<td><code>Lf</code></td>
-			<td>Line feed type. Can take the following values:
-				<ul>
-					<li><code>Cr</code> - Macintosh (CR)</li>
-					<li><code>CrLf</code> - Windows (CR LF)</li>
-					<li><code>Lf</code> - Unix (LF)</li>
-					<li><code>LfCr</code></li>
-				</ul>
-			</td>
-		</tr>
-		<tr valign="top">
-			<td><code>OmitSourceMapUrl</code></td>
-			<td><code title="System.Boolean">Boolean</code></td>
-			<td><code>false</code></td>
-			<td>Flag for whether to disable <code>sourceMappingUrl</code> in css output.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>OutputStyle</code></td>
-			<td><code title="LibSassHost.OutputStyle">OutputStyle</code> enumeration</td>
-			<td><code>Nested</code></td>
-			<td>Output style for the generated css code. Can take the following values:
-				<ul>
-					<li><code>Nested</code></li>
-					<li><code>Expanded</code></li>
-					<li><code>Compact</code></li>
-					<li><code>Compressed</code></li>
-				</ul>
-			</td>
-		</tr>
-		<tr valign="top">
-			<td><code>Precision</code></td>
-			<td><code title="System.Int32">Int32</code></td>
-			<td><code>5</code></td>
-			<td>Precision for fractional numbers.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>SourceComments</code></td>
-			<td><code title="System.Boolean">Boolean</code></td>
-			<td><code>false</code></td>
-			<td>Flag for whether to emit comments in the generated CSS indicating the corresponding source line.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>SourceMap</code></td>
-			<td><code title="System.Boolean">Boolean</code></td>
-			<td><code>false</code></td>
-			<td>Flag for whether to enable source map generation.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>SourceMapFileUrls</code></td>
-			<td><code title="System.Boolean">Boolean</code></td>
-			<td><code>false</code></td>
-			<td>Flag for whether to create file urls for sources.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>SourceMapIncludeContents</code></td>
-			<td><code title="System.Boolean">Boolean</code></td>
-			<td><code>false</code></td>
-			<td>Flag for whether to include contents in maps.</td>
-		</tr>
-		<tr valign="top">
-			<td><code>SourceMapRootPath</code></td>
-			<td><code title="System.String">String</code></td>
-			<td>Empty string</td>
-			<td>Value will be emitted as <code>sourceRoot</code> in the source map information.</td>
-		</tr>
-	</tbody>
+    <thead>
+        <tr valign="top">
+            <th>Property name</th>
+            <th>Data&nbsp;type</th>
+            <th>Default value</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr valign="top">
+            <td><code>AdditionalImportExtensions</code></td>
+            <td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
+            <td><code>.css</code></td>
+            <td>List of additional <code>@import</code> file extensions.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>IncludePaths</code></td>
+            <td><code title="System.Collections.Generic.IList&lt;string&gt;">IList&lt;string&gt;</code></td>
+            <td>Empty list</td>
+            <td>List of include paths.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>IndentType</code></td>
+            <td><code title="LibSassHost.IndentType">IndentType</code> enumeration</td>
+            <td><code>Space</code></td>
+            <td>Indent type. Can take the following values:
+                <ul>
+                    <li><code>Space</code> - space character</li>
+                    <li><code>Tab</code> - tab character</li>
+                </ul>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td><code>IndentWidth</code></td>
+            <td><code title="System.Int32">Int32</code></td>
+            <td><code>2</code></td>
+            <td>Number of spaces or tabs to be used for indentation.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>InlineSourceMap</code></td>
+            <td><code title="System.Boolean">Boolean</code></td>
+            <td><code>false</code></td>
+            <td>Flag for whether to embed <code>sourceMappingUrl</code> as data uri.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>LineFeedType</code></td>
+            <td><code title="LibSassHost.LineFeedType">LineFeedType</code> enumeration</td>
+            <td><code>Lf</code></td>
+            <td>Line feed type. Can take the following values:
+                <ul>
+                    <li><code>Cr</code> - Macintosh (CR)</li>
+                    <li><code>CrLf</code> - Windows (CR LF)</li>
+                    <li><code>Lf</code> - Unix (LF)</li>
+                    <li><code>LfCr</code></li>
+                </ul>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td><code>OmitSourceMapUrl</code></td>
+            <td><code title="System.Boolean">Boolean</code></td>
+            <td><code>false</code></td>
+            <td>Flag for whether to disable <code>sourceMappingUrl</code> in css output.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>OutputStyle</code></td>
+            <td><code title="LibSassHost.OutputStyle">OutputStyle</code> enumeration</td>
+            <td><code>Nested</code></td>
+            <td>Output style for the generated css code. Can take the following values:
+                <ul>
+                    <li><code>Nested</code></li>
+                    <li><code>Expanded</code></li>
+                    <li><code>Compact</code></li>
+                    <li><code>Compressed</code></li>
+                </ul>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td><code>Precision</code></td>
+            <td><code title="System.Int32">Int32</code></td>
+            <td><code>5</code></td>
+            <td>Precision for fractional numbers.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>SourceComments</code></td>
+            <td><code title="System.Boolean">Boolean</code></td>
+            <td><code>false</code></td>
+            <td>Flag for whether to emit comments in the generated CSS indicating the corresponding source line.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>SourceMap</code></td>
+            <td><code title="System.Boolean">Boolean</code></td>
+            <td><code>false</code></td>
+            <td>Flag for whether to enable source map generation.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>SourceMapFileUrls</code></td>
+            <td><code title="System.Boolean">Boolean</code></td>
+            <td><code>false</code></td>
+            <td>Flag for whether to create file urls for sources.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>SourceMapIncludeContents</code></td>
+            <td><code title="System.Boolean">Boolean</code></td>
+            <td><code>false</code></td>
+            <td>Flag for whether to include contents in maps.</td>
+        </tr>
+        <tr valign="top">
+            <td><code>SourceMapRootPath</code></td>
+            <td><code title="System.String">String</code></td>
+            <td>Empty string</td>
+            <td>Value will be emitted as <code>sourceRoot</code> in the source map information.</td>
+        </tr>
+    </tbody>
 </table>
 
 Using of the `CompileFile` method quite a bit different from using of the `Compile` method:
@@ -286,35 +286,35 @@ using LibSassHost.Helpers;
 
 namespace LibSassHost.Example.ConsoleApplication
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-			const string basePath = "/Projects/TestSass";
-			string inputFilePath = Path.Combine(basePath, "style.scss");
-			string outputFilePath = Path.Combine(basePath, "style.css");
-			string sourceMapFilePath = Path.Combine(basePath, "style.css.map");
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            const string basePath = "/Projects/TestSass";
+            string inputFilePath = Path.Combine(basePath, "style.scss");
+            string outputFilePath = Path.Combine(basePath, "style.css");
+            string sourceMapFilePath = Path.Combine(basePath, "style.css.map");
 
-			try
-			{
-				var options = new CompilationOptions { SourceMap = true };
-				CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath,
-					sourceMapFilePath, options);
+            try
+            {
+                var options = new CompilationOptions { SourceMap = true };
+                CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath,
+                    sourceMapFilePath, options);
 
-				Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
-					Environment.NewLine);
-				Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
-				Console.WriteLine("Included file paths: {0}",
-					string.Join(", ", result.IncludedFilePaths));
-			}
-			catch (SassCompilationException e)
-			{
-				Console.WriteLine("During compilation of SCSS file an error occurred. See details:");
-				Console.WriteLine();
-				Console.WriteLine(SassErrorHelpers.Format(e));
-			}
-		}
-	}
+                Console.WriteLine("Compiled content:{1}{1}{0}{1}", result.CompiledContent,
+                    Environment.NewLine);
+                Console.WriteLine("Source map:{1}{1}{0}{1}", result.SourceMap, Environment.NewLine);
+                Console.WriteLine("Included file paths: {0}",
+                    string.Join(", ", result.IncludedFilePaths));
+            }
+            catch (SassCompilationException e)
+            {
+                Console.WriteLine("During compilation of SCSS file an error occurred. See details:");
+                Console.WriteLine();
+                Console.WriteLine(SassErrorHelpers.Format(e));
+            }
+        }
+    }
 }
 ```
 

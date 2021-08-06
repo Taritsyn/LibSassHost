@@ -68,7 +68,7 @@ body {
 
 			try
 			{
-				var options = new CompilationOptions { SourceMap = true, SourceMapFileUrls = true };
+				var options = new CompilationOptions { SourceMap = true };
 				CompilationResult result = SassCompiler.CompileFile(inputFilePath, outputFilePath, options: options);
 				WriteOutput(result);
 			}
