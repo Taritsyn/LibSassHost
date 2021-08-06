@@ -406,4 +406,11 @@ Build script can also take a options, information about which can be obtained by
 If you use the LibSass Host for .NET in some project, please send me a message so I can include it in this list:
 
  * [Bundle Transformer](https://github.com/Taritsyn/BundleTransformer) by Andrey Taritsyn
+ * [Excubo.WebCompiler](https://github.com/excubo-ag/WebCompiler) by Stefan Lörwald
+ * [JacobDixon.AspNetCore.LiveSassCompile](https://github.com/JakeDixon/JacobDixon.AspNetCore.LiveSassCompile) by Jacob Dixon
+ * [Karambolo.AspNetCore.Bundling](https://github.com/adams85/bundling) by Adam Simon
+ * [LibSassBuilder](https://github.com/johan-v-r/LibSassBuilder) by Johan van Rensburg
+ * [MustardBlack-Core.Assets.Css.Sass](https://www.nuget.org/packages/MustardBlack-Core.Assets.Css.Sass/) by Andrew Bullock
+ * [Profound.Kentico.SassPlugin](https://www.nuget.org/packages/Profound.Kentico.SassPlugin/) by Arindam Debnath
+ * [Sass.AspNetCore](https://www.nuget.org/packages/Sass.AspNetCore/) by Aleksandr Ovchinnikov
  * [VirtoCommerce Storefront for ASP.NET Core](https://github.com/VirtoCommerce/vc-storefront-core) by Virto Solutions LTD
