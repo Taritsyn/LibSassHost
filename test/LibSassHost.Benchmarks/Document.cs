@@ -1,6 +1,6 @@
 ﻿namespace LibSassHost.Benchmarks
 {
-	internal sealed class Document
+	public sealed class Document
 	{
 		public string RelativePath
 		{

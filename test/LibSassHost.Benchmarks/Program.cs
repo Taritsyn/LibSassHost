@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Running;
+﻿using System.Reflection;
+
+using BenchmarkDotNet.Running;
 
 namespace LibSassHost.Benchmarks
 {
@@ -6,7 +8,7 @@ namespace LibSassHost.Benchmarks
 	{
 		public static void Main(string[] args)
 		{
-			BenchmarkRunner.Run<ScssCompilationBenchmark>();
+			BenchmarkSwitcher.FromAssembly(typeof(Program).GetTypeInfo().Assembly).Run(args);
 		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace LibSassHost.Benchmarks
@@ -8,8 +7,8 @@ namespace LibSassHost.Benchmarks
 	{
 		public static void PopulateTestData(string directoryPath, Dictionary<string, Document> documents)
 		{
-			string absoluteDirectoryPath = Path.GetFullPath(
-				Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryPath));
+			string currentDirectory = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+			string absoluteDirectoryPath = Path.GetFullPath(Path.Combine(currentDirectory, directoryPath));
 
 			foreach (string documentName in documents.Keys)
 			{
