@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-#if NET45 || NET471 || NETSTANDARD || NETCOREAPP2_1
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
 using System.Runtime.InteropServices;
 #endif
 using System.Text;
@@ -94,7 +94,7 @@ namespace LibSassHost
 			get { return _fileManager; }
 			set { _fileManager = value; }
 		}
-#if NETFULL
+#if NETFRAMEWORK
 
 		/// <summary>
 		/// Static constructor

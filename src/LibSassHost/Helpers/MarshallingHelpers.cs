@@ -1,5 +1,5 @@
 ﻿using System;
-#if NET45 || NET471 || NETSTANDARD || NETCOREAPP2_1
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
 using System.Buffers;
 #endif
 using System.Runtime.InteropServices;
@@ -33,7 +33,7 @@ namespace LibSassHost.Helpers
 			{
 				// Convert Unicode to ANSI
 				Encoding srcEncoding = Encoding.UTF8;
-#if NETFULL
+#if NETFRAMEWORK
 				Encoding dstEncoding = Encoding.Default;
 #else
 				Encoding dstEncoding = Encoding.GetEncoding(0);
@@ -117,7 +117,7 @@ namespace LibSassHost.Helpers
 			var pBuffer = (byte*)ptr;
 			int bufferLength = (int)(pTempBuffer - pBuffer);
 
-#if NET471 || NETSTANDARD || NETCOREAPP2_1
+#if NET471_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
 			result = Encoding.UTF8.GetString(pBuffer, bufferLength);
 #else
 			var byteArrayPool = ArrayPool<byte>.Shared;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-#if NET45 || NET471 || NETSTANDARD || NETCOREAPP2_1
+#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
 using System.Runtime.InteropServices;
 #endif
 #if NET40
