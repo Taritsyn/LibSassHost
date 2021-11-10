@@ -83,7 +83,8 @@ if "%VisualStudioVersion%"=="12.0" goto check-vs-done
 if "%VisualStudioVersion%"=="14.0" goto check-vs-done
 if "%VisualStudioVersion%"=="15.0" goto check-vs-done
 if "%VisualStudioVersion%"=="16.0" goto check-vs-done
-echo *** Error: This script requires a Developer Command Prompt for VS2013, VS2015, VS2017 or VS2019.
+if "%VisualStudioVersion%"=="17.0" goto check-vs-done
+echo *** Error: This script requires a Developer Command Prompt for VS2013, VS2015, VS2017, VS2019 or VS2022.
 goto exit
 :check-vs-done
 
