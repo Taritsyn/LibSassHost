@@ -71,7 +71,7 @@ SassCompiler.FileManager = FileManager.Instance;
 
 But in this case, will increase memory consumption (approximately 3 times).
 
-A good example of implementing a custom file manager, which provides access to the virtual file system, is the <a href="https://github.com/Taritsyn/BundleTransformer/blob/master/src/BundleTransformer.SassAndScss/Internal/VirtualFileManager.cs" target="_blank"><code title="BundleTransformer.SassAndScss.Internal.VirtualFileManager">VirtualFileManager</code></a> class from the <a href="https://github.com/Taritsyn/BundleTransformer/wiki/Sass-and-SCSS" target="_blank">BundleTransformer.SassAndScss</a> package.
+A good example of implementing a custom file manager, which provides access to the virtual file system, is the <a href="https://github.com/Taritsyn/BundleTransformer/blob/5ee76a16f30d29fd54e7864fb8a10cfeb5b91e92/src/BundleTransformer.SassAndScss/Internal/VirtualFileManager.cs" target="_blank"><code title="BundleTransformer.SassAndScss.Internal.VirtualFileManager">VirtualFileManager</code></a> class from the <a href="https://www.nuget.org/packages/BundleTransformer.SassAndScss/1.12.36" target="_blank">BundleTransformer.SassAndScss</a> package.
 
 It should also be noted, that this library does not write the result of compilation to disk. `Compile` and `CompileFile` methods of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class return the result of compilation in the form of an instance of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class. Consider in detail properties of the <code title="LibSassHost.CompilationResult">CompilationResult</code> class:
 
@@ -405,7 +405,6 @@ Build script can also take a options, information about which can be obtained by
 ## Who's Using LibSass Host for .NET
 If you use the LibSass Host for .NET in some project, please send me a message so I can include it in this list:
 
- * [Bundle Transformer](https://github.com/Taritsyn/BundleTransformer) by Andrey Taritsyn
  * [Excubo.WebCompiler](https://github.com/excubo-ag/WebCompiler) by Stefan Lörwald
  * [JacobDixon.AspNetCore.LiveSassCompile](https://github.com/JakeDixon/JacobDixon.AspNetCore.LiveSassCompile) by Jacob Dixon
  * [Karambolo.AspNetCore.Bundling](https://github.com/adams85/bundling) by Adam Simon
