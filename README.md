@@ -405,7 +405,7 @@ Build script can also take a options, information about which can be obtained by
 ## Who's Using LibSass Host for .NET
 If you use the LibSass Host for .NET in some project, please send me a message so I can include it in this list:
 
- * [Excubo.WebCompiler](https://github.com/excubo-ag/WebCompiler) by Stefan Lörwald
+ * [Abstractions.Sass.CrossPlatformLibSass](https://www.nuget.org/packages/Abstractions.Sass.CrossPlatformLibSass)
  * [JacobDixon.AspNetCore.LiveSassCompile](https://github.com/JakeDixon/JacobDixon.AspNetCore.LiveSassCompile) by Jacob Dixon
  * [Karambolo.AspNetCore.Bundling](https://github.com/adams85/bundling) by Adam Simon
  * [LibSassBuilder](https://github.com/johan-v-r/LibSassBuilder) by Johan van Rensburg
