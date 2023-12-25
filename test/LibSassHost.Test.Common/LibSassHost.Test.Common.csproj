@@ -6,32 +6,33 @@
     <TargetFrameworks>net462;net471;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>$(NoWarn);xUnit2013</NoWarn>
+    <NoWarn>$(NoWarn);NU1507;xUnit2013</NoWarn>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <Import Project="../../build/common.props" />
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="xunit" Version="2.6.4" />
-    <PackageReference Include="LibSassHost.Native.win-x64" Version="1.3.3" />
-    <PackageReference Include="LibSassHost.Native.win-x86" Version="1.3.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" VersionOverride="2.6.4" />
+    <PackageReference Include="LibSassHost.Native.win-x64" />
+    <PackageReference Include="LibSassHost.Native.win-x86" />
 
     <ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'net5.0' ">
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
+    <PackageReference Include="xunit.runner.visualstudio" VersionOverride="2.4.5" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp3.1' And '$(TargetFramework)' != 'net5.0' ">
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6" />
+    <PackageReference Include="xunit.runner.visualstudio" VersionOverride="2.5.6" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'net471' ">
-    <PackageReference Include="LibSassHost.Native.linux-x64" Version="1.3.3" />
-    <PackageReference Include="LibSassHost.Native.osx-x64" Version="1.3.3" />
+    <PackageReference Include="LibSassHost.Native.linux-x64" />
+    <PackageReference Include="LibSassHost.Native.osx-x64" />
   </ItemGroup>
 
 </Project>

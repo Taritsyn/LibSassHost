@@ -7,7 +7,8 @@
     <RuntimeFrameworkVersion>1.0.16</RuntimeFrameworkVersion>
     <OutputType>Exe</OutputType>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <NoWarn>$(NoWarn);NU1903</NoWarn>
+    <NoWarn>$(NoWarn);NU1507;NU1903</NoWarn>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <IsPackable>false</IsPackable>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
@@ -15,11 +16,11 @@
   <Import Project="../../build/common.props" />
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.0.1" />
-    <PackageReference Include="LibSassHost.Native.win-x64" Version="1.3.3" />
-    <PackageReference Include="LibSassHost.Native.win-x86" Version="1.3.3" />
-    <PackageReference Include="LibSassHost.Native.linux-x64" Version="1.3.3" />
-    <PackageReference Include="LibSassHost.Native.osx-x64" Version="1.3.3" />
+    <PackageReference Include="System.Text.Encoding.CodePages" VersionOverride="4.0.1" />
+    <PackageReference Include="LibSassHost.Native.win-x64" />
+    <PackageReference Include="LibSassHost.Native.win-x86" />
+    <PackageReference Include="LibSassHost.Native.linux-x64" />
+    <PackageReference Include="LibSassHost.Native.osx-x64" />
 
     <ProjectReference Include="..\LibSassHost.Sample.Logic\LibSassHost.Sample.Logic.csproj" />
   </ItemGroup>
