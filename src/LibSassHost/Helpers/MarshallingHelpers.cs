@@ -1,5 +1,5 @@
 ﻿using System;
-#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
+#if NET45_OR_GREATER || NETSTANDARD
 using System.Buffers;
 #endif
 using System.Runtime.InteropServices;
@@ -117,7 +117,7 @@ namespace LibSassHost.Helpers
 			var pBuffer = (byte*)ptr;
 			int bufferLength = (int)(pTempBuffer - pBuffer);
 
-#if NET471_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
+#if NET471_OR_GREATER || NETSTANDARD
 			result = Encoding.UTF8.GetString(pBuffer, bufferLength);
 #else
 			var byteArrayPool = ArrayPool<byte>.Shared;

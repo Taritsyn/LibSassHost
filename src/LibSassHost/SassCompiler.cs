@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
+#if NET45_OR_GREATER || NETSTANDARD
 using System.Runtime.InteropServices;
 #endif
 using System.Text;

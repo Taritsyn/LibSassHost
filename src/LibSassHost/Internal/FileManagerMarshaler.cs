@@ -1,4 +1,4 @@
-﻿#if NET45_OR_GREATER || NETSTANDARD || NETCOREAPP2_1
+﻿#if NET45_OR_GREATER || NETSTANDARD
 using System.Runtime.InteropServices;
 #endif
 #if NET40

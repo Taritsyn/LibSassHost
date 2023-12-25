@@ -23,11 +23,7 @@ namespace LibSassHost.Test.Common
 		protected CompileTestsBase(SyntaxType syntaxType)
 		{
 			string appDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
-#if NET40
-			string baseDirectoryPath = Path.Combine(appDirectoryPath, "../../");
-#else
 			string baseDirectoryPath = Path.Combine(appDirectoryPath, "../../../");
-#endif
 			_filesDirectoryPath = Path.GetFullPath(Path.Combine(baseDirectoryPath, "../SharedFiles"));
 			_syntaxType = syntaxType;
 
