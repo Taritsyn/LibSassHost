@@ -8,6 +8,6 @@ if ($project.Type -eq 'Web Site') {
         New-Item -ItemType Directory -Force -Path $assemblyDestDir
     }
 
-    $assemblySourceFile = Join-Path $installPath 'runtimes/win-x86/native/libsass.dll'
-    Copy-Item $assemblySourceFile $assemblyDestDir -Force
+    $assemblySourceFiles = Join-Path $installPath 'runtimes/win-x86/native/*.*'
+    Copy-Item $assemblySourceFiles $assemblyDestDir -Force
 }

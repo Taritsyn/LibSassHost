@@ -5,7 +5,7 @@
 
    --------------------------------------------------------------------------------
 
-           Copyright (c) 2015-2021 Andrey Taritsyn - http://www.taritsyn.ru
+           Copyright (c) 2015-2023 Andrey Taritsyn - http://www.taritsyn.ru
 
 
    ===========
@@ -26,7 +26,8 @@
    =============
    RELEASE NOTES
    =============
-   No longer supports a .NET Core App 2.1.
+   1. Added support for the LibSass version 3.6.6;
+   2. No longer supports a .NET Core App 2.1.
 
    ============
    PROJECT SITE

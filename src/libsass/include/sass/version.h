@@ -2,7 +2,7 @@
 #define SASS_VERSION_H
 
 #ifndef LIBSASS_VERSION
-#define LIBSASS_VERSION /*LSH- "[NA]"*/"3.6.5"
+#define LIBSASS_VERSION /*LSH- "[NA]"*/"3.6.6"
 #endif
 
 #ifndef LIBSASS_LANGUAGE_VERSION
