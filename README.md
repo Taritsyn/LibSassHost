@@ -140,7 +140,7 @@ body {
             {
                 Console.WriteLine("During compilation of SCSS code an error occurred. See details:");
                 Console.WriteLine();
-                Console.WriteLine(SassErrorHelpers.Format(e));
+                Console.WriteLine(SassErrorHelpers.GenerateErrorDetails(e));
             }
         }
     }
@@ -311,7 +311,7 @@ namespace LibSassHost.Example.ConsoleApplication
             {
                 Console.WriteLine("During compilation of SCSS file an error occurred. See details:");
                 Console.WriteLine();
-                Console.WriteLine(SassErrorHelpers.Format(e));
+                Console.WriteLine(SassErrorHelpers.GenerateErrorDetails(e));
             }
         }
     }
