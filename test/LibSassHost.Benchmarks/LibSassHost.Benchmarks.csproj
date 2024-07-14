@@ -5,6 +5,7 @@
     <VersionPrefix>1.4.0</VersionPrefix>
     <TargetFrameworks>net462;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);NU1507</NoWarn>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -15,11 +16,13 @@
   <Import Project="../../build/common.props" />
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" VersionOverride="0.13.11" />
+    <PackageReference Include="BenchmarkDotNet" VersionOverride="0.13.12" />
+    <PackageReference Include="LibSassHost.Native.win-arm" />
+    <PackageReference Include="LibSassHost.Native.win-arm64" />
     <PackageReference Include="LibSassHost.Native.win-x64" />
     <PackageReference Include="LibSassHost.Native.win-x86" />
 
-    <ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
+    <ProjectReference Include="../../src/LibSassHost/LibSassHost.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'net462' ">

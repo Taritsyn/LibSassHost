@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Product>LibSass Host Native for Linux (x64)</Product>
-    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionPrefix>1.5.0</VersionPrefix>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
@@ -15,7 +15,6 @@
 
 This package is only compatible with .NET Core.</Description>
     <PackageTags>$(PackageCommonTags);Linux;x64</PackageTags>
-    <PackageReleaseNotes>Added support for the LibSass version 3.6.6.</PackageReleaseNotes>
   </PropertyGroup>
 
 </Project>

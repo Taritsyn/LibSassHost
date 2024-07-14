@@ -7,6 +7,7 @@
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.0</NetStandardImplicitPackageVersion>
     <OutputType>Library</OutputType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -14,7 +15,7 @@
   <Import Project="../../build/net40-client-target.props" />
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
+    <ProjectReference Include="../../src/LibSassHost/LibSassHost.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
@@ -22,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\SharedFiles\*.scss">
-      <Link>Files\%(Filename)%(Extension)</Link>
+    <None Include="../SharedFiles/*.scss">
+      <Link>Files/%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>

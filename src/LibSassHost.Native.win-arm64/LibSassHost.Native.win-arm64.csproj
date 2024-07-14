@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Product>LibSass Host Native for Windows (ARM64)</Product>
+    <VersionPrefix>1.5.0</VersionPrefix>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <Import Project="../../build/common.props" />
+  <Import Project="../../build/nuget-for-native-lib.props" />
+  <Import Project="../../build/initialize-standard-nuspec-properties.targets" />
+
+  <PropertyGroup>
+    <Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.6 for Windows (ARM64).
+
+This package is only compatible with .NET Core and .NET Framework 4.5.</Description>
+    <PackageTags>$(PackageCommonTags);Windows;ARM64</PackageTags>
+  </PropertyGroup>
+
+</Project>

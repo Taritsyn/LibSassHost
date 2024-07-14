@@ -15,11 +15,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" VersionOverride="2.6.4" />
+    <PackageReference Include="xunit" VersionOverride="2.9.0" />
+    <PackageReference Include="LibSassHost.Native.win-arm" />
+    <PackageReference Include="LibSassHost.Native.win-arm64" />
     <PackageReference Include="LibSassHost.Native.win-x64" />
     <PackageReference Include="LibSassHost.Native.win-x86" />
 
-    <ProjectReference Include="..\..\src\LibSassHost\LibSassHost.csproj" />
+    <ProjectReference Include="../../src/LibSassHost/LibSassHost.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'net5.0' ">
@@ -27,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'netcoreapp3.1' And '$(TargetFramework)' != 'net5.0' ">
-    <PackageReference Include="xunit.runner.visualstudio" VersionOverride="2.5.6" />
+    <PackageReference Include="xunit.runner.visualstudio" VersionOverride="2.8.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'net471' ">

@@ -14,12 +14,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LibSassHost.Native.win-arm" />
+    <PackageReference Include="LibSassHost.Native.win-arm64" />
     <PackageReference Include="LibSassHost.Native.win-x64" />
     <PackageReference Include="LibSassHost.Native.win-x86" />
     <PackageReference Include="LibSassHost.Native.linux-x64" />
     <PackageReference Include="LibSassHost.Native.osx-x64" />
 
-    <ProjectReference Include="..\LibSassHost.Sample.Logic\LibSassHost.Sample.Logic.csproj" />
+    <ProjectReference Include="../LibSassHost.Sample.Logic/LibSassHost.Sample.Logic.csproj" />
   </ItemGroup>
 
 </Project>

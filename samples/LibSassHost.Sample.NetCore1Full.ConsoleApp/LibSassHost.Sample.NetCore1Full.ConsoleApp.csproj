@@ -5,6 +5,7 @@
     <VersionPrefix>1.4.0</VersionPrefix>
     <TargetFramework>net451</TargetFramework>
     <OutputType>Exe</OutputType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);NU1507</NoWarn>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
@@ -14,10 +15,12 @@
   <Import Project="../../build/common.props" />
 
   <ItemGroup>
+    <PackageReference Include="LibSassHost.Native.win-arm" />
+    <PackageReference Include="LibSassHost.Native.win-arm64" />
     <PackageReference Include="LibSassHost.Native.win-x64" />
     <PackageReference Include="LibSassHost.Native.win-x86" />
 
-    <ProjectReference Include="..\LibSassHost.Sample.Logic\LibSassHost.Sample.Logic.csproj" />
+    <ProjectReference Include="../LibSassHost.Sample.Logic/LibSassHost.Sample.Logic.csproj" />
   </ItemGroup>
 
 </Project>

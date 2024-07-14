@@ -2,6 +2,10 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+#if NET40
+
+using PolyfillsForOldDotNet.System.Runtime.InteropServices;
+#endif
 
 using LibSassHost.Resources;
 using LibSassHost.Utilities;
@@ -36,7 +40,21 @@ namespace LibSassHost
 				baseDirectoryPath = currentDomain.BaseDirectory;
 			}
 
-			string platform = Utils.Is64BitProcess() ? "x64" : "x86";
+			Architecture architecture = RuntimeInformation.OSArchitecture;
+			string platform;
+
+			if (architecture == Architecture.X64 || architecture == Architecture.X86)
+			{
+				platform = Utils.Is64BitProcess() ? "x64" : "x86";
+			}
+			else if (architecture == Architecture.Arm64 || architecture == Architecture.Arm)
+			{
+				platform = Utils.Is64BitProcess() ? "arm64" : "arm";
+			}
+			else
+			{
+				return;
+			}
 
 			string assemblyFileName = ASSEMBLY_NAME + ".dll";
 			string assemblyDirectoryPath = Path.Combine(baseDirectoryPath, platform);

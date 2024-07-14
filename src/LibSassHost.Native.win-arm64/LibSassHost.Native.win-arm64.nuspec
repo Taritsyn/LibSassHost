@@ -1,0 +1,15 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    $CommonMetadataElements$
+  </metadata>
+  <files>
+    $CommonFileElements$
+    <file src="../../lib/win-arm64/libsass.dll" target="runtimes/win-arm64/native/" />
+    <file src="build/LibSassHost.Native.win-arm64.props" target="build/" />
+    <file src="tools/Install.ps1" target="tools/" />
+    <file src="tools/Uninstall.ps1" target="tools/" />
+    <file src="../libsass/LICENSE.txt" target="libsass-license.txt" />
+    <file src="readme.txt" />
+  </files>
+</package>

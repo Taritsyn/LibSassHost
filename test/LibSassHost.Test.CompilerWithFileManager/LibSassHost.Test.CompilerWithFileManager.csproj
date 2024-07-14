@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
 
-    <ProjectReference Include="..\LibSassHost.Test.Common\LibSassHost.Test.Common.csproj" />
+    <ProjectReference Include="../LibSassHost.Test.Common/LibSassHost.Test.Common.csproj" />
   </ItemGroup>
 
 </Project>
