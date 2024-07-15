@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Product>LibSass Host: Sample .NET Core 2.1 Console Application</Product>
-    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionPrefix>1.5.0</VersionPrefix>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

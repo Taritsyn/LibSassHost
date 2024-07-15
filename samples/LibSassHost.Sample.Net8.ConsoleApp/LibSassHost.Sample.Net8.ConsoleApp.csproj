@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Product>LibSass Host: Sample .NET 8 Console Application</Product>
-    <VersionPrefix>1.4.0</VersionPrefix>
+    <VersionPrefix>1.5.0</VersionPrefix>
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -538,6 +538,15 @@ namespace LibSassHost
 								"LibSassHost.Native.win-x86"
 						);
 					}
+					else if (osArchitecture == Architecture.Arm64 || osArchitecture == Architecture.Arm)
+					{
+						descriptionBuilder.AppendFormat(Strings.Compiler_NuGetPackageInstallationRequired,
+							Utils.Is64BitProcess() ?
+								"LibSassHost.Native.win-arm64"
+								:
+								"LibSassHost.Native.win-arm"
+						);
+					}
 					else
 					{
 						descriptionBuilder.AppendFormat(Strings.Compiler_NoNuGetPackageForProcessorArchitecture,

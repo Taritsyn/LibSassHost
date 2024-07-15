@@ -1,6 +1,10 @@
 Change log
 ==========
 
+## v1.5.0 - July 15, 2024
+ * Added a packages that contain a native assemblies for Windows (ARM) and (ARM64)
+ * Minor improvements in metadata of NuGet packages
+
 ## v1.4.0 - December 26, 2023
  * Added support for the LibSass version 3.6.6
  * No longer supports a .NET Core App 2.1

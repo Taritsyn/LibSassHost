@@ -1,20 +1,22 @@
-LibSass Host for .NET [![NuGet version](http://img.shields.io/nuget/v/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)  [![Download count](https://img.shields.io/nuget/dt/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)
+LibSass Host for .NET [![NuGet version](https://img.shields.io/nuget/v/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)  [![Download count](https://img.shields.io/nuget/dt/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)
 =====================
 
 <img src="https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo.png" width="360" height="100" alt="LibSass Host logo" />
 
-.NET wrapper around the [LibSass](http://sass-lang.com/libsass) library with the ability to support a virtual file system.
+.NET wrapper around the [LibSass](https://github.com/sass/libsass) library with the ability to support a virtual file system.
 
 ## Installation
 This library can be installed through NuGet.
-[LibSassHost](http://nuget.org/packages/LibSassHost/) package does not contain the native implementations of the LibSass.
+[LibSassHost](https://www.nuget.org/packages/LibSassHost/) package does not contain the native implementations of the LibSass.
 Therefore, you need to choose and install the most appropriate package(s) for your platform.
 The following packages are available:
 
- * [LibSassHost.Native.win-x86](http://nuget.org/packages/LibSassHost.Native.win-x86/) contains the native assembly for Windows (x86).
- * [LibSassHost.Native.win-x64](http://nuget.org/packages/LibSassHost.Native.win-x64/) contains the native assembly for Windows (x64).
- * [LibSassHost.Native.linux-x64](http://nuget.org/packages/LibSassHost.Native.linux-x64/) contains the native assembly for Linux (x64). Only compatible with .NET Core.
- * [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/) contains the native assembly for OS X (x64). Only compatible with .NET Core.
+ * [LibSassHost.Native.win-x86](https://www.nuget.org/packages/LibSassHost.Native.win-x86/) contains the native assembly for Windows (x86).
+ * [LibSassHost.Native.win-x64](https://www.nuget.org/packages/LibSassHost.Native.win-x64/) contains the native assembly for Windows (x64).
+ * [LibSassHost.Native.win-arm](https://www.nuget.org/packages/LibSassHost.Native.win-arm/) contains the native assembly for Windows (ARM).
+ * [LibSassHost.Native.win-arm64](https://www.nuget.org/packages/LibSassHost.Native.win-arm64/) contains the native assembly for Windows (ARM64).
+ * [LibSassHost.Native.linux-x64](https://www.nuget.org/packages/LibSassHost.Native.linux-x64/) contains the native assembly for Linux (x64). Only compatible with .NET Core.
+ * [LibSassHost.Native.osx-x64](https://www.nuget.org/packages/LibSassHost.Native.osx-x64/) contains the native assembly for OS X (x64). Only compatible with .NET Core.
 
 If you need support for other operating systems, then you should read the [“Building LibSass”](#building-libsass) section.
 
@@ -27,7 +29,7 @@ LibSassHost.Native.linux-x64 and LibSassHost.Native.osx-x64 packages do not supp
 First you need to get the `libsass.so` assembly file. You have 3 ways to do this:
 
  1. [Download a assembly file](https://github.com/Taritsyn/LibSassHost/blob/master/lib/linux-x64/libsass.so) from the LibSass Host's project repository.
- 1. Extract a assembly file from the [LibSassHost.Native.linux-x64](http://nuget.org/packages/LibSassHost.Native.linux-x64/) package. The `libsass.so` file is located in the `runtimes/linux-x64/native/` directory of NuGet package.
+ 1. Extract a assembly file from the [LibSassHost.Native.linux-x64](https://www.nuget.org/packages/LibSassHost.Native.linux-x64/) package. The `libsass.so` file is located in the `runtimes/linux-x64/native/` directory of NuGet package.
  1. [Build a assembly file](#building-libsass) from the source code.
 
 Afterwards open a terminal window and change directory to the directory where the `libsass.so` file is located. Next, enter the following command:
@@ -42,7 +44,7 @@ sudo ldconfig
 First you need to get the `libsass.dylib` assembly file. You have 3 ways to do this:
 
  1. [Download a assembly file](https://github.com/Taritsyn/LibSassHost/blob/master/lib/osx-x64/libsass.dylib) from the LibSass Host's project repository.
- 1. Extract a assembly file from the [LibSassHost.Native.osx-x64](http://nuget.org/packages/LibSassHost.Native.osx-x64/) package. The `libsass.dylib` file is located in the `runtimes/osx-x64/native/` directory of NuGet package.
+ 1. Extract a assembly file from the [LibSassHost.Native.osx-x64](https://www.nuget.org/packages/LibSassHost.Native.osx-x64/) package. The `libsass.dylib` file is located in the `runtimes/osx-x64/native/` directory of NuGet package.
  1. [Build a assembly file](#building-libsass) from the source code.
 
 Afterwards open a terminal window and change directory to the directory where the `libsass.dylib` file is located. Next, enter the following command:
@@ -52,7 +54,7 @@ mkdir -p /usr/local/lib/ && cp libsass.dylib "$_"
 ```
 
 ## Usage
-The main difference between this library from other .NET wrappers around the LibSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](http://libsassnet.codeplex.com/)) is ability to support a virtual file system. You can set the file manager by using `FileManager` property of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class:
+The main difference between this library from other .NET wrappers around the LibSass (e.g. [libsassnet](https://github.com/darrenkopp/libsass-net/), [SharpScss](https://github.com/xoofx/SharpScss), [NSass](https://github.com/TBAPI-0KA/NSass), [Sass.Net](https://www.nuget.org/packages/XWeb.Web.Sass.Core)) is ability to support a virtual file system. You can set the file manager by using `FileManager` property of the <code title="LibSassHost.SassCompiler">SassCompiler</code> class:
 
 ```csharp
 SassCompiler.FileManager = CustomFileManager();
@@ -335,7 +337,7 @@ git clone https://github.com/Taritsyn/LibSassHost.git
 Further actions depend on your operating system.
 
 ### Windows
-In your system must be installed Visual Studio 2013, 2015, 2017, 2019 or 2022 with C++ support.
+In your system must be installed Visual Studio 2019 or 2022 with C++ support.
 
 To build the LibSass on Windows:
 
