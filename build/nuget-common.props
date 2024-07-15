@@ -2,10 +2,13 @@
   <PropertyGroup>
     <Title>$(Product)</Title>
     <Authors>Andrey Taritsyn</Authors>
+    <PackageReadmeFile>PACKAGE-DESCRIPTION.md</PackageReadmeFile>
+    <PackageReadmeFullPath>$(PackageReadmeFile)</PackageReadmeFullPath>
     <PackageCommonTags>LibSass;Sass;SCSS;CSS</PackageCommonTags>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageLicenseFullPath>../../LICENSE.txt</PackageLicenseFullPath>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo_128x128.png</PackageIconUrl>
     <PackageIconFullPath>../../images/LibSassHost_Logo_128x128.png</PackageIconFullPath>
     <PackageProjectUrl>https://github.com/Taritsyn/LibSassHost</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Taritsyn/LibSassHost</RepositoryUrl>

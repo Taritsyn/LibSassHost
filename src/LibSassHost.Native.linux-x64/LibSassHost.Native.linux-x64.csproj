@@ -11,9 +11,7 @@
   <Import Project="../../build/initialize-standard-nuspec-properties.targets" />
 
   <PropertyGroup>
-    <Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.6 for Linux (x64).
-
-This package is only compatible with .NET Core.</Description>
+    <Description>This package complements the LibSassHost package and contains the native implementation of LibSass for Linux (x64).</Description>
     <PackageTags>$(PackageCommonTags);Linux;x64</PackageTags>
   </PropertyGroup>
 

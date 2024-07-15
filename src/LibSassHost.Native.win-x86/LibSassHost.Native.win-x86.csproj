@@ -11,7 +11,7 @@
   <Import Project="../../build/initialize-standard-nuspec-properties.targets" />
 
   <PropertyGroup>
-    <Description>This package complements the LibSassHost package and contains the native implementation of LibSass version 3.6.6 for Windows (x86).</Description>
+    <Description>This package complements the LibSassHost package and contains the native implementation of LibSass for Windows (x86).</Description>
     <PackageTags>$(PackageCommonTags);Windows;x86</PackageTags>
   </PropertyGroup>
 

@@ -9,7 +9,5 @@
     <file src="build/LibSassHost.Native.win-arm.props" target="build/" />
     <file src="tools/Install.ps1" target="tools/" />
     <file src="tools/Uninstall.ps1" target="tools/" />
-    <file src="../libsass/LICENSE.txt" target="libsass-license.txt" />
-    <file src="readme.txt" />
   </files>
 </package>

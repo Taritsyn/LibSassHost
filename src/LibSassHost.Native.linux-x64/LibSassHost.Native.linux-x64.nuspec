@@ -6,7 +6,5 @@
   <files>
     $CommonFileElements$
     <file src="../../lib/linux-x64/libsass.so" target="runtimes/linux-x64/native/" />
-    <file src="../libsass/LICENSE.txt" target="libsass-license.txt" />
-    <file src="readme.txt" />
   </files>
 </package>
