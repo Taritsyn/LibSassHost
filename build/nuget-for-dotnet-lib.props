@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="$(PackageLicenseFullPath)" PackagePath="/" Pack="true" Visible="false" />
     <None Include="../libsass/LICENSE.txt" PackagePath="libsass-license.txt" Pack="true" Visible="false" />
     <None Include="$(PackageIconFullPath)" PackagePath="$(PackageIcon)" Pack="true" Visible="false" />
