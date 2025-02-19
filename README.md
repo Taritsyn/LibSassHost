@@ -407,7 +407,9 @@ Build script can also take a options, information about which can be obtained by
 ## Who's Using LibSass Host for .NET
 If you use the LibSass Host for .NET in some project, please send me a message so I can include it in this list:
 
- * [Abstractions.Sass.CrossPlatformLibSass](https://www.nuget.org/packages/Abstractions.Sass.CrossPlatformLibSass)
+ * [Abstractions Sass Compiler CI Build](https://www.nuget.org/packages/Abstractions.Sass.CIBuild) by Abstractions AS
+ * [Abstractions Sass Compiler Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=AbstractionsAS.AbstractionsSassVisualStudioExtension) by Abstractions AS
+ * [Abstractions SASS Theming System](https://www.nuget.org/packages/Abstractions.Sass.Theming/) by Abstractions AS
  * [Core Sass Compiler](https://github.com/benwmills/core-sass-compiler) by Ben Mills
  * [CssBuilder](https://github.com/x-projs/CssBuilder)
  * [JacobDixon.AspNetCore.LiveSassCompile](https://github.com/JakeDixon/JacobDixon.AspNetCore.LiveSassCompile) by Jacob Dixon
@@ -416,4 +418,4 @@ If you use the LibSass Host for .NET in some project, please send me a message s
  * [MustardBlack-Core.Assets.Css.Sass](https://www.nuget.org/packages/MustardBlack-Core.Assets.Css.Sass/) by Andrew Bullock
  * [Profound.Kentico.SassPlugin](https://www.nuget.org/packages/Profound.Kentico.SassPlugin/) by Arindam Debnath
  * [Sass.AspNetCore](https://www.nuget.org/packages/Sass.AspNetCore/) by Aleksandr Ovchinnikov
- * [VirtoCommerce Storefront for ASP.NET Core](https://github.com/VirtoCommerce/vc-storefront-core) by Virto Solutions LTD
+ * [Virto Commerce Storefront Kit](https://github.com/VirtoCommerce/vc-storefront) by Virto Solutions LTD
