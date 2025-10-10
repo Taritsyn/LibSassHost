@@ -1,6 +1,8 @@
 LibSass Host for .NET [![NuGet version](https://img.shields.io/nuget/v/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)  [![Download count](https://img.shields.io/nuget/dt/LibSassHost.svg)](https://www.nuget.org/packages/LibSassHost/)
 =====================
 
+**Warning:** [LibSass is deprecated](https://sass-lang.com/blog/libsass-is-deprecated/). Projects that still use the LibSass Host library should move onto the [Dart Sass Host](https://github.com/Taritsyn/DartSassHost).
+
 <img src="https://raw.githubusercontent.com/Taritsyn/LibSassHost/master/images/LibSassHost_Logo.png" width="360" height="100" alt="LibSass Host logo" />
 
 .NET wrapper around the [LibSass](https://github.com/sass/libsass) library with the ability to support a virtual file system.
