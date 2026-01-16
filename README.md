@@ -339,7 +339,7 @@ git clone https://github.com/Taritsyn/LibSassHost.git
 Further actions depend on your operating system.
 
 ### Windows
-In your system must be installed Visual Studio 2019 or 2022 with C++ support.
+In your system must be installed Visual Studio 2019, 2022 or 2026 with C++ support.
 
 To build the LibSass on Windows:
 

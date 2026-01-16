@@ -72,6 +72,9 @@
   <PropertyGroup Label="VS2022 toolset selection" Condition="'$(VisualStudioVersion)' == '17.0'">
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Label="VS2026 toolset selection" Condition="'$(VisualStudioVersion)' == '18.0'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>

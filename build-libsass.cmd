@@ -80,8 +80,9 @@ goto exit
 :check-vs
 if "%VisualStudioVersion%"=="16.0" goto check-vs-done
 if "%VisualStudioVersion%"=="17.0" goto check-vs-done
-echo *** Error: This script requires a Developer Command Prompt for VS2019 or VS2022.
-echo Browse to http://www.visualstudio.com for more information.
+if "%VisualStudioVersion%"=="18.0" goto check-vs-done
+echo *** Error: This script requires a Developer Command Prompt for VS2019, VS2022 or VS2026.
+echo     Browse to http://www.visualstudio.com for more information.
 goto exit
 :check-vs-done
 
@@ -106,6 +107,13 @@ set _MSBUILD_ARGS=%_MSBUILD_ARGS% /p:Platform=x64
 if "%_VERBOSE%"=="true" (msbuild %_MSBUILD_ARGS%) else (msbuild %_MSBUILD_ARGS% >%_LOG_FILE_NAME%)
 if errorlevel 1 goto error
 :build-x64-done
+
+:check-vs2026-for-arm
+if not "%VisualStudioVersion%"=="18.0" goto check-vs2026-for-arm-done
+echo *** Warning: VS2026 does not support 32-bit ARM development.
+echo     Use VS2022 with the Windows SDK version 10.0.22621 installed instead.
+goto build-arm64
+:check-vs2026-for-arm-done
 
 :build-arm
 echo Building LibSass (ARM) ...
